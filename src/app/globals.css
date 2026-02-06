@@ -47,6 +47,16 @@
     @apply border-border;
   }
 
+  /* Hide scrollbar for all browsers */
+  * {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  *::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
   html {
     scroll-behavior: smooth;
   }

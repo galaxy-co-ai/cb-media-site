@@ -13,10 +13,19 @@ interface AccordionProps {
 export function Accordion({ sections }: AccordionProps) {
   const [openSection, setOpenSection] = useState<string | null>(null)
   const contentRefs = useRef<Map<string, HTMLDivElement>>(new Map())
+  const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map())
+  const scrollPositionRef = useRef<number>(0)
+
+  const getScrollContainer = () => {
+    // The main element has overflow-y-auto
+    return document.querySelector('main')
+  }
 
   const toggleSection = (id: string) => {
+    const scrollContainer = getScrollContainer()
+
     if (openSection === id) {
-      // Close current section
+      // Close current section - restore scroll position
       const content = contentRefs.current.get(id)
       if (content) {
         gsap.to(content, {
@@ -24,10 +33,24 @@ export function Accordion({ sections }: AccordionProps) {
           opacity: 0,
           duration: 0.4,
           ease: 'power2.inOut',
+          onComplete: () => {
+            // Restore scroll position after close animation
+            if (scrollContainer) {
+              scrollContainer.scrollTo({
+                top: scrollPositionRef.current,
+                behavior: 'smooth',
+              })
+            }
+          },
         })
       }
       setOpenSection(null)
     } else {
+      // Save current scroll position before opening
+      if (scrollContainer) {
+        scrollPositionRef.current = scrollContainer.scrollTop
+      }
+
       // Close previous section
       if (openSection) {
         const prevContent = contentRefs.current.get(openSection)
@@ -44,6 +67,7 @@ export function Accordion({ sections }: AccordionProps) {
       // Open new section
       setOpenSection(id)
       const content = contentRefs.current.get(id)
+      const item = itemRefs.current.get(id)
       if (content) {
         gsap.fromTo(
           content,
@@ -53,6 +77,12 @@ export function Accordion({ sections }: AccordionProps) {
             opacity: 1,
             duration: 0.4,
             ease: 'power2.out',
+            onComplete: () => {
+              // Scroll the accordion item into view after opening
+              if (item) {
+                item.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }
+            },
           }
         )
       }
@@ -62,7 +92,13 @@ export function Accordion({ sections }: AccordionProps) {
   return (
     <div className="w-full">
       {sections.map((section) => (
-        <div key={section._id} className="border-b border-border">
+        <div
+          key={section._id}
+          ref={(el) => {
+            if (el) itemRefs.current.set(section._id, el)
+          }}
+          className="border-b border-border"
+        >
           <button
             onClick={() => toggleSection(section._id)}
             className="w-full py-6 md:py-8 flex items-center justify-between text-left group"
