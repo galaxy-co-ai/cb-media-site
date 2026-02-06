@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { gsap } from 'gsap'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { Section } from '@/sanity/lib/types'
 import { PortableTextRenderer } from '@/components/content/PortableTextRenderer'
 import { StatsGrid } from '@/components/content/StatsGrid'
@@ -12,86 +12,39 @@ interface AccordionProps {
 
 export function Accordion({ sections }: AccordionProps) {
   const [openSection, setOpenSection] = useState<string | null>(null)
-  const contentRefs = useRef<Map<string, HTMLDivElement>>(new Map())
   const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map())
   const scrollPositionRef = useRef<number>(0)
 
-  const getScrollContainer = () => {
-    // The main element has overflow-y-auto
-    return document.querySelector('main')
-  }
+  const getScrollContainer = () => document.querySelector('main')
 
   const toggleSection = (id: string) => {
     const scrollContainer = getScrollContainer()
 
     if (openSection === id) {
-      // Close current section - animate both collapse and scroll together
-      const content = contentRefs.current.get(id)
-      if (content && scrollContainer) {
-        // Animate both simultaneously
-        gsap.to(content, {
-          height: 0,
-          opacity: 0,
-          duration: 0.5,
-          ease: 'power2.inOut',
-        })
-        gsap.to(scrollContainer, {
-          scrollTop: scrollPositionRef.current,
-          duration: 0.5,
-          ease: 'power2.inOut',
-        })
-      }
+      // Closing - restore scroll position
       setOpenSection(null)
+      if (scrollContainer) {
+        setTimeout(() => {
+          scrollContainer.scrollTo({
+            top: scrollPositionRef.current,
+            behavior: 'smooth',
+          })
+        }, 100)
+      }
     } else {
-      // Save current scroll position before opening
+      // Opening - save position and scroll to item
       if (scrollContainer) {
         scrollPositionRef.current = scrollContainer.scrollTop
       }
-
-      // Close previous section
-      if (openSection) {
-        const prevContent = contentRefs.current.get(openSection)
-        if (prevContent) {
-          gsap.to(prevContent, {
-            height: 0,
-            opacity: 0,
-            duration: 0.3,
-            ease: 'power2.inOut',
-          })
-        }
-      }
-
-      // Open new section
       setOpenSection(id)
-      const content = contentRefs.current.get(id)
-      const item = itemRefs.current.get(id)
-      if (content && scrollContainer) {
-        // First, expand the content
-        gsap.fromTo(
-          content,
-          { height: 0, opacity: 0 },
-          {
-            height: 'auto',
-            opacity: 1,
-            duration: 0.5,
-            ease: 'power2.out',
-            onStart: () => {
-              // Calculate target scroll position and animate simultaneously
-              if (item) {
-                const itemRect = item.getBoundingClientRect()
-                const containerRect = scrollContainer.getBoundingClientRect()
-                const targetScroll = scrollContainer.scrollTop + itemRect.top - containerRect.top
 
-                gsap.to(scrollContainer, {
-                  scrollTop: targetScroll,
-                  duration: 0.5,
-                  ease: 'power2.out',
-                })
-              }
-            },
-          }
-        )
-      }
+      // Scroll to the item after animation starts
+      setTimeout(() => {
+        const item = itemRefs.current.get(id)
+        if (item) {
+          item.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 50)
     }
   }
 
@@ -112,30 +65,38 @@ export function Accordion({ sections }: AccordionProps) {
             <h2 className="font-display text-4xl md:text-6xl lg:text-7xl tracking-wide text-foreground group-hover:text-muted-foreground transition-colors">
               {section.title}
             </h2>
-            <span
-              className={`text-3xl md:text-4xl text-muted-foreground transition-transform duration-300 ${
-                openSection === section._id ? 'rotate-45' : ''
-              }`}
+            <motion.span
+              animate={{ rotate: openSection === section._id ? 45 : 0 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="text-3xl md:text-4xl text-muted-foreground"
             >
               +
-            </span>
+            </motion.span>
           </button>
 
-          <div
-            ref={(el) => {
-              if (el) contentRefs.current.set(section._id, el)
-            }}
-            className="overflow-hidden"
-            style={{ height: 0, opacity: 0 }}
-          >
-            <div className="pb-8 md:pb-12">
-              {section.stats && section.stats.length > 0 && (
-                <StatsGrid stats={section.stats} />
-              )}
-              <PortableTextRenderer content={section.content} />
-              {section.slug === 'contact' && <ContactBlock />}
-            </div>
-          </div>
+          <AnimatePresence initial={false}>
+            {openSection === section._id && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{
+                  duration: 0.4,
+                  ease: [0.4, 0, 0.2, 1],
+                  opacity: { duration: 0.3 }
+                }}
+                className="overflow-hidden"
+              >
+                <div className="pb-8 md:pb-12">
+                  {section.stats && section.stats.length > 0 && (
+                    <StatsGrid stats={section.stats} />
+                  )}
+                  <PortableTextRenderer content={section.content} />
+                  {section.slug === 'contact' && <ContactBlock />}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       ))}
     </div>
