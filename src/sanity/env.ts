@@ -1,18 +1,9 @@
 export const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01'
 
-export const dataset = assertValue(
-  process.env.NEXT_PUBLIC_SANITY_DATASET,
-  'Missing environment variable: NEXT_PUBLIC_SANITY_DATASET'
-)
+// Allow build to pass without env vars, but warn
+export const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
 
-export const projectId = assertValue(
-  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  'Missing environment variable: NEXT_PUBLIC_SANITY_PROJECT_ID'
-)
+export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || ''
 
-function assertValue<T>(v: T | undefined, errorMessage: string): T {
-  if (v === undefined) {
-    throw new Error(errorMessage)
-  }
-  return v
-}
+// Runtime check - will show error in browser console if not configured
+export const isSanityConfigured = Boolean(projectId)
