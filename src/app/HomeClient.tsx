@@ -24,9 +24,9 @@ export function HomeClient({ sections }: HomeClientProps) {
       <ParticleBackground />
 
       {/* Main Content */}
-      <main className="min-h-screen">
+      <main className="h-screen overflow-y-auto snap-y snap-proximity">
         {/* Hero Section */}
-        <section className="h-screen flex flex-col items-center justify-center px-6">
+        <section className="h-screen flex flex-col items-center justify-center px-6 snap-start">
           <h1 className="font-display text-6xl md:text-8xl lg:text-9xl tracking-wider text-center">
             CB.MEDIA
           </h1>
@@ -39,19 +39,21 @@ export function HomeClient({ sections }: HomeClientProps) {
         </section>
 
         {/* Accordion Sections */}
-        <section className="px-6 md:px-12 lg:px-24 pb-24">
-          <Accordion sections={sections} />
-        </section>
-
-        {/* Footer */}
-        <footer className="border-t border-border px-6 md:px-12 lg:px-24 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <span className="font-display text-2xl tracking-wider">CB.MEDIA</span>
-            <span className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} CB.Media. All rights reserved.
-            </span>
+        <section className="min-h-screen flex flex-col snap-start">
+          <div className="flex-1 px-6 md:px-12 lg:px-24 pt-12 pb-8">
+            <Accordion sections={sections} />
           </div>
-        </footer>
+
+          {/* Footer */}
+          <footer className="border-t border-border px-6 md:px-12 lg:px-24 py-8 mt-auto">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <span className="font-display text-2xl tracking-wider">CB.MEDIA</span>
+              <span className="text-sm text-muted-foreground">
+                © {new Date().getFullYear()} CB.Media. All rights reserved.
+              </span>
+            </div>
+          </footer>
+        </section>
       </main>
     </>
   )

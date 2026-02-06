@@ -70,13 +70,18 @@ export function ParticleBackground() {
         value: 60,
       },
       opacity: {
-        value: { min: 0.1, max: 0.4 },
+        value: { min: 0.3, max: 0.8 },
+        animation: {
+          enable: true,
+          speed: 0.5,
+          sync: false,
+        },
       },
       shape: {
         type: 'circle',
       },
       size: {
-        value: { min: 1, max: 2 },
+        value: { min: 1, max: 3 },
       },
     },
     detectRetina: true,
