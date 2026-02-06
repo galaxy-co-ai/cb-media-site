@@ -14,10 +14,12 @@ export const SECTIONS_QUERY = groq`
 
 export const SITE_SETTINGS_QUERY = groq`
   *[_type == "siteSettings"][0] {
-    siteName,
-    tagline,
-    description,
-    email,
-    phone
+    heroHeadline,
+    heroTagline,
+    heroSubtext,
+    contactEmail,
+    contactPhone,
+    ctaText,
+    ctaLink
   }
 `

@@ -16,9 +16,11 @@ export interface Section {
 }
 
 export interface SiteSettings {
-  siteName?: string
-  tagline?: string
-  description?: string
-  email?: string
-  phone?: string
+  heroHeadline?: string
+  heroTagline?: string
+  heroSubtext?: string
+  contactEmail?: string
+  contactPhone?: string
+  ctaText?: string
+  ctaLink?: string
 }
