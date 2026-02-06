@@ -33,8 +33,8 @@ export function HomeClient({ sections }: HomeClientProps) {
           <p className="mt-4 text-xl md:text-2xl text-muted-foreground tracking-widest">
             TURN VISIBILITY INTO VALUE
           </p>
-          <p className="mt-2 text-lg text-muted-foreground tracking-wider">
-            Media. Creative. Culture.
+          <p className="mt-4 text-base md:text-lg text-muted-foreground tracking-wide text-center max-w-2xl">
+            Architects of culture, community, and impact. Engineering brands for long-term durability, not just short-term spikes.
           </p>
         </section>
 

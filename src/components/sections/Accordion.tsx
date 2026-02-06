@@ -25,23 +25,20 @@ export function Accordion({ sections }: AccordionProps) {
     const scrollContainer = getScrollContainer()
 
     if (openSection === id) {
-      // Close current section - restore scroll position
+      // Close current section - animate both collapse and scroll together
       const content = contentRefs.current.get(id)
-      if (content) {
+      if (content && scrollContainer) {
+        // Animate both simultaneously
         gsap.to(content, {
           height: 0,
           opacity: 0,
-          duration: 0.4,
+          duration: 0.5,
           ease: 'power2.inOut',
-          onComplete: () => {
-            // Restore scroll position after close animation
-            if (scrollContainer) {
-              scrollContainer.scrollTo({
-                top: scrollPositionRef.current,
-                behavior: 'smooth',
-              })
-            }
-          },
+        })
+        gsap.to(scrollContainer, {
+          scrollTop: scrollPositionRef.current,
+          duration: 0.5,
+          ease: 'power2.inOut',
         })
       }
       setOpenSection(null)
@@ -68,19 +65,28 @@ export function Accordion({ sections }: AccordionProps) {
       setOpenSection(id)
       const content = contentRefs.current.get(id)
       const item = itemRefs.current.get(id)
-      if (content) {
+      if (content && scrollContainer) {
+        // First, expand the content
         gsap.fromTo(
           content,
           { height: 0, opacity: 0 },
           {
             height: 'auto',
             opacity: 1,
-            duration: 0.4,
+            duration: 0.5,
             ease: 'power2.out',
-            onComplete: () => {
-              // Scroll the accordion item into view after opening
+            onStart: () => {
+              // Calculate target scroll position and animate simultaneously
               if (item) {
-                item.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                const itemRect = item.getBoundingClientRect()
+                const containerRect = scrollContainer.getBoundingClientRect()
+                const targetScroll = scrollContainer.scrollTop + itemRect.top - containerRect.top
+
+                gsap.to(scrollContainer, {
+                  scrollTop: targetScroll,
+                  duration: 0.5,
+                  ease: 'power2.out',
+                })
               }
             },
           }

@@ -18,7 +18,7 @@ export const fallbackSections: Section[] = [
           {
             _type: 'span',
             _key: 's1',
-            text: 'From broadcast and streaming to digital and out-of-home, we architect cohesive brand and direct response campaigns that compound efficiency across every channel.',
+            text: 'We architect cohesive brand and direct response campaigns that compound efficiency across every channel, from broadcast and streaming to digital and out-of-home.',
             marks: [],
           },
         ],
@@ -31,7 +31,8 @@ export const fallbackSections: Section[] = [
         listItem: 'bullet',
         level: 1,
         children: [
-          { _type: 'span', _key: 'l1', text: 'Media Efficiency and Coverage', marks: [] },
+          { _type: 'span', _key: 'l1a', text: 'Media Efficiency & Coverage', marks: ['strong'] },
+          { _type: 'span', _key: 'l1b', text: ' - We deploy budgets where they actually work. We address CAC creep and ROAS decline at the source, not the dashboard.', marks: [] },
         ],
         markDefs: [],
       },
@@ -42,7 +43,8 @@ export const fallbackSections: Section[] = [
         listItem: 'bullet',
         level: 1,
         children: [
-          { _type: 'span', _key: 'l2', text: 'Brand, Memory, and Creative Systems', marks: [] },
+          { _type: 'span', _key: 'l2a', text: 'Brand, Memory & Creative Systems', marks: ['strong'] },
+          { _type: 'span', _key: 'l2b', text: ' - We build creative platforms that run for years, not weeks, and still feel sharp, relevant, and on-brand.', marks: [] },
         ],
         markDefs: [],
       },
@@ -53,7 +55,8 @@ export const fallbackSections: Section[] = [
         listItem: 'bullet',
         level: 1,
         children: [
-          { _type: 'span', _key: 'l3', text: 'Expansion and Category Ownership', marks: [] },
+          { _type: 'span', _key: 'l3a', text: 'Expansion & Category Ownership', marks: ['strong'] },
+          { _type: 'span', _key: 'l3b', text: ' - We map SKU expansion, geographic rollout, and category dominance so your brand becomes the default choice.', marks: [] },
         ],
         markDefs: [],
       },
@@ -64,7 +67,8 @@ export const fallbackSections: Section[] = [
         listItem: 'bullet',
         level: 1,
         children: [
-          { _type: 'span', _key: 'l4', text: 'Media Buying Power for Challengers', marks: [] },
+          { _type: 'span', _key: 'l4a', text: 'Media Buying Power for Challengers', marks: ['strong'] },
+          { _type: 'span', _key: 'l4b', text: ' - Enterprise-level buying power and pricing without diluting your identity.', marks: [] },
         ],
         markDefs: [],
       },
@@ -85,7 +89,7 @@ export const fallbackSections: Section[] = [
           {
             _type: 'span',
             _key: 's1',
-            text: 'We partner with operators and investors who need marketing to work like an asset, not an experiment.',
+            text: "We partner with operators and investors who need marketing to work like an asset, not an experiment. Whether you're a challenger brand, a category disruptor, or a portfolio company scaling post-acquisition, we build engines that compound with your growth.",
             marks: [],
           },
         ],
@@ -93,56 +97,15 @@ export const fallbackSections: Section[] = [
       },
       {
         _type: 'block',
-        _key: 'list1',
+        _key: 'p2',
         style: 'normal',
-        listItem: 'bullet',
-        level: 1,
         children: [
-          { _type: 'span', _key: 'l1', text: 'CPG and D2C brands', marks: [] },
-        ],
-        markDefs: [],
-      },
-      {
-        _type: 'block',
-        _key: 'list2',
-        style: 'normal',
-        listItem: 'bullet',
-        level: 1,
-        children: [
-          { _type: 'span', _key: 'l2', text: 'Retail and multi-location concepts', marks: [] },
-        ],
-        markDefs: [],
-      },
-      {
-        _type: 'block',
-        _key: 'list3',
-        style: 'normal',
-        listItem: 'bullet',
-        level: 1,
-        children: [
-          { _type: 'span', _key: 'l3', text: 'Home services and local service networks', marks: [] },
-        ],
-        markDefs: [],
-      },
-      {
-        _type: 'block',
-        _key: 'list4',
-        style: 'normal',
-        listItem: 'bullet',
-        level: 1,
-        children: [
-          { _type: 'span', _key: 'l4', text: 'Professional services and specialty practices', marks: [] },
-        ],
-        markDefs: [],
-      },
-      {
-        _type: 'block',
-        _key: 'list5',
-        style: 'normal',
-        listItem: 'bullet',
-        level: 1,
-        children: [
-          { _type: 'span', _key: 'l5', text: 'Fintech and cybersecurity brands', marks: [] },
+          {
+            _type: 'span',
+            _key: 's2',
+            text: 'CPG & D2C \u00B7 Retail & Multi-Location \u00B7 Home Services \u00B7 Professional Services \u00B7 Fintech & Cybersecurity \u00B7 Media & Communications Agencies',
+            marks: [],
+          },
         ],
         markDefs: [],
       },
@@ -163,7 +126,7 @@ export const fallbackSections: Section[] = [
           {
             _type: 'span',
             _key: 's1',
-            text: 'Most teams know that what got them here will not get them to the next level. The missing piece is a clear, credible path forward.',
+            text: "Most teams know that what got them here won't get them to the next level. The missing piece isn't more tactics, it's a clear, credible architecture for growth.",
             marks: [],
           },
         ],
@@ -176,7 +139,8 @@ export const fallbackSections: Section[] = [
         listItem: 'bullet',
         level: 1,
         children: [
-          { _type: 'span', _key: 'l1', text: "95% of your market isn't buying today — we build for that reality", marks: [] },
+          { _type: 'span', _key: 'l1a', text: "95% of your market isn't buying today.", marks: ['strong'] },
+          { _type: 'span', _key: 'l1b', text: " We build for that reality, planting demand now so you harvest it later, instead of chasing the same 5% everyone else is fighting over.", marks: [] },
         ],
         markDefs: [],
       },
@@ -187,7 +151,8 @@ export const fallbackSections: Section[] = [
         listItem: 'bullet',
         level: 1,
         children: [
-          { _type: 'span', _key: 'l2', text: 'Campaigns that run for years, not quarters', marks: [] },
+          { _type: 'span', _key: 'l2a', text: 'Campaigns should run for years, not quarters.', marks: ['strong'] },
+          { _type: 'span', _key: 'l2b', text: ' The strongest brand platforms compound like interest. We build creative systems with that kind of durability.', marks: [] },
         ],
         markDefs: [],
       },
@@ -198,7 +163,8 @@ export const fallbackSections: Section[] = [
         listItem: 'bullet',
         level: 1,
         children: [
-          { _type: 'span', _key: 'l3', text: 'Memory structures, not metrics theater', marks: [] },
+          { _type: 'span', _key: 'l3a', text: 'Memory structures, not metrics theater.', marks: ['strong'] },
+          { _type: 'span', _key: 'l3b', text: " We connect emotional insight with cultural context so your brand isn't just seen, it's remembered when it matters.", marks: [] },
         ],
         markDefs: [],
       },
@@ -209,7 +175,8 @@ export const fallbackSections: Section[] = [
         listItem: 'bullet',
         level: 1,
         children: [
-          { _type: 'span', _key: 'l4', text: 'Brand farming over pure hunting', marks: [] },
+          { _type: 'span', _key: 'l4a', text: 'Brand farming over pure hunting.', marks: ['strong'] },
+          { _type: 'span', _key: 'l4b', text: ' Hunt-and-close has limits. We shift you toward durable demand generation so growth continues even when campaigns pause.', marks: [] },
         ],
         markDefs: [],
       },
@@ -236,7 +203,7 @@ export const fallbackSections: Section[] = [
           {
             _type: 'span',
             _key: 's1',
-            text: 'Results from a US-based B2C brand. CB.Media identified $17.46M in sub-optimal spend and redirected it for maximum impact.',
+            text: 'Results from a national B2C brand engagement. CB.Media identified $17.46M in sub-optimal media spend and redirected it to drive measurable, compounding impact.',
             marks: [],
           },
         ],
@@ -259,7 +226,7 @@ export const fallbackSections: Section[] = [
           {
             _type: 'span',
             _key: 's1',
-            text: 'Ready to turn visibility into value?',
+            text: "If you like the view from the thirtieth floor, capture it. If you want to see it from the hundredth, let's talk.",
             marks: [],
           },
         ],

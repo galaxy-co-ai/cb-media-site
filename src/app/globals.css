@@ -47,7 +47,14 @@
     @apply border-border;
   }
 
-  /* Hide scrollbar for all browsers */
+  /* Hide scrollbar but reserve gutter space to prevent layout shift */
+  html {
+    overflow-y: scroll; /* Always show scrollbar gutter */
+    scrollbar-gutter: stable; /* Reserve space even when not scrolling */
+    scroll-behavior: smooth;
+  }
+
+  /* Hide the actual scrollbar visually */
   * {
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
@@ -55,10 +62,6 @@
 
   *::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
-  }
-
-  html {
-    scroll-behavior: smooth;
   }
 
   body {
