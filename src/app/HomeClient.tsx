@@ -1,0 +1,58 @@
+'use client'
+
+import { useState } from 'react'
+import { ConstellationIntro } from '@/components/intro/ConstellationIntro'
+import { ParticleBackground } from '@/components/intro/ParticleBackground'
+import { Accordion } from '@/components/sections/Accordion'
+import type { Section } from '@/sanity/lib/types'
+
+interface HomeClientProps {
+  sections: Section[]
+}
+
+export function HomeClient({ sections }: HomeClientProps) {
+  const [introComplete, setIntroComplete] = useState(false)
+
+  return (
+    <>
+      {/* Intro Animation */}
+      {!introComplete && (
+        <ConstellationIntro onComplete={() => setIntroComplete(true)} />
+      )}
+
+      {/* Persistent Particle Background */}
+      <ParticleBackground />
+
+      {/* Main Content */}
+      <main className="min-h-screen">
+        {/* Hero Section */}
+        <section className="h-screen flex flex-col items-center justify-center px-6">
+          <h1 className="font-display text-6xl md:text-8xl lg:text-9xl tracking-wider text-center">
+            CB.MEDIA
+          </h1>
+          <p className="mt-4 text-xl md:text-2xl text-muted-foreground tracking-widest">
+            TURN VISIBILITY INTO VALUE
+          </p>
+          <p className="mt-2 text-lg text-muted-foreground tracking-wider">
+            Media. Creative. Culture.
+          </p>
+        </section>
+
+        {/* Accordion Sections */}
+        <section className="px-6 md:px-12 lg:px-24 pb-24">
+          <Accordion sections={sections} />
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-border px-6 md:px-12 lg:px-24 py-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <span className="font-display text-2xl tracking-wider">CB.MEDIA</span>
+            <span className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} CB.Media. All rights reserved.
+            </span>
+          </div>
+        </footer>
+      </main>
+    </>
+  )
+}

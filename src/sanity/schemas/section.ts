@@ -55,6 +55,13 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'stats',
+      title: 'Statistics',
+      type: 'array',
+      of: [{ type: 'stat' }],
+      description: 'Optional KPI statistics for Results-style sections',
+    }),
+    defineField({
       name: 'isVisible',
       title: 'Visible',
       type: 'boolean',
