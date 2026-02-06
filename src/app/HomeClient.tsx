@@ -1,7 +1,5 @@
 'use client'
 
-import { useState } from 'react'
-import { ConstellationIntro } from '@/components/intro/ConstellationIntro'
 import { ParticleBackground } from '@/components/intro/ParticleBackground'
 import { Accordion } from '@/components/sections/Accordion'
 import type { Section } from '@/sanity/lib/types'
@@ -11,16 +9,9 @@ interface HomeClientProps {
 }
 
 export function HomeClient({ sections }: HomeClientProps) {
-  const [introComplete, setIntroComplete] = useState(false)
-
   return (
     <>
-      {/* Intro Animation */}
-      {!introComplete && (
-        <ConstellationIntro onComplete={() => setIntroComplete(true)} />
-      )}
-
-      {/* Persistent Particle Background */}
+      {/* Particle Background */}
       <ParticleBackground />
 
       {/* Main Content */}
