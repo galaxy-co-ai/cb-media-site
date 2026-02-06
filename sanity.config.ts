@@ -9,6 +9,7 @@ const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!
 export default defineConfig({
   name: 'cb-media-studio',
   title: 'CB.Media Content',
+  basePath: '/studio',
 
   projectId,
   dataset,
