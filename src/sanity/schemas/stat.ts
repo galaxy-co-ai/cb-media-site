@@ -7,16 +7,18 @@ export default defineType({
   fields: [
     {
       name: 'value',
-      title: 'Value',
+      title: 'Number',
       type: 'string',
-      description: 'The statistic value (e.g., "+193%", "-57%", "+454M")',
+      description: 'The impressive figure (e.g., "+193%", "50K+", "$2.5M")',
+      placeholder: '+193%',
       validation: (Rule) => Rule.required(),
     },
     {
       name: 'label',
-      title: 'Label',
+      title: 'What It Means',
       type: 'string',
-      description: 'Description of what this stat represents',
+      description: 'Brief explanation of the number',
+      placeholder: 'Engagement Growth',
       validation: (Rule) => Rule.required(),
     },
   ],
@@ -27,8 +29,8 @@ export default defineType({
     },
     prepare({ value, label }) {
       return {
-        title: value,
-        subtitle: label,
+        title: value || 'New Stat',
+        subtitle: label || 'Add a label...',
       }
     },
   },

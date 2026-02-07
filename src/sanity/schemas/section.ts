@@ -2,44 +2,36 @@ import { defineField, defineType } from 'sanity'
 
 export default defineType({
   name: 'section',
-  title: 'Section',
+  title: 'Content Section',
   type: 'document',
+  groups: [
+    { name: 'content', title: '📝 Content', default: true },
+    { name: 'settings', title: '⚙️ Settings' },
+  ],
   fields: [
+    // Content Fields
     defineField({
       name: 'title',
       title: 'Section Title',
       type: 'string',
-      description: 'The title shown in the accordion header',
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      options: {
-        source: 'title',
-        maxLength: 96,
-      },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'order',
-      title: 'Display Order',
-      type: 'number',
-      description: 'Lower numbers appear first',
-      validation: (Rule) => Rule.required().min(0),
+      group: 'content',
+      description: 'This appears as the accordion header (e.g., "Our Services")',
+      placeholder: 'e.g., Our Expertise',
+      validation: (Rule) => Rule.required().max(60),
     }),
     defineField({
       name: 'content',
       title: 'Content',
       type: 'array',
+      group: 'content',
+      description: 'Add your text, headings, and images here. Use the toolbar to format.',
       of: [
         {
           type: 'block',
           styles: [
-            { title: 'Normal', value: 'normal' },
-            { title: 'H3', value: 'h3' },
-            { title: 'H4', value: 'h4' },
+            { title: 'Normal Text', value: 'normal' },
+            { title: 'Heading (Medium)', value: 'h3' },
+            { title: 'Heading (Small)', value: 'h4' },
           ],
           marks: {
             decorators: [
@@ -51,21 +43,54 @@ export default defineType({
         {
           type: 'image',
           options: { hotspot: true },
+          fields: [
+            {
+              name: 'alt',
+              title: 'Alt Text',
+              type: 'string',
+              description: 'Describe the image (helps with accessibility & SEO)',
+            },
+          ],
         },
       ],
     }),
     defineField({
       name: 'stats',
-      title: 'Statistics',
+      title: 'Key Numbers',
       type: 'array',
+      group: 'content',
       of: [{ type: 'stat' }],
-      description: 'Optional KPI statistics for Results-style sections',
+      description: 'Optional: Add impressive statistics (e.g., "+193% Growth", "50K+ Followers")',
+    }),
+
+    // Settings Fields
+    defineField({
+      name: 'slug',
+      title: 'URL Slug',
+      type: 'slug',
+      group: 'settings',
+      description: 'Auto-generated from title. Click "Generate" after entering a title.',
+      options: {
+        source: 'title',
+        maxLength: 96,
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'order',
+      title: 'Display Order',
+      type: 'number',
+      group: 'settings',
+      description: 'Use 1, 2, 3... to arrange sections. Lower numbers appear first.',
+      placeholder: '1',
+      validation: (Rule) => Rule.required().min(0).integer(),
     }),
     defineField({
       name: 'isVisible',
-      title: 'Visible',
+      title: 'Show on Website',
       type: 'boolean',
-      description: 'Show this section on the site',
+      group: 'settings',
+      description: 'Turn OFF to hide this section without deleting it',
       initialValue: true,
     }),
   ],
@@ -83,9 +108,10 @@ export default defineType({
       isVisible: 'isVisible',
     },
     prepare({ title, order, isVisible }) {
+      const status = isVisible ? '🌐 Live' : '🔒 Hidden'
       return {
-        title: `${order}. ${title}`,
-        subtitle: isVisible ? 'Visible' : 'Hidden',
+        title: `${order ?? '?'}. ${title || 'Untitled Section'}`,
+        subtitle: status,
       }
     },
   },

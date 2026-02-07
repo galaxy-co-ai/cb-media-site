@@ -8,7 +8,7 @@ const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!
 
 export default defineConfig({
   name: 'cb-media-studio',
-  title: 'CB.Media Content',
+  title: 'CB Media Studio',
   basePath: '/studio',
 
   projectId,
@@ -18,30 +18,32 @@ export default defineConfig({
     structureTool({
       structure: (S) =>
         S.list()
-          .title('Content')
+          .title('📚 CB Media Content')
           .items([
             // Site Settings as a singleton
             S.listItem()
-              .title('Site Settings')
+              .title('⚙️ Site Settings')
               .id('siteSettings')
               .child(
                 S.document()
                   .schemaType('siteSettings')
                   .documentId('siteSettings')
+                  .title('Site Settings')
               ),
             S.divider(),
             // Sections
             S.listItem()
-              .title('Sections')
+              .title('📰 Content Sections')
               .schemaType('section')
               .child(
                 S.documentTypeList('section')
-                  .title('Sections')
+                  .title('Content Sections')
                   .defaultOrdering([{ field: 'order', direction: 'asc' }])
               ),
           ]),
     }),
-    visionTool(),
+    // Hide Vision tool from non-developers by putting it last
+    visionTool({ defaultApiVersion: '2024-01-01' }),
   ],
 
   schema: {

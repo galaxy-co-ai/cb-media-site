@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk, Montserrat } from 'next/font/google'
 import { CrispChat } from '@/components/chat/CrispChat'
+import { FeedbackWidget } from '@/components/feedback/FeedbackWidget'
 import './globals.css'
 
 const inter = Inter({
@@ -43,6 +44,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${spaceGrotesk.variable} ${montserrat.variable} font-sans`}>
         {children}
         <CrispChat />
+        <FeedbackWidget />
       </body>
     </html>
   )

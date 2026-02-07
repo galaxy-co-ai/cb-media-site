@@ -107,17 +107,40 @@ function ContactBlock() {
   return (
     <div className="mt-6 space-y-2">
       <a
-        href="mailto:tothman@CB.MEDIA"
+        href="mailto:info@cb.media"
         className="block text-lg text-foreground hover:text-muted-foreground transition-colors"
       >
-        tothman@CB.MEDIA
+        info@cb.media
       </a>
-      <a
-        href="tel:+19198157727"
-        className="block text-lg text-foreground hover:text-muted-foreground transition-colors"
-      >
-        +1 (919) 815-7727
-      </a>
+      <div className="mt-4 space-y-2">
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground w-28">North America</span>
+          <a
+            href="tel:+10000000000"
+            className="text-lg text-foreground hover:text-muted-foreground transition-colors"
+          >
+            +1 (000) 000-0000
+          </a>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground w-28">EMEA</span>
+          <a
+            href="tel:+440000000000"
+            className="text-lg text-foreground hover:text-muted-foreground transition-colors"
+          >
+            +44 00 0000 0000
+          </a>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground w-28">APAC</span>
+          <a
+            href="tel:+610000000000"
+            className="text-lg text-foreground hover:text-muted-foreground transition-colors"
+          >
+            +61 0 0000 0000
+          </a>
+        </div>
+      </div>
       <button className="mt-4 px-8 py-3 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-display text-xl tracking-wide">
         LET'S TALK
       </button>
