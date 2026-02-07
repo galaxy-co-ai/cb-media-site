@@ -11,6 +11,56 @@ function getResend(): Resend | null {
   return resend
 }
 
+// Telegram configuration
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
+
+async function sendTelegramNotification(
+  message: string,
+  screenshot: string | null
+) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+    console.log('Telegram not configured, skipping notification')
+    return
+  }
+
+  try {
+    if (screenshot) {
+      // Send photo with caption
+      const base64Data = screenshot.split(',')[1]
+      const buffer = Buffer.from(base64Data, 'base64')
+      const blob = new Blob([buffer], { type: 'image/jpeg' })
+
+      const formData = new FormData()
+      formData.append('chat_id', TELEGRAM_CHAT_ID)
+      formData.append('photo', blob, 'screenshot.jpg')
+      formData.append('caption', message.substring(0, 1024)) // Telegram caption limit
+      formData.append('parse_mode', 'HTML')
+
+      await fetch(
+        `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`,
+        { method: 'POST', body: formData }
+      )
+    } else {
+      // Send text message
+      await fetch(
+        `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'HTML',
+          }),
+        }
+      )
+    }
+  } catch (error) {
+    console.error('Telegram notification error:', error)
+  }
+}
+
 interface FeedbackRequest {
   element: {
     selector: string
@@ -31,6 +81,21 @@ export async function POST(request: Request) {
     if (!note?.trim()) {
       return NextResponse.json({ error: 'Note is required' }, { status: 400 })
     }
+
+    // Build Telegram message
+    const telegramMessage = `<b>📝 CB Media Feedback</b>
+
+<b>Page:</b> ${url}
+
+<b>Element:</b> ${element ? `<code>${element.selector}</code>` : 'None selected'}
+
+<b>Feedback:</b>
+${note}
+
+<i>${new Date(timestamp).toLocaleString()}</i>`
+
+    // Send Telegram notification (non-blocking)
+    sendTelegramNotification(telegramMessage, screenshot)
 
     // Build email content
     const screenshotHtml = screenshot
