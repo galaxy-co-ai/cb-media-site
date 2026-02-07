@@ -94,6 +94,15 @@
 @layer utilities {
   .font-display {
     font-family: var(--font-display), sans-serif;
+    letter-spacing: 0.08em; /* 8% tracking per brand spec */
+  }
+
+  .tracking-brand {
+    letter-spacing: 0.08em; /* 8% */
+  }
+
+  .tracking-tight {
+    letter-spacing: 0.02em;
   }
 
   .text-balance {
