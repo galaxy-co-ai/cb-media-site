@@ -5,6 +5,14 @@ export interface Stat {
   label: string
 }
 
+export interface ServiceItem {
+  _key: string
+  title: string
+  description: string
+  ctaText: string
+  ctaLink?: string
+}
+
 export interface Section {
   _id: string
   title: string
@@ -12,6 +20,7 @@ export interface Section {
   order: number
   content: PortableTextBlock[]
   stats?: Stat[]
+  serviceItems?: ServiceItem[]
   isVisible: boolean
 }
 

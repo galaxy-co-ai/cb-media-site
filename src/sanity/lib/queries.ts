@@ -8,6 +8,13 @@ export const SECTIONS_QUERY = groq`
     order,
     content,
     stats,
+    serviceItems[] {
+      _key,
+      title,
+      description,
+      ctaText,
+      ctaLink
+    },
     isVisible
   }
 `

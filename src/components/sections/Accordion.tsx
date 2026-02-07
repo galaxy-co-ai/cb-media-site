@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { Section } from '@/sanity/lib/types'
 import { PortableTextRenderer } from '@/components/content/PortableTextRenderer'
 import { StatsGrid } from '@/components/content/StatsGrid'
+import { ServiceGrid } from '@/components/content/ServiceGrid'
 
 interface AccordionProps {
   sections: Section[]
@@ -92,6 +93,11 @@ export function Accordion({ sections }: AccordionProps) {
                     <StatsGrid stats={section.stats} />
                   )}
                   <PortableTextRenderer content={section.content} />
+                  {section.serviceItems && section.serviceItems.length > 0 && (
+                    <div className="mt-8">
+                      <ServiceGrid items={section.serviceItems} />
+                    </div>
+                  )}
                   {section.slug === 'contact' && <ContactBlock />}
                 </div>
               </motion.div>

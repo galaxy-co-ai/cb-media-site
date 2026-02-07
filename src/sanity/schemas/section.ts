@@ -62,6 +62,62 @@ export default defineType({
       of: [{ type: 'stat' }],
       description: 'Optional: Add impressive statistics (e.g., "+193% Growth", "50K+ Followers")',
     }),
+    defineField({
+      name: 'serviceItems',
+      title: 'Service Cards',
+      type: 'array',
+      group: 'content',
+      description: 'Add service offerings with CTAs. Displays in a 2x2 grid with hover effects.',
+      of: [
+        {
+          type: 'object',
+          name: 'serviceItem',
+          title: 'Service Item',
+          fields: [
+            {
+              name: 'title',
+              title: 'Title',
+              type: 'string',
+              description: 'Service name (e.g., "Media Efficiency & Coverage")',
+              validation: (Rule) => Rule.required().max(80),
+            },
+            {
+              name: 'description',
+              title: 'Description',
+              type: 'text',
+              rows: 3,
+              description: 'Brief description of the service',
+              validation: (Rule) => Rule.required().max(200),
+            },
+            {
+              name: 'ctaText',
+              title: 'CTA Button Text',
+              type: 'string',
+              description: 'Button text (e.g., "EFFICIENCY AUDIT")',
+              validation: (Rule) => Rule.required().max(30),
+            },
+            {
+              name: 'ctaLink',
+              title: 'CTA Link (Optional)',
+              type: 'url',
+              description: 'Where the button links to (leave empty for contact scroll)',
+            },
+          ],
+          preview: {
+            select: {
+              title: 'title',
+              cta: 'ctaText',
+            },
+            prepare({ title, cta }) {
+              return {
+                title: title || 'Untitled Service',
+                subtitle: cta ? `CTA: ${cta}` : 'No CTA set',
+              }
+            },
+          },
+        },
+      ],
+    }),
 
     // Settings Fields
     defineField({

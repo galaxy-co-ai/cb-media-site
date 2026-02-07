@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { motion } from 'framer-motion'
-import { ParticleBackground } from '@/components/intro/ParticleBackground'
+import { GridSkylineBackground } from '@/components/GridSkylineBackground'
 import { Accordion } from '@/components/sections/Accordion'
 import type { Section } from '@/sanity/lib/types'
 
@@ -24,13 +24,13 @@ export function HomeClient({ sections }: HomeClientProps) {
 
   return (
     <>
-      {/* Particle Background */}
-      <ParticleBackground />
+      {/* Animated Grid Skyline Background */}
+      <GridSkylineBackground />
 
       {/* Main Content */}
       <main className="h-screen overflow-y-auto snap-y snap-proximity">
         {/* Hero Section */}
-        <section ref={heroRef} className="h-screen flex flex-col items-center justify-center px-6 snap-start relative">
+        <section ref={heroRef} className="h-screen flex flex-col items-center justify-center px-6 pb-24 snap-start relative">
           <h1 className="font-hero text-6xl md:text-8xl lg:text-9xl text-center">
             CB MEDIA
           </h1>
@@ -38,7 +38,7 @@ export function HomeClient({ sections }: HomeClientProps) {
             TURN VISIBILITY INTO VALUE
           </p>
           <p className="mt-4 text-base md:text-lg text-muted-foreground tracking-wide text-center max-w-2xl">
-            Architects of culture, community, and impact. Engineering brands for long-term durability, not just short-term spikes.
+            Architects of culture, community, and impact.
           </p>
 
           {/* Scroll Chevron */}
