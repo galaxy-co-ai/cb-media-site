@@ -97,6 +97,13 @@
     letter-spacing: 0.08em; /* 8% tracking per brand spec */
   }
 
+  .font-hero {
+    font-family: var(--font-hero), sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
   .tracking-brand {
     letter-spacing: 0.08em; /* 8% */
   }

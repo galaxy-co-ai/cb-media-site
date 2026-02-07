@@ -26,7 +26,7 @@ export function HomeClient({ sections }: HomeClientProps) {
       <main className="h-screen overflow-y-auto snap-y snap-proximity">
         {/* Hero Section */}
         <section className="h-screen flex flex-col items-center justify-center px-6 snap-start relative">
-          <h1 className="font-display text-6xl md:text-8xl lg:text-9xl tracking-wider text-center">
+          <h1 className="font-hero text-6xl md:text-8xl lg:text-9xl text-center">
             CB MEDIA
           </h1>
           <p className="mt-4 text-xl md:text-2xl text-muted-foreground tracking-widest">

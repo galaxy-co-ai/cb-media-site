@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, Space_Grotesk } from 'next/font/google'
+import { Inter, Space_Grotesk, Montserrat } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({
@@ -10,6 +10,12 @@ const inter = Inter({
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-display',
   weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+})
+
+const montserrat = Montserrat({
+  variable: '--font-hero',
+  weight: ['600'],
   subsets: ['latin'],
 })
 
@@ -33,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} ${montserrat.variable} font-sans`}>
         {children}
       </body>
     </html>
