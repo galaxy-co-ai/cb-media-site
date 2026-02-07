@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CB Media Site
+
+Modern marketing agency website built with Next.js 16, featuring animated city skyline backgrounds and accordion-style content sections.
+
+## Tech Stack
+
+- **Framework:** Next.js 16.1.6 (App Router)
+- **React:** 19.2.3
+- **Styling:** Tailwind CSS v4
+- **Animations:** Framer Motion
+- **CMS:** Sanity v5
+- **Hosting:** Vercel
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Run development server
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3007](http://localhost:3007) to view the site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── page.tsx              # Server component, fetches Sanity data
+│   ├── HomeClient.tsx        # Client component with hero + accordion
+│   ├── layout.tsx            # Fonts + global providers
+│   ├── globals.css           # Dark theme, typography utilities
+│   ├── studio/[[...tool]]/   # Sanity Studio route
+│   └── api/
+│       ├── chat/             # Telegram chat integration
+│       └── feedback/         # User feedback endpoint
+├── components/
+│   ├── sections/Accordion.tsx      # Framer Motion expand/collapse
+│   ├── GridSkylineBackground.tsx   # Animated city skyline
+│   ├── content/                    # PortableText, ServiceGrid, StatsGrid
+│   └── feedback/FeedbackWidget.tsx # Feedback collection
+├── sanity/
+│   ├── schemas/              # section, siteSettings, stat
+│   └── lib/                  # client, queries, types
+└── lib/
+    ├── redis.ts              # Upstash Redis for chat sessions
+    └── fallback-content.ts   # Static content fallback
+```
 
-## Learn More
+## Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+Create a `.env.local` file:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+NEXT_PUBLIC_SANITY_PROJECT_ID=ctm1hbbr
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_SANITY_API_VERSION=2024-01-01
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Optional: For Telegram chat integration
+TELEGRAM_BOT_TOKEN=your_token
+TELEGRAM_CHAT_ID=your_chat_id
 
-## Deploy on Vercel
+# Optional: For Redis session storage
+UPSTASH_REDIS_REST_URL=your_url
+UPSTASH_REDIS_REST_TOKEN=your_token
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Content Management
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Content can be managed in two ways:
+
+1. **Sanity Studio** - Visit `/studio` to edit content via CMS
+2. **Fallback Content** - Edit `src/lib/fallback-content.ts` for static content
+
+## Scripts
+
+```bash
+pnpm dev          # Start dev server on port 3007
+pnpm build        # Production build
+pnpm start        # Start production server
+pnpm lint         # Run ESLint
+pnpm test         # Run tests with Vitest
+```
+
+## Deployment
+
+The site deploys automatically to Vercel on push to `main`.
+
+**Live URL:** https://cb-media-site.vercel.app

@@ -33,12 +33,7 @@
 - **Up chevron** at top of accordion → scrolls back to hero
 - Both use Framer Motion animations
 
-### 5. Crisp Chat Widget
-- **Website ID:** `285bad61-3f0b-4120-b2eb-b10844abf290`
-- Component: `src/components/chat/CrispChat.tsx`
-- Loaded in layout for site-wide availability
-
-### 6. Branding Updates
+### 5. Branding Updates
 - Hero title: "CB MEDIA" (no dot)
 - Footer: "CB MEDIA"
 
@@ -49,13 +44,13 @@
 ```
 src/
 ├── app/
-│   ├── layout.tsx          # Fonts + CrispChat
+│   ├── layout.tsx          # Fonts + global providers
 │   ├── HomeClient.tsx      # Hero + chevrons + accordion
 │   ├── globals.css         # Typography utilities
 │   └── studio/[[...tool]]/ # Sanity Studio route
 ├── components/
 │   ├── sections/Accordion.tsx    # Framer Motion accordion
-│   ├── chat/CrispChat.tsx        # Crisp widget
+│   ├── feedback/FeedbackWidget.tsx
 │   └── content/
 │       ├── PortableTextRenderer.tsx
 │       └── StatsGrid.tsx
@@ -99,9 +94,8 @@ All Sanity env vars already configured.
 ## Pending / Next Steps
 
 1. **Test Sanity Studio** - Click "Structure" tab, should show Site Settings + Sections
-2. **Customize Crisp** - Colors, automated messages, feedback forms
-3. **Typography refinements** - If client wants different sizes/weights
-4. **Content updates** - Edit via Studio or update fallback-content.ts
+2. **Typography refinements** - If client wants different sizes/weights
+3. **Content updates** - Edit via Studio or update fallback-content.ts
 
 ---
 
