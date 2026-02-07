@@ -19,7 +19,7 @@ export function HomeClient({ sections }: HomeClientProps) {
         {/* Hero Section */}
         <section className="h-screen flex flex-col items-center justify-center px-6 snap-start">
           <h1 className="font-display text-6xl md:text-8xl lg:text-9xl tracking-wider text-center">
-            CB.MEDIA
+            CB MEDIA
           </h1>
           <p className="mt-4 text-xl md:text-2xl text-muted-foreground tracking-widest">
             TURN VISIBILITY INTO VALUE
@@ -38,7 +38,7 @@ export function HomeClient({ sections }: HomeClientProps) {
           {/* Footer */}
           <footer className="border-t border-border px-6 md:px-12 lg:px-24 py-8 mt-auto">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <span className="font-display text-2xl tracking-wider">CB.MEDIA</span>
+              <span className="font-display text-2xl tracking-wider">CB MEDIA</span>
               <span className="text-sm text-muted-foreground">
                 © {new Date().getFullYear()} CB.Media. All rights reserved.
               </span>
