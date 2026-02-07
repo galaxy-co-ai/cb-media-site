@@ -204,9 +204,10 @@ export function FeedbackWidget() {
 
   return (
     <div data-feedback-widget className="fixed top-4 right-4 z-50">
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isOpen ? (
           <motion.div
+            key="feedback-card"
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -297,6 +298,7 @@ export function FeedbackWidget() {
           </motion.div>
         ) : (
           <motion.button
+            key="feedback-button"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
