@@ -11,10 +11,15 @@ interface HomeClientProps {
 }
 
 export function HomeClient({ sections }: HomeClientProps) {
+  const heroRef = useRef<HTMLElement>(null)
   const contentRef = useRef<HTMLElement>(null)
 
   const scrollToContent = () => {
     contentRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const scrollToHero = () => {
+    heroRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -25,7 +30,7 @@ export function HomeClient({ sections }: HomeClientProps) {
       {/* Main Content */}
       <main className="h-screen overflow-y-auto snap-y snap-proximity">
         {/* Hero Section */}
-        <section className="h-screen flex flex-col items-center justify-center px-6 snap-start relative">
+        <section ref={heroRef} className="h-screen flex flex-col items-center justify-center px-6 snap-start relative">
           <h1 className="font-hero text-6xl md:text-8xl lg:text-9xl text-center">
             CB MEDIA
           </h1>
@@ -64,7 +69,29 @@ export function HomeClient({ sections }: HomeClientProps) {
         </section>
 
         {/* Accordion Sections */}
-        <section ref={contentRef} className="min-h-screen flex flex-col snap-start">
+        <section ref={contentRef} className="min-h-screen flex flex-col snap-start relative">
+          {/* Scroll to Top Chevron */}
+          <motion.button
+            onClick={scrollToHero}
+            className="absolute top-4 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer z-10"
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            aria-label="Scroll to top"
+          >
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+          </motion.button>
+
           <div className="flex-1 px-6 md:px-12 lg:px-24 pt-12 pb-8">
             <Accordion sections={sections} />
           </div>
