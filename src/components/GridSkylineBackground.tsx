@@ -69,6 +69,11 @@ export function GridSkylineBackground() {
     windowLights: [] as WindowLight[],
     reducedMotion: false,
     lastLabelOpacity: LABEL_OPACITY,
+    // P9: Cursor proximity tracking
+    mouseX: -1000,
+    mouseY: -1000,
+    smoothMouseX: -1000,
+    smoothMouseY: -1000,
   })
 
   // Initialize window lights for a city
@@ -114,6 +119,10 @@ export function GridSkylineBackground() {
 
     // Clear canvas
     ctx.clearRect(0, 0, width, height)
+
+    // P9: Smooth lerp cursor position (0.1 factor per frame)
+    state.smoothMouseX = lerp(state.smoothMouseX, state.mouseX, 0.1)
+    state.smoothMouseY = lerp(state.smoothMouseY, state.mouseY, 0.1)
 
     // Initialize cycle time
     if (state.cycleStartTime === 0) {
@@ -271,7 +280,15 @@ export function GridSkylineBackground() {
           if (wy + windowHeight > buildingBaseY || wy < by) return
           if (wx + windowWidth > bx + bw) return
 
-          const opacity = lerp(WINDOW_OPACITY_MIN, WINDOW_OPACITY_MAX, flickerValue)
+          // P9: Proximity boost — windows within 200px of cursor get 2x opacity
+          const windowCenterX = wx + windowWidth * 0.35
+          const windowCenterY = wy + windowHeight * 0.5
+          const dx = windowCenterX - state.smoothMouseX
+          const dy = windowCenterY - state.smoothMouseY
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          const proximityBoost = dist < 200 ? lerp(2, 1, dist / 200) : 1
+
+          const opacity = lerp(WINDOW_OPACITY_MIN, WINDOW_OPACITY_MAX, flickerValue) * proximityBoost
 
           // Warm vs cool white
           const r = 255
@@ -342,6 +359,13 @@ export function GridSkylineBackground() {
 
     prefersReducedMotion.addEventListener('change', handleMotionChange)
 
+    // P9: Track mouse for cursor proximity
+    const handleMouseMove = (e: MouseEvent) => {
+      stateRef.current.mouseX = e.clientX
+      stateRef.current.mouseY = e.clientY
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+
     // Initialize
     handleResize()
     window.addEventListener('resize', handleResize)
@@ -356,6 +380,7 @@ export function GridSkylineBackground() {
     }
 
     return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('resize', handleResize)
       prefersReducedMotion.removeEventListener('change', handleMotionChange)
       if (animationRef.current) {

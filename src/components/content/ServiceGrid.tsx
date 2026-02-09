@@ -27,13 +27,14 @@ export function ServiceGrid({ items }: ServiceGridProps) {
           transition={{
             duration: 0.4,
             delay: index * 0.1,
-            ease: [0.4, 0, 0.2, 1]
+            ease: [0.4, 0, 0.2, 1] as const,
           }}
           whileHover={{
-            scale: 1.03,
-            transition: { duration: 0.2 }
+            y: -2,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+            transition: { type: 'spring', stiffness: 300, damping: 25 },
           }}
-          className="group relative p-6 md:p-8 border border-border/50 bg-background/30 backdrop-blur-sm rounded-sm hover:border-foreground/30 hover:bg-background/50 transition-colors duration-300"
+          className="group relative p-6 md:p-8 border border-white/[0.06] bg-background/40 backdrop-blur-[8px] rounded-sm hover:border-foreground/30 transition-colors duration-300"
         >
           {/* Subtle glow effect on hover */}
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
@@ -51,17 +52,17 @@ export function ServiceGrid({ items }: ServiceGridProps) {
               {item.description}
             </p>
 
-            {/* CTA Button */}
+            {/* CTA Button — P5: accent hover */}
             {item.ctaLink ? (
               <a
                 href={item.ctaLink}
-                className="inline-block px-5 py-2.5 border border-foreground/60 text-foreground text-sm font-medium tracking-wider uppercase hover:bg-foreground hover:text-background transition-all duration-200"
+                className="inline-block px-5 py-2.5 border border-foreground/60 text-foreground text-sm font-medium tracking-wider uppercase transition-all duration-150 hover:bg-[var(--accent-glow)] hover:border-[var(--accent-glow)] hover:text-background"
               >
                 {item.ctaText}
               </a>
             ) : (
               <button
-                className="px-5 py-2.5 border border-foreground/60 text-foreground text-sm font-medium tracking-wider uppercase hover:bg-foreground hover:text-background transition-all duration-200 cursor-pointer"
+                className="px-5 py-2.5 border border-foreground/60 text-foreground text-sm font-medium tracking-wider uppercase transition-all duration-150 cursor-pointer hover:bg-[var(--accent-glow)] hover:border-[var(--accent-glow)] hover:text-background"
               >
                 {item.ctaText}
               </button>

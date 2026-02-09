@@ -40,6 +40,7 @@
   --border: oklch(0.2 0 0);
   --input: oklch(0.15 0 0);
   --ring: oklch(0.4 0 0);
+  --accent-glow: oklch(0.6 0.25 25);
 }
 
 @layer base {
@@ -115,4 +116,59 @@
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* ── P6: Film Grain Overlay ────────────────────────────────── */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.025;
+}
+
+/* ── P6: Vignette Overlay ──────────────────────────────────── */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+/* ── P10: Accordion title hover tracking shift ─────────────── */
+.accordion-title {
+  letter-spacing: 0.025em;
+  transition: letter-spacing 150ms ease;
+}
+.accordion-item:hover .accordion-title {
+  letter-spacing: 0.015em;
+}
+
+/* ── P10: Accordion border gradient sweep on hover ─────────── */
+.accordion-item {
+  position: relative;
+  overflow: hidden;
+}
+.accordion-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -100%;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+  transition: left 600ms ease;
+  pointer-events: none;
+}
+.accordion-item:hover::after {
+  left: 100%;
+}
+
+/* ── P5: Footer logo hover accent ──────────────────────────── */
+.footer-logo {
+  transition: color 0.15s ease;
+}
+.footer-logo:hover {
+  color: var(--accent-glow);
 }
