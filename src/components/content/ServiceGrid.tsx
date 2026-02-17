@@ -18,7 +18,7 @@ export function ServiceGrid({ items }: ServiceGridProps) {
   if (!items || items.length === 0) return null
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-4xl">
+    <div className="grid grid-cols-1 gap-6 md:gap-8 max-w-4xl">
       {items.map((item, index) => (
         <motion.div
           key={item._key}
@@ -29,19 +29,9 @@ export function ServiceGrid({ items }: ServiceGridProps) {
             delay: index * 0.1,
             ease: [0.4, 0, 0.2, 1] as const,
           }}
-          whileHover={{
-            y: -2,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-            transition: { type: 'spring', stiffness: 300, damping: 25 },
-          }}
-          className="group relative p-6 md:p-8 border border-white/[0.06] bg-background/40 backdrop-blur-[8px] rounded-sm hover:border-foreground/30 transition-colors duration-300"
+          className="group relative p-6 md:p-8"
         >
-          {/* Subtle glow effect on hover */}
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent rounded-sm" />
-          </div>
-
-          <div className="relative z-10">
+          <div>
             {/* Title */}
             <h3 className="font-semibold text-lg md:text-xl text-foreground mb-3">
               {item.title}
@@ -69,6 +59,7 @@ export function ServiceGrid({ items }: ServiceGridProps) {
             )}
           </div>
         </motion.div>
+
       ))}
     </div>
   )
