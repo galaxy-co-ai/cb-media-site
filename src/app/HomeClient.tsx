@@ -140,7 +140,7 @@ export function HomeClient({ sections }: HomeClientProps) {
       <div className="vignette" aria-hidden="true" />
 
       {/* Main Content */}
-      <main ref={mainRef} className="h-screen overflow-y-auto snap-y snap-proximity">
+      <main ref={mainRef} className="h-screen overflow-y-auto snap-y snap-mandatory">
         {/* Hero Section */}
         <section className="h-screen flex flex-col items-center justify-center px-6 pb-24 snap-start relative">
           {/* P3: Cursor gradient overlay */}
