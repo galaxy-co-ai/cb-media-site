@@ -10,34 +10,12 @@ interface HomeClientProps {
   sections: Section[]
 }
 
-// ── P1: Hero entrance choreography ──────────────────────────
-const heroTitle = 'CB MEDIA'
-
-const charVariants = {
-  hidden: { clipPath: 'inset(100% 0 0 0)' },
-  visible: (i: number) => ({
-    clipPath: 'inset(0 0 0 0)',
-    transition: { duration: 0.5, delay: i * 0.05, ease: [0.33, 1, 0.68, 1] as const },
-  }),
-}
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 12 },
-  visible: (delay: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, delay, ease: [0.33, 1, 0.68, 1] as const },
-  }),
-}
 
 export function HomeClient({ sections }: HomeClientProps) {
   const heroRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLElement>(null)
   const mainRef = useRef<HTMLElement>(null)
   const prefersReducedMotion = useReducedMotion()
-
-  // ── Intro state ───────────────────────────────────────────────
-  const [introComplete] = useState(true)
 
   // ── P7: Scroll-based hero transition ──────────────────────────
   const { scrollYProgress } = useScroll({
@@ -152,57 +130,22 @@ export function HomeClient({ sections }: HomeClientProps) {
               filter: prefersReducedMotion ? 'none' : undefined,
             }}
           >
-            {/* P1: Character-by-character mask reveal */}
-            <motion.h1
-              className="font-display text-6xl md:text-8xl lg:text-9xl text-center tracking-[0.08em]"
-              initial="hidden"
-              animate={introComplete ? 'visible' : 'hidden'}
-            >
-              {heroTitle.split('').map((char, i) => (
-                <motion.span
-                  key={i}
-                  custom={i}
-                  variants={charVariants}
-                  style={{ display: 'inline-block', letterSpacing: '0.08em' }}
-                >
-                  {char === ' ' ? '\u00A0' : char}
-                </motion.span>
-              ))}
-            </motion.h1>
+            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl text-center tracking-[0.08em]">
+              CB MEDIA
+            </h1>
 
-            {/* Tagline — fades in at 650ms */}
-            <motion.p
-              className="mt-4 text-xl md:text-2xl text-muted-foreground tracking-widest"
-              custom={0.65}
-              variants={fadeUp}
-              initial="hidden"
-              animate={introComplete ? 'visible' : 'hidden'}
-            >
+            <p className="mt-4 text-xl md:text-2xl text-muted-foreground tracking-widest">
               TURN VISIBILITY INTO VALUE
-            </motion.p>
+            </p>
 
-            {/* Subheading — fades in at 850ms */}
-            <motion.p
-              className="mt-4 text-base md:text-lg text-muted-foreground tracking-wide text-center max-w-2xl"
-              custom={0.85}
-              variants={fadeUp}
-              initial="hidden"
-              animate={introComplete ? 'visible' : 'hidden'}
-            >
+            <p className="mt-4 text-base md:text-lg text-muted-foreground tracking-wide text-center max-w-2xl">
               Architects of culture, community, and impact.
-            </motion.p>
+            </p>
           </motion.div>
 
-          {/* Scroll Chevron — delay bumped to 1.5s */}
-          <motion.button
+          <button
             onClick={scrollToContent}
             className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer z-[2]"
-            initial={{ opacity: 0 }}
-            animate={introComplete ? { opacity: 1, y: [0, 8, 0] } : { opacity: 0 }}
-            transition={{
-              opacity: { delay: 1.5, duration: 1 },
-              y: { delay: 2.5, duration: 2, repeat: Infinity, ease: 'easeInOut' },
-            }}
             aria-label="Scroll to content"
           >
             <svg
@@ -217,7 +160,7 @@ export function HomeClient({ sections }: HomeClientProps) {
             >
               <polyline points="6 9 12 15 18 9" />
             </svg>
-          </motion.button>
+          </button>
         </section>
 
         {/* Accordion Sections */}
