@@ -1,9 +1,8 @@
 'use client'
 
-import { useRef, useEffect, useState, useCallback } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion, useMotionValue, useSpring, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { InterstellarBackground } from '@/components/InterstellarBackground'
-import { GridZoomIntro } from '@/components/GridZoomIntro'
 import { Accordion } from '@/components/sections/Accordion'
 import type { Section } from '@/sanity/lib/types'
 
@@ -38,8 +37,7 @@ export function HomeClient({ sections }: HomeClientProps) {
   const prefersReducedMotion = useReducedMotion()
 
   // ── Intro state ───────────────────────────────────────────────
-  const [introComplete, setIntroComplete] = useState(false)
-  const handleIntroComplete = useCallback(() => setIntroComplete(true), [])
+  const [introComplete] = useState(true)
 
   // ── P7: Scroll-based hero transition ──────────────────────────
   const { scrollYProgress } = useScroll({
@@ -114,12 +112,6 @@ export function HomeClient({ sections }: HomeClientProps) {
 
   return (
     <>
-      {/* Grid Zoom Intro Sequence */}
-      <GridZoomIntro
-        onComplete={handleIntroComplete}
-        skip={prefersReducedMotion ?? false}
-      />
-
       {/* Interstellar Background — fades on scroll */}
       <motion.div
         style={{ opacity: prefersReducedMotion ? 1 : skylineOpacity }}
