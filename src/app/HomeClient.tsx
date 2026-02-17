@@ -1,8 +1,9 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { motion, useMotionValue, useSpring, useReducedMotion, useScroll, useTransform } from 'framer-motion'
-import { GridSkylineBackground } from '@/components/GridSkylineBackground'
+import { InterstellarBackground } from '@/components/InterstellarBackground'
+import { GridZoomIntro } from '@/components/GridZoomIntro'
 import { Accordion } from '@/components/sections/Accordion'
 import type { Section } from '@/sanity/lib/types'
 
@@ -35,6 +36,10 @@ export function HomeClient({ sections }: HomeClientProps) {
   const contentRef = useRef<HTMLElement>(null)
   const mainRef = useRef<HTMLElement>(null)
   const prefersReducedMotion = useReducedMotion()
+
+  // ── Intro state ───────────────────────────────────────────────
+  const [introComplete, setIntroComplete] = useState(false)
+  const handleIntroComplete = useCallback(() => setIntroComplete(true), [])
 
   // ── P7: Scroll-based hero transition ──────────────────────────
   const { scrollYProgress } = useScroll({
@@ -84,12 +89,12 @@ export function HomeClient({ sections }: HomeClientProps) {
 
     const unsubX = smoothX.on('change', () => {
       setGradientStyle({
-        background: `radial-gradient(600px circle at ${smoothX.get() * 100}% ${smoothY.get() * 100}%, rgba(255, 60, 60, 0.03), transparent 70%)`,
+        background: `radial-gradient(600px circle at ${smoothX.get() * 100}% ${smoothY.get() * 100}%, rgba(80, 120, 200, 0.04), transparent 70%)`,
       })
     })
     const unsubY = smoothY.on('change', () => {
       setGradientStyle({
-        background: `radial-gradient(600px circle at ${smoothX.get() * 100}% ${smoothY.get() * 100}%, rgba(255, 60, 60, 0.03), transparent 70%)`,
+        background: `radial-gradient(600px circle at ${smoothX.get() * 100}% ${smoothY.get() * 100}%, rgba(80, 120, 200, 0.04), transparent 70%)`,
       })
     })
 
@@ -109,12 +114,18 @@ export function HomeClient({ sections }: HomeClientProps) {
 
   return (
     <>
-      {/* Animated Grid Skyline Background — P7: fades on scroll */}
+      {/* Grid Zoom Intro Sequence */}
+      <GridZoomIntro
+        onComplete={handleIntroComplete}
+        skip={prefersReducedMotion ?? false}
+      />
+
+      {/* Interstellar Background — fades on scroll */}
       <motion.div
         style={{ opacity: prefersReducedMotion ? 1 : skylineOpacity }}
         className="fixed inset-0 -z-10"
       >
-        <GridSkylineBackground />
+        <InterstellarBackground />
       </motion.div>
 
       {/* P6: Film grain overlay */}
@@ -153,7 +164,7 @@ export function HomeClient({ sections }: HomeClientProps) {
             <motion.h1
               className="font-hero text-6xl md:text-8xl lg:text-9xl text-center"
               initial="hidden"
-              animate="visible"
+              animate={introComplete ? 'visible' : 'hidden'}
             >
               {heroTitle.split('').map((char, i) => (
                 <motion.span
@@ -173,7 +184,7 @@ export function HomeClient({ sections }: HomeClientProps) {
               custom={0.65}
               variants={fadeUp}
               initial="hidden"
-              animate="visible"
+              animate={introComplete ? 'visible' : 'hidden'}
             >
               TURN VISIBILITY INTO VALUE
             </motion.p>
@@ -184,7 +195,7 @@ export function HomeClient({ sections }: HomeClientProps) {
               custom={0.85}
               variants={fadeUp}
               initial="hidden"
-              animate="visible"
+              animate={introComplete ? 'visible' : 'hidden'}
             >
               Architects of culture, community, and impact.
             </motion.p>
@@ -195,7 +206,7 @@ export function HomeClient({ sections }: HomeClientProps) {
             onClick={scrollToContent}
             className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer z-[2]"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1, y: [0, 8, 0] }}
+            animate={introComplete ? { opacity: 1, y: [0, 8, 0] } : { opacity: 0 }}
             transition={{
               opacity: { delay: 1.5, duration: 1 },
               y: { delay: 2.5, duration: 2, repeat: Infinity, ease: 'easeInOut' },

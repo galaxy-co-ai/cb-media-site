@@ -40,7 +40,7 @@
   --border: oklch(0.2 0 0);
   --input: oklch(0.15 0 0);
   --ring: oklch(0.4 0 0);
-  --accent-glow: oklch(0.6 0.25 25);
+  --accent-glow: oklch(0.6 0.15 250);
 }
 
 @layer base {
