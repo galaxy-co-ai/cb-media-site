@@ -162,7 +162,7 @@ export function HomeClient({ sections }: HomeClientProps) {
           >
             {/* P1: Character-by-character mask reveal */}
             <motion.h1
-              className="font-hero text-6xl md:text-8xl lg:text-9xl text-center"
+              className="font-display text-6xl md:text-8xl lg:text-9xl text-center tracking-[0.08em]"
               initial="hidden"
               animate={introComplete ? 'visible' : 'hidden'}
             >

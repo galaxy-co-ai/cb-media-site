@@ -117,7 +117,7 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(
         }}
         className={`border-b border-border transition-all duration-200 accordion-item ${
           isOpen
-            ? 'border-l-2 border-l-[var(--accent-glow)] pl-4'
+            ? 'border-l-2 border-l-white pl-4'
             : 'border-l-2 border-l-transparent pl-4'
         }`}
       >
