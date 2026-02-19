@@ -180,25 +180,31 @@ export function HomeClient({ sections }: HomeClientProps) {
             </AnimatePresence>
           </div>
 
-          {introComplete && (
-            <button
-              onClick={scrollToContent}
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer z-[2]"
-              aria-label="Scroll to content"
-            >
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+          <AnimatePresence>
+            {introComplete && (
+              <motion.button
+                onClick={scrollToContent}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer z-[2]"
+                aria-label="Scroll to content"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 8, ease: [0.25, 0.1, 0.25, 1], delay: 2.5 }}
               >
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </motion.button>
+            )}
+          </AnimatePresence>
           )}
         </section>
 
