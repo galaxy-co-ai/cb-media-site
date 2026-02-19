@@ -14,12 +14,14 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const [showSkip, setShowSkip] = useState(false);
   const [skipped, setSkipped] = useState(false);
+  const [completed, setCompleted] = useState(false);
   const hasCompletedRef = useRef(false);
 
   // Stable onComplete that only fires once
   const handleComplete = useCallback(() => {
     if (hasCompletedRef.current) return;
     hasCompletedRef.current = true;
+    setCompleted(true);
     onComplete();
   }, [onComplete]);
 
@@ -87,8 +89,8 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
         />
       </Canvas>
 
-      {/* Skip button */}
-      {showSkip && !skipped && (
+      {/* Skip button — fades away once intro completes */}
+      {showSkip && !skipped && !completed && (
         <button
           onClick={handleSkip}
           style={{

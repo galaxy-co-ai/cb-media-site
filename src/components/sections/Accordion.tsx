@@ -16,7 +16,7 @@ const contentStagger = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 },
+    transition: { staggerChildren: 0.15 },
   },
 }
 
@@ -25,7 +25,7 @@ const contentChild = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: [0.33, 1, 0.68, 1] as const },
+    transition: { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] as const },
   },
 }
 
@@ -130,7 +130,7 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(
           </h2>
           <motion.span
             animate={{ rotate: isOpen ? 45 : 0 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            transition={{ type: 'spring', stiffness: 150, damping: 20 }}
             className="text-3xl md:text-4xl text-muted-foreground"
           >
             +
@@ -144,8 +144,8 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{
-                height: { type: 'spring', stiffness: 300, damping: 30 },
-                opacity: { duration: 0.3, ease: [0.4, 0, 0.2, 1] as const },
+                height: { type: 'spring', stiffness: 120, damping: 28 },
+                opacity: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const },
               }}
               className="overflow-hidden"
             >
