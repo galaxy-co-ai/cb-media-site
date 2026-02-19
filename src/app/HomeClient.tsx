@@ -1,10 +1,16 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
-import { motion, useMotionValue, useSpring, useReducedMotion, useScroll, useTransform } from 'framer-motion'
-import { InterstellarBackground } from '@/components/InterstellarBackground'
+import { useRef, useEffect, useState, useCallback } from 'react'
+import { motion, AnimatePresence, useMotionValue, useSpring, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import dynamic from 'next/dynamic'
+import gsap from 'gsap'
 import { Accordion } from '@/components/sections/Accordion'
 import type { Section } from '@/sanity/lib/types'
+
+const CinematicIntro = dynamic(
+  () => import('@/components/intro/CinematicIntro'),
+  { ssr: false },
+)
 
 interface HomeClientProps {
   sections: Section[]
@@ -16,6 +22,11 @@ export function HomeClient({ sections }: HomeClientProps) {
   const contentRef = useRef<HTMLElement>(null)
   const mainRef = useRef<HTMLElement>(null)
   const prefersReducedMotion = useReducedMotion()
+  const [introComplete, setIntroComplete] = useState(false)
+
+  const handleIntroComplete = useCallback(() => {
+    setIntroComplete(true)
+  }, [])
 
   // ── P7: Scroll-based hero transition ──────────────────────────
   const { scrollYProgress } = useScroll({
@@ -80,23 +91,32 @@ export function HomeClient({ sections }: HomeClientProps) {
     }
   }, [smoothX, smoothY, prefersReducedMotion])
 
+  const smoothScroll = (target: number) => {
+    const main = mainRef.current
+    if (!main) return
+    main.style.scrollSnapType = 'none'
+    gsap.to(main, {
+      scrollTop: target,
+      duration: 1.8,
+      ease: 'power2.inOut',
+      onComplete: () => { main.style.scrollSnapType = '' },
+    })
+  }
+
   const scrollToContent = () => {
-    contentRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const target = contentRef.current
+    if (!target) return
+    smoothScroll(target.offsetTop)
   }
 
   const scrollToHero = () => {
-    heroRef.current?.scrollIntoView({ behavior: 'smooth' })
+    smoothScroll(0)
   }
 
   return (
     <>
-      {/* Interstellar Background — fades on scroll */}
-      <motion.div
-        style={{ opacity: prefersReducedMotion ? 1 : skylineOpacity }}
-        className="fixed inset-0 -z-10"
-      >
-        <InterstellarBackground />
-      </motion.div>
+      {/* Event Horizon — cinematic intro, stays as ambient background */}
+      <CinematicIntro onComplete={handleIntroComplete} />
 
       {/* P6: Film grain overlay */}
       <svg className="film-grain" aria-hidden="true">
@@ -110,7 +130,7 @@ export function HomeClient({ sections }: HomeClientProps) {
       <div className="vignette" aria-hidden="true" />
 
       {/* Main Content */}
-      <main ref={mainRef} className="h-screen overflow-y-auto snap-y snap-mandatory">
+      <main ref={mainRef} className="h-screen overflow-y-auto snap-y snap-mandatory relative z-[51]">
         {/* Hero Section */}
         <section className="h-screen flex flex-col items-center justify-center px-6 pb-24 snap-start relative">
           {/* P3: Cursor gradient overlay */}
@@ -120,47 +140,66 @@ export function HomeClient({ sections }: HomeClientProps) {
             aria-hidden="true"
           />
 
-          {/* P7: Scroll-driven hero content wrapper */}
-          <motion.div
+          {/* Scroll target ref — always mounted for useScroll */}
+          <div
             ref={heroRef}
             className="flex flex-col items-center justify-center relative z-[2]"
-            style={{
-              scale: prefersReducedMotion ? 1 : heroScale,
-              opacity: prefersReducedMotion ? 1 : heroOpacity,
-              filter: prefersReducedMotion ? 'none' : undefined,
-            }}
           >
-            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl text-center tracking-[0.08em]">
-              CB MEDIA
-            </h1>
+            {/* Hero content — fades in gracefully after intro */}
+            <AnimatePresence>
+              {introComplete && (
+                <motion.div
+                  className="flex flex-col items-center justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  style={{
+                    scale: prefersReducedMotion ? 1 : heroScale,
+                    opacity: prefersReducedMotion ? 1 : heroOpacity,
+                    filter: prefersReducedMotion ? 'none' : undefined,
+                  }}
+                >
+                  <motion.h1
+                    className="font-display text-6xl md:text-8xl lg:text-9xl text-center tracking-[0.08em]"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 8, ease: [0.25, 0.1, 0.25, 1], delay: 0.5 }}
+                  >
+                    CB MEDIA
+                  </motion.h1>
 
-            <p className="mt-4 text-xl md:text-2xl text-muted-foreground tracking-widest">
-              TURN VISIBILITY INTO VALUE
-            </p>
+                  <motion.p
+                    className="mt-4 text-xl md:text-2xl text-muted-foreground tracking-widest"
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 8, ease: [0.25, 0.1, 0.25, 1], delay: 2.5 }}
+                  >
+                    TURNING VISIBILITY INTO VALUE
+                  </motion.p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-            <p className="mt-4 text-base md:text-lg text-muted-foreground tracking-wide text-center max-w-2xl">
-              Architects of culture, community, and impact.
-            </p>
-          </motion.div>
-
-          <button
-            onClick={scrollToContent}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer z-[2]"
-            aria-label="Scroll to content"
-          >
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {introComplete && (
+            <button
+              onClick={scrollToContent}
+              className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer z-[2]"
+              aria-label="Scroll to content"
             >
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+          )}
         </section>
 
         {/* Accordion Sections */}

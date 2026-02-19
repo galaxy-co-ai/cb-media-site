@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk, Montserrat } from 'next/font/google'
-import { FeedbackWidget } from '@/components/feedback/FeedbackWidget'
+
 import './globals.css'
 
 const inter = Inter({
@@ -42,7 +42,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${spaceGrotesk.variable} ${montserrat.variable} font-sans`}>
         {children}
-        <FeedbackWidget />
       </body>
     </html>
   )
