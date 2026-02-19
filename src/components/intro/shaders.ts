@@ -128,7 +128,6 @@ export const renderVertexShader = /* glsl */ `
   uniform sampler2D uPositionTexture;
   uniform sampler2D uVelocityTexture;
   uniform float uPointSize;
-  uniform float uDpr;
 
   attribute vec2 reference;
 
@@ -145,8 +144,11 @@ export const renderVertexShader = /* glsl */ `
     vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
     vDepth = -mvPosition.z;
 
-    // Point size with depth attenuation, scaled by DPR for mobile consistency
-    gl_PointSize = uPointSize * uDpr * (80.0 / max(vDepth, 1.0));
+    // Slow particles shrink — prevents big blobs stuck in ambient phase
+    float speedScale = 0.3 + 0.7 * smoothstep(0.0, 0.5, vSpeed);
+
+    // Point size with depth attenuation
+    gl_PointSize = uPointSize * speedScale * (80.0 / max(vDepth, 1.0));
     gl_Position = projectionMatrix * mvPosition;
   }
 `;
