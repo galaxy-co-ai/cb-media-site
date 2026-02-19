@@ -122,6 +122,7 @@ export default function GPGPUParticles({
           uPositionTexture: { value: null },
           uVelocityTexture: { value: null },
           uPointSize: { value: 0.5 },
+          uDpr: { value: Math.min(window.devicePixelRatio || 1, 2) },
           uColorTemp: { value: 4000 },
           uOpacity: { value: 1.0 },
         },

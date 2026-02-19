@@ -128,6 +128,7 @@ export const renderVertexShader = /* glsl */ `
   uniform sampler2D uPositionTexture;
   uniform sampler2D uVelocityTexture;
   uniform float uPointSize;
+  uniform float uDpr;
 
   attribute vec2 reference;
 
@@ -144,8 +145,8 @@ export const renderVertexShader = /* glsl */ `
     vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
     vDepth = -mvPosition.z;
 
-    // Point size with depth attenuation
-    gl_PointSize = uPointSize * (80.0 / max(vDepth, 1.0));
+    // Point size with depth attenuation, scaled by DPR for mobile consistency
+    gl_PointSize = uPointSize * uDpr * (80.0 / max(vDepth, 1.0));
     gl_Position = projectionMatrix * mvPosition;
   }
 `;
@@ -196,7 +197,8 @@ export const renderFragmentShader = /* glsl */ `
     vec2 coord = gl_PointCoord - vec2(0.5);
     float dist = length(coord);
     if (dist > 0.5) discard;
-    float alpha = smoothstep(0.5, 0.05, dist);
+    // Wider falloff eliminates hard circle edges on mobile (small point sizes)
+    float alpha = smoothstep(0.5, 0.15, dist);
 
     vec3 baseColor = temperatureToColor(uColorTemp);
 

@@ -168,7 +168,7 @@ export function HomeClient({ sections }: HomeClientProps) {
                   </motion.h1>
 
                   <motion.p
-                    className="mt-4 text-xl md:text-2xl text-muted-foreground tracking-widest"
+                    className="mt-4 text-[clamp(0.75rem,3.5vw,1.5rem)] text-muted-foreground tracking-widest whitespace-nowrap"
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 8, ease: [0.25, 0.1, 0.25, 1], delay: 2.5 }}
