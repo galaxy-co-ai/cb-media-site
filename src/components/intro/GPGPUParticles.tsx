@@ -19,7 +19,7 @@ interface GPGPUParticlesProps {
 
 export default function GPGPUParticles({
   animState,
-  size = 256,
+  size = 128,
 }: GPGPUParticlesProps) {
   const { gl } = useThree();
   const meshRef = useRef<THREE.Points>(null);
@@ -121,7 +121,7 @@ export default function GPGPUParticles({
         uniforms: {
           uPositionTexture: { value: null },
           uVelocityTexture: { value: null },
-          uPointSize: { value: 0.5 },
+          uPointSize: { value: 3.0 },
           uColorTemp: { value: 4000 },
           uOpacity: { value: 1.0 },
         },

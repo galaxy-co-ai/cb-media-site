@@ -133,6 +133,12 @@ export const renderVertexShader = /* glsl */ `
 
   varying float vSpeed;
   varying float vDepth;
+  varying float vSizeRand;
+
+  // Per-particle hash for size variation
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+  }
 
   void main() {
     vec4 posData = texture2D(uPositionTexture, reference);
@@ -141,14 +147,19 @@ export const renderVertexShader = /* glsl */ `
     vec3 pos = posData.xyz;
     vSpeed = length(velData.xyz);
 
+    // Per-particle size variation: most are medium, some are large bright stars
+    float h = hash(reference * 1000.0);
+    float sizeVar = mix(0.4, 2.5, pow(h, 3.0)); // cubic bias — few big, many small
+    vSizeRand = sizeVar;
+
     vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
     vDepth = -mvPosition.z;
 
     // Slow particles shrink — prevents big blobs stuck in ambient phase
     float speedScale = 0.3 + 0.7 * smoothstep(0.0, 0.5, vSpeed);
 
-    // Point size with depth attenuation
-    gl_PointSize = uPointSize * speedScale * (80.0 / max(vDepth, 1.0));
+    // Point size with depth attenuation and per-particle variation
+    gl_PointSize = uPointSize * sizeVar * speedScale * (80.0 / max(vDepth, 1.0));
     gl_Position = projectionMatrix * mvPosition;
   }
 `;
@@ -162,6 +173,7 @@ export const renderFragmentShader = /* glsl */ `
 
   varying float vSpeed;
   varying float vDepth;
+  varying float vSizeRand;
 
   // Attempt a basic blackbody color from temperature (simplified Planckian locus)
   vec3 temperatureToColor(float temp) {
@@ -204,12 +216,13 @@ export const renderFragmentShader = /* glsl */ `
 
     vec3 baseColor = temperatureToColor(uColorTemp);
 
-    float brightness = 1.0 + vSpeed * 0.08;
-    brightness = min(brightness, 1.5);
+    // Larger particles glow brighter (star luminosity scales with size)
+    float brightness = 1.0 + vSpeed * 0.08 + vSizeRand * 0.3;
+    brightness = min(brightness, 2.0);
 
     float depthFade = clamp(1.0 - vDepth / 80.0, 0.1, 1.0);
 
-    vec3 finalColor = baseColor * brightness * depthFade * 0.25;
+    vec3 finalColor = baseColor * brightness * depthFade * 0.5;
 
     gl_FragColor = vec4(finalColor, alpha * uOpacity);
   }
