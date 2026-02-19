@@ -147,8 +147,12 @@
 }
 
 .main-content {
-  background: var(--background);
   margin-bottom: 80px; /* Height of footer — exposes it at scroll end */
+}
+
+/* Solid background only below the hero so CinematicIntro shows through */
+#content {
+  background: var(--background);
 }
 
 /* ── Footer logo hover accent ──────────────────────────────── */
