@@ -49,20 +49,21 @@ export const velocityShader = /* glsl */ `
     vec3 p = pos.xyz;
     vec3 v = vel.xyz;
 
-    // --- Gravitational pull toward origin (constant force — drain model) ---
-    // Per-particle hash breaks the uniform shell — no perfect circle outline.
+    // --- Gravitational pull toward origin ---
+    // 1/r² near center for wormhole depth, constant further out for steady drain.
     vec3 toCenter = -p;
     float dist = length(toCenter);
-    float gravHash = 0.7 + hash(uv * 1000.0) * 0.6;  // 0.7–1.3x gravity variation
-    v += normalize(toCenter + 0.001) * uGravity * gravHash * uDelta;
+    float gravHash = 0.7 + hash(uv * 1000.0) * 0.6;
+    // Wormhole pull: stronger 1/r² near center, linear far out
+    float gravScale = mix(1.0, 4.0 / (dist * dist + 1.0), smoothstep(3.0, 0.5, dist));
+    v += normalize(toCenter + 0.001) * uGravity * gravHash * gravScale * uDelta;
 
     // --- Orbital / spiral component (1/√r differential rotation) ---
-    // Inner particles orbit faster than outer → visible spiral arms.
-    // smoothstep fades tangential near center so particles fall in gracefully.
-    if (uGravity > 0.01) {
-      float tangentialMag = uGravity * 2.4 / (sqrt(dist) + 0.3);
+    // Stronger tangential force = more dramatic, visible spiral arms.
+    if (uGravity > 0.001) {
+      float tangentialMag = uGravity * 4.0 / (sqrt(dist) + 0.2);
       vec3 tangent = normalize(cross(toCenter, vec3(0.0, 0.0, 1.0)) + 0.001);
-      v += tangent * tangentialMag * smoothstep(0.5, 8.0, dist) * uDelta;
+      v += tangent * tangentialMag * smoothstep(0.3, 6.0, dist) * uDelta;
     }
 
     // --- Disk flattening (push Z toward 0 — camera-facing plane) ---
