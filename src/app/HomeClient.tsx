@@ -205,7 +205,6 @@ export function HomeClient({ sections }: HomeClientProps) {
               </motion.button>
             )}
           </AnimatePresence>
-          )}
         </section>
 
         {/* Accordion Sections */}
