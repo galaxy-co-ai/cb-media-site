@@ -1,29 +1,26 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useRef, useEffect, useCallback } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { SectionHeader } from './SectionHeader'
 import type { Section } from '@/sanity/lib/types'
 import type { PortableTextBlock } from 'next-sanity'
-
-gsap.registerPlugin(ScrollTrigger)
 
 interface WhoWeServeProps {
   section: Section
 }
 
-/**
- * Extract plain text + bold markers from PortableText blocks.
- * Returns an array of { word, isBold } for each word.
- */
+/** Base opacity for lines far from cursor during hover */
+const BASE_OPACITY = 0.3
+/** How many lines away before reaching base opacity */
+const FALLOFF_LINES = 3
+/** Resting opacity when cursor isn't over the section */
+const REST_OPACITY = 0.5
+
 function parseWords(blocks: PortableTextBlock[]): { word: string; isBold: boolean }[] {
   const words: { word: string; isBold: boolean }[] = []
-
   for (const block of blocks) {
     if (block._type !== 'block' || !block.children) continue
-
     for (const child of block.children as Array<{ text: string; marks?: string[] }>) {
       const isBold = child.marks?.includes('strong') ?? false
       const split = child.text.split(/\s+/).filter(Boolean)
@@ -32,44 +29,101 @@ function parseWords(blocks: PortableTextBlock[]): { word: string; isBold: boolea
       }
     }
   }
-
   return words
 }
 
 export function WhoWeServe({ section }: WhoWeServeProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const wordsRef = useRef<HTMLDivElement>(null)
+  const textRef = useRef<HTMLParagraphElement>(null)
+  const linesRef = useRef<{ top: number; els: HTMLSpanElement[] }[]>([])
+  const lineHeightRef = useRef(60)
+  const rafRef = useRef(0)
   const prefersReduced = useReducedMotion()
-  const isInView = useInView(containerRef, { once: true, margin: '-100px' })
 
   const words = parseWords(section.content)
 
+  // Group non-bold word spans into visual lines by offsetTop
+  const buildLines = useCallback(() => {
+    if (!textRef.current) return
+    const lineMap = new Map<number, HTMLSpanElement[]>()
+    textRef.current.querySelectorAll<HTMLSpanElement>('.word-dim').forEach((el) => {
+      const top = Math.round(el.offsetTop / 4) * 4
+      if (!lineMap.has(top)) lineMap.set(top, [])
+      lineMap.get(top)!.push(el)
+    })
+    const sorted = Array.from(lineMap.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([top, els]) => ({ top, els }))
+    linesRef.current = sorted
+    if (sorted.length >= 2) {
+      lineHeightRef.current = sorted[1].top - sorted[0].top
+    }
+  }, [])
+
   useEffect(() => {
-    if (prefersReduced || !wordsRef.current) return
+    const timer = setTimeout(buildLines, 150)
+    window.addEventListener('resize', buildLines)
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('resize', buildLines)
+    }
+  }, [buildLines, words.length])
 
-    const wordEls = wordsRef.current.querySelectorAll<HTMLSpanElement>('.word')
-    if (wordEls.length === 0) return
+  // Cursor-proximity spotlight (desktop only)
+  useEffect(() => {
+    if (prefersReduced) return
+    if (!window.matchMedia('(min-width: 768px)').matches) return
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        wordEls,
-        { opacity: 0.15 },
-        {
-          opacity: 1,
-          stagger: 0.05,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: wordsRef.current,
-            start: 'top 70%',
-            end: 'bottom 30%',
-            scrub: 1,
-          },
-        },
-      )
-    }, wordsRef)
+    const container = containerRef.current
+    const textEl = textRef.current
+    if (!container || !textEl) return
 
-    return () => ctx.revert()
-  }, [prefersReduced, words.length])
+    const setAllOpacity = (opacity: number) => {
+      for (const line of linesRef.current) {
+        for (const el of line.els) {
+          el.style.opacity = String(opacity)
+        }
+      }
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(() => {
+        const lines = linesRef.current
+        if (lines.length === 0) return
+
+        const textRect = textEl.getBoundingClientRect()
+        const cursorY = e.clientY - textRect.top
+        const lh = lineHeightRef.current
+
+        for (const line of lines) {
+          const lineCenter = line.top + lh / 2
+          const dist = Math.abs(cursorY - lineCenter) / lh
+          const t = Math.max(0, 1 - dist / FALLOFF_LINES)
+          const opacity = BASE_OPACITY + (1 - BASE_OPACITY) * t
+          for (const el of line.els) {
+            el.style.opacity = String(opacity)
+          }
+        }
+      })
+    }
+
+    const handleMouseLeave = () => {
+      cancelAnimationFrame(rafRef.current)
+      setAllOpacity(REST_OPACITY)
+    }
+
+    // Start at resting state
+    setAllOpacity(REST_OPACITY)
+
+    container.addEventListener('mousemove', handleMouseMove)
+    container.addEventListener('mouseleave', handleMouseLeave)
+    return () => {
+      container.removeEventListener('mousemove', handleMouseMove)
+      container.removeEventListener('mouseleave', handleMouseLeave)
+      cancelAnimationFrame(rafRef.current)
+    }
+  }, [prefersReduced])
 
   return (
     <section
@@ -78,30 +132,30 @@ export function WhoWeServe({ section }: WhoWeServeProps) {
     >
       <SectionHeader title={section.title} />
 
-      <div
-        ref={wordsRef}
-        className="mt-12 md:mt-16 max-w-5xl"
-      >
-        <p className="font-display text-2xl md:text-4xl lg:text-5xl leading-snug tracking-wide">
+      <div className="mt-12 md:mt-16 max-w-5xl">
+        <p
+          ref={textRef}
+          className="font-display text-2xl md:text-4xl lg:text-5xl leading-snug tracking-wide"
+        >
           {words.map((w, i) => {
-            // Bold words always stay bright
             if (w.isBold) {
               return (
                 <span
                   key={i}
-                  className="word inline-block mr-[0.3em] font-semibold text-foreground"
-                  style={{ opacity: 1 }}
+                  className="word-bold inline-block mr-[0.3em] font-semibold text-foreground"
                 >
                   {w.word}
                 </span>
               )
             }
-
             return (
               <span
                 key={i}
-                className="word inline-block mr-[0.3em] text-foreground"
-                style={prefersReduced ? undefined : { opacity: 0.15 }}
+                className="word-dim inline-block mr-[0.3em] text-foreground"
+                style={{
+                  opacity: prefersReduced ? 1 : REST_OPACITY,
+                  transition: 'opacity 0.15s ease',
+                }}
               >
                 {w.word}
               </span>
@@ -109,14 +163,6 @@ export function WhoWeServe({ section }: WhoWeServeProps) {
           })}
         </p>
       </div>
-
-      {/* Mobile fallback: simple fade-in instead of scroll scrub */}
-      <motion.div
-        className="md:hidden mt-8"
-        initial={{ opacity: 0 }}
-        animate={isInView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.8 }}
-      />
     </section>
   )
 }
