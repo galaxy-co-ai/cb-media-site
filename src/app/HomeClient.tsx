@@ -107,9 +107,9 @@ export function HomeClient({ sections }: HomeClientProps) {
       <div className="vignette" aria-hidden="true" />
 
       {/* Footer — fixed behind main, revealed as main scrolls away */}
-      <footer className="footer-reveal border-t border-border px-6 md:px-12 lg:px-24 py-8">
+      <footer className="footer-reveal border-t border-border px-6 md:px-10 lg:px-16 py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <span className="font-display text-2xl tracking-wider footer-logo">CB MEDIA</span>
+          <span className="font-display text-xl tracking-wider footer-logo">CB MEDIA</span>
           <span className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} CB.Media. All rights reserved.
           </span>
@@ -122,7 +122,7 @@ export function HomeClient({ sections }: HomeClientProps) {
       {/* Main scrollable content — Lenis smooth scroll + mandatory snap */}
       <main className="main-content relative z-[51]">
         {/* Hero Section */}
-        <section id="hero" data-snap-section className="h-screen flex flex-col items-center justify-center px-6 pb-24 relative">
+        <section id="hero" data-snap-section className="h-screen flex flex-col items-center justify-center px-6 pb-16 relative">
           {/* Cursor gradient overlay */}
           <div
             className="absolute inset-0 pointer-events-none"
@@ -147,7 +147,7 @@ export function HomeClient({ sections }: HomeClientProps) {
                   }}
                 >
                   <motion.h1
-                    className="font-display text-6xl md:text-8xl lg:text-9xl text-center tracking-[0.08em]"
+                    className="font-display text-5xl md:text-7xl lg:text-8xl text-center tracking-[0.08em]"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 8, ease: [0.25, 0.1, 0.25, 1], delay: 0.5 }}
@@ -156,7 +156,7 @@ export function HomeClient({ sections }: HomeClientProps) {
                   </motion.h1>
 
                   <motion.p
-                    className="mt-4 text-[clamp(0.75rem,3.5vw,1.5rem)] text-muted-foreground tracking-widest whitespace-nowrap"
+                    className="mt-4 text-[clamp(0.625rem,2.5vw,1.125rem)] text-muted-foreground tracking-widest whitespace-nowrap"
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 8, ease: [0.25, 0.1, 0.25, 1], delay: 2.5 }}

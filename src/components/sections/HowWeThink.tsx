@@ -59,7 +59,7 @@ export function HowWeThink({ section }: HowWeThinkProps) {
   return (
     <section
       ref={containerRef}
-      className="relative py-24 md:py-32 px-6 md:px-12 lg:px-24"
+      className="relative py-16 md:py-24 px-6 md:px-10 lg:px-16"
     >
       <SectionHeader title={section.title} />
 
@@ -68,13 +68,13 @@ export function HowWeThink({ section }: HowWeThinkProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-        className="mt-8 mb-16 max-w-3xl text-muted-foreground"
+        className="mt-6 mb-12 max-w-3xl text-muted-foreground"
       >
         <PortableTextRenderer content={section.content} />
       </motion.div>
 
       {/* Cards container */}
-      <div ref={cardsContainerRef} className="space-y-6 md:space-y-0">
+      <div ref={cardsContainerRef} className="space-y-4 md:space-y-0">
         {cards.map((card, i) => (
           <PhilosophyCard
             key={card._key}
@@ -108,13 +108,13 @@ function PhilosophyCard({
       initial={prefersReduced ? undefined : { opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: 0.2 + index * 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-      className="philosophy-card bg-[oklch(0.08_0_0)] border border-border rounded-lg p-8 md:p-12 md:min-h-[300px] flex flex-col justify-center"
+      className="philosophy-card bg-[oklch(0.08_0_0)] border border-border rounded-lg p-6 md:p-8 md:min-h-[220px] flex flex-col justify-center"
     >
       <div className="flex items-baseline gap-4 mb-4">
         <span className="font-display text-sm text-muted-foreground tabular-nums">
           {String(index + 1).padStart(2, '0')}
         </span>
-        <h3 className="font-display text-xl md:text-2xl lg:text-3xl tracking-wide text-foreground">
+        <h3 className="font-display text-lg md:text-xl lg:text-2xl tracking-wide text-foreground">
           {title}
         </h3>
       </div>

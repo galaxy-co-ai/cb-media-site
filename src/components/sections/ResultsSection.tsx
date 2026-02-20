@@ -19,7 +19,7 @@ export function ResultsSection({ section }: ResultsSectionProps) {
   return (
     <section
       ref={ref}
-      className="relative py-24 md:py-32 px-6 md:px-12 lg:px-24"
+      className="relative py-16 md:py-24 px-6 md:px-10 lg:px-16"
     >
       <SectionHeader title={section.title} />
 
@@ -28,13 +28,13 @@ export function ResultsSection({ section }: ResultsSectionProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-        className="mt-8 mb-16 max-w-3xl text-muted-foreground"
+        className="mt-6 mb-12 max-w-3xl text-muted-foreground"
       >
         <PortableTextRenderer content={section.content} />
       </motion.div>
 
       {/* Stats — alternating narrative rows */}
-      <div className="space-y-16 md:space-y-24">
+      <div className="space-y-12 md:space-y-16">
         {stats.map((stat, i) => (
           <motion.div
             key={i}
@@ -47,9 +47,9 @@ export function ResultsSection({ section }: ResultsSectionProps) {
           >
             <DigitRoll
               value={stat.value}
-              className="text-6xl md:text-8xl lg:text-9xl"
+              className="text-5xl md:text-7xl lg:text-8xl"
             />
-            <p className="mt-2 font-display text-lg md:text-xl tracking-wider text-muted-foreground uppercase">
+            <p className="mt-2 font-display text-base md:text-lg tracking-wider text-muted-foreground uppercase">
               {stat.label}
             </p>
           </motion.div>

@@ -39,21 +39,21 @@ export function ContactSection({ section }: ContactSectionProps) {
   }, [prefersReduced])
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 md:px-12 lg:px-24 py-24">
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 md:px-10 lg:px-16 py-16">
       {/* Giant headline */}
       <h2
         ref={headlineRef}
-        className="font-hero text-[clamp(3rem,12vw,10rem)] text-center leading-none"
+        className="font-hero text-[clamp(2.25rem,10vw,7.5rem)] text-center leading-none"
       >
         LET&apos;S TALK
       </h2>
 
       {/* CTA Button */}
-      <div className="mt-12 hidden md:block">
+      <div className="mt-10 hidden md:block">
         <MagneticButton>
           <a
             href="mailto:info@cb.media"
-            className="inline-block px-12 py-5 border border-foreground text-foreground font-display text-xl tracking-wider hover:bg-foreground hover:text-background transition-colors duration-200"
+            className="inline-block px-10 py-4 border border-foreground text-foreground font-display text-lg tracking-wider hover:bg-foreground hover:text-background transition-colors duration-200"
           >
             GET IN TOUCH
           </a>
@@ -61,17 +61,17 @@ export function ContactSection({ section }: ContactSectionProps) {
       </div>
 
       {/* Mobile CTA (no magnetic) */}
-      <div className="mt-10 md:hidden">
+      <div className="mt-8 md:hidden">
         <a
           href="mailto:info@cb.media"
-          className="inline-block px-10 py-4 border border-foreground text-foreground font-display text-lg tracking-wider hover:bg-foreground hover:text-background transition-colors duration-200"
+          className="inline-block px-8 py-3 border border-foreground text-foreground font-display text-base tracking-wider hover:bg-foreground hover:text-background transition-colors duration-200"
         >
           GET IN TOUCH
         </a>
       </div>
 
       {/* Contact details */}
-      <div className="mt-16 flex flex-col md:flex-row items-center gap-6 md:gap-12 text-muted-foreground">
+      <div className="mt-12 flex flex-col md:flex-row items-center gap-6 md:gap-10 text-muted-foreground">
         <a
           href="mailto:info@cb.media"
           className="text-foreground hover:text-muted-foreground transition-colors"

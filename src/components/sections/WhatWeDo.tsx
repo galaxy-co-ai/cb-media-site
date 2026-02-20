@@ -20,7 +20,7 @@ export function WhatWeDo({ section }: WhatWeDoProps) {
   return (
     <section
       ref={ref}
-      className="relative py-24 md:py-32 px-6 md:px-12 lg:px-24"
+      className="relative py-16 md:py-24 px-6 md:px-10 lg:px-16"
     >
       <SectionHeader title={section.title} />
 
@@ -29,13 +29,13 @@ export function WhatWeDo({ section }: WhatWeDoProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-        className="mt-8 mb-16 max-w-3xl text-muted-foreground"
+        className="mt-6 mb-12 max-w-3xl text-muted-foreground"
       >
         <PortableTextRenderer content={section.content} />
       </motion.div>
 
       {/* Desktop: Two-column hover list */}
-      <div className="hidden md:grid md:grid-cols-2 gap-12 lg:gap-24">
+      <div className="hidden md:grid md:grid-cols-2 gap-8 lg:gap-16">
         {/* Left: Service titles */}
         <div className="space-y-0">
           {services.map((item, i) => (
@@ -46,7 +46,7 @@ export function WhatWeDo({ section }: WhatWeDoProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.4 + i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-              className={`w-full text-left py-6 border-b border-border group flex items-baseline gap-4 transition-colors duration-200 ${
+              className={`w-full text-left py-4 border-b border-border group flex items-baseline gap-4 transition-colors duration-200 ${
                 activeIndex === i
                   ? 'border-l-2 border-l-[var(--accent-glow)] pl-4'
                   : 'border-l-2 border-l-transparent pl-4'
@@ -56,7 +56,7 @@ export function WhatWeDo({ section }: WhatWeDoProps) {
                 {String(i + 1).padStart(2, '0')}
               </span>
               <span
-                className={`font-display text-2xl lg:text-3xl tracking-wide transition-colors duration-200 ${
+                className={`font-display text-xl lg:text-2xl tracking-wide transition-colors duration-200 ${
                   activeIndex === i ? 'text-foreground' : 'text-muted-foreground'
                 }`}
               >
@@ -77,11 +77,11 @@ export function WhatWeDo({ section }: WhatWeDoProps) {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
               >
-                <p className="text-lg text-muted-foreground leading-relaxed">
+                <p className="text-base text-muted-foreground leading-relaxed">
                   {services[activeIndex].description}
                 </p>
                 {services[activeIndex].ctaText && (
-                  <span className="inline-block mt-6 font-display text-sm tracking-wider text-[var(--accent-glow)]">
+                  <span className="inline-block mt-4 font-display text-sm tracking-wider text-[var(--accent-glow)]">
                     {services[activeIndex].ctaText} &rarr;
                   </span>
                 )}
@@ -103,13 +103,13 @@ export function WhatWeDo({ section }: WhatWeDoProps) {
           >
             <button
               onClick={() => setExpandedMobile(expandedMobile === i ? null : i)}
-              className="w-full py-5 flex items-baseline justify-between text-left"
+              className="w-full py-4 flex items-baseline justify-between text-left"
             >
               <div className="flex items-baseline gap-3">
                 <span className="font-display text-sm text-muted-foreground tabular-nums">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <span className="font-display text-xl tracking-wide text-foreground">
+                <span className="font-display text-lg tracking-wide text-foreground">
                   {item.title}
                 </span>
               </div>

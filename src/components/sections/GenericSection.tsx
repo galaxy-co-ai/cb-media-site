@@ -17,7 +17,7 @@ export function GenericSection({ section }: GenericSectionProps) {
   return (
     <section
       ref={ref}
-      className="relative py-24 md:py-32 px-6 md:px-12 lg:px-24"
+      className="relative py-16 md:py-24 px-6 md:px-10 lg:px-16"
     >
       <SectionHeader title={section.title} />
 
@@ -25,7 +25,7 @@ export function GenericSection({ section }: GenericSectionProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-        className="mt-12 max-w-3xl"
+        className="mt-8 max-w-3xl"
       >
         <PortableTextRenderer content={section.content} />
       </motion.div>

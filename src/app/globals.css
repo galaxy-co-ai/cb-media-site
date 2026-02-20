@@ -147,7 +147,7 @@
 }
 
 .main-content {
-  margin-bottom: 80px; /* Height of footer — exposes it at scroll end */
+  margin-bottom: 60px; /* Height of footer — exposes it at scroll end */
 }
 
 /* Solid background only below the hero so CinematicIntro shows through */

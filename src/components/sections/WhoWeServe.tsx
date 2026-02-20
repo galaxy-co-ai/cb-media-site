@@ -128,14 +128,14 @@ export function WhoWeServe({ section }: WhoWeServeProps) {
   return (
     <section
       ref={containerRef}
-      className="relative py-24 md:py-40 px-6 md:px-12 lg:px-24"
+      className="relative py-16 md:py-28 px-6 md:px-10 lg:px-16"
     >
       <SectionHeader title={section.title} />
 
-      <div className="mt-12 md:mt-16 max-w-5xl">
+      <div className="mt-8 md:mt-12 max-w-5xl">
         <p
           ref={textRef}
-          className="font-display text-2xl md:text-4xl lg:text-5xl leading-snug tracking-wide"
+          className="font-display text-xl md:text-3xl lg:text-4xl leading-snug tracking-wide"
         >
           {words.map((w, i) => {
             if (w.isBold) {
