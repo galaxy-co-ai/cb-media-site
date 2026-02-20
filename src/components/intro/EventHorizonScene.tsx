@@ -17,6 +17,7 @@ export interface AnimState {
   maxSpeed: number;
   repulsion: number;
   drag: number;
+  spiral: number;
   // Rendering
   colorTemp: number;
   particleOpacity: number;
@@ -35,6 +36,7 @@ function createAnimState(): AnimState {
     maxSpeed: 0.1,
     repulsion: 0,
     drag: 0.998,
+    spiral: 0,
     colorTemp: 4000,
     particleOpacity: 1.0,
     bloomIntensity: 0.3,
@@ -88,11 +90,16 @@ export default function EventHorizonScene({
 
     // =====================================================================
     // Phase 2: PULL (4–7s)
-    // Gravity activates, drag bleeds energy, spiral begins
+    // Gravity activates, drag bleeds energy, cyclonic spiral begins
     // =====================================================================
     tl.to(
       animState,
       { gravity: 2.0, duration: 3, ease: 'power2.in' },
+      4,
+    );
+    tl.to(
+      animState,
+      { spiral: 4.0, duration: 3, ease: 'power2.in' },
       4,
     );
     tl.to(
@@ -117,10 +124,15 @@ export default function EventHorizonScene({
     // Inner particles reach center first, outer follow steadily.
     // (+20% duration from 12s to give outer particles time to arrive)
     // =====================================================================
-    // Subtle gravity ramp — accelerates gently as drain progresses
+    // Gravity + cyclonic spiral ramp — accelerating rate through the drain
     tl.to(
       animState,
       { gravity: 3.5, duration: 14.5, ease: 'power2.in' },
+      7,
+    );
+    tl.to(
+      animState,
+      { spiral: 12.0, duration: 14.5, ease: 'power3.in' },
       7,
     );
     tl.to(
@@ -220,6 +232,7 @@ export default function EventHorizonScene({
         gravity: 0,
         diskFlatten: 0,
         collapseForce: 0,
+        spiral: 0,
         brownian: 0.01,
         maxSpeed: 15.0,
         colorTemp: 6000,

@@ -21,6 +21,7 @@ export const velocityShader = /* glsl */ `
   uniform float uTime;
   uniform float uRepulsion;
   uniform float uDrag;
+  uniform float uSpiral;
 
   // Hash-based pseudo-random (deterministic per texel + time)
   float hash(vec2 p) {
@@ -56,13 +57,13 @@ export const velocityShader = /* glsl */ `
     float gravHash = 0.7 + hash(uv * 1000.0) * 0.6;  // 0.7–1.3x gravity variation
     v += normalize(toCenter + 0.001) * uGravity * gravHash * uDelta;
 
-    // --- Orbital / spiral component (1/√r differential rotation) ---
-    // Inner particles orbit faster than outer → visible spiral arms.
-    // smoothstep fades tangential near center so particles fall in gracefully.
-    if (uGravity > 0.01) {
-      float tangentialMag = uGravity * 2.4 / (sqrt(dist) + 0.3);
+    // --- Cyclonic spiral component ---
+    // uSpiral controls tangential intensity independently from gravity.
+    // 1/r^0.4 profile: faster rotation near the eye, visible spiral arms.
+    if (uSpiral > 0.001) {
+      float tangentialMag = uSpiral / (pow(dist, 0.4) + 0.2);
       vec3 tangent = normalize(cross(toCenter, vec3(0.0, 0.0, 1.0)) + 0.001);
-      v += tangent * tangentialMag * smoothstep(0.5, 8.0, dist) * uDelta;
+      v += tangent * tangentialMag * smoothstep(0.3, 8.0, dist) * uDelta;
     }
 
     // --- Disk flattening (push Z toward 0 — camera-facing plane) ---

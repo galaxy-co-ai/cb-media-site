@@ -87,6 +87,7 @@ export default function GPGPUParticles({
     velUniforms.uTime = { value: 0 };
     velUniforms.uRepulsion = { value: 0 };
     velUniforms.uDrag = { value: 0.998 };
+    velUniforms.uSpiral = { value: 0 };
 
     const posUniforms = posVar.material.uniforms;
     posUniforms.uDelta = { value: 0.016 };
@@ -152,6 +153,7 @@ export default function GPGPUParticles({
     velUniforms.uTime.value += clampedDelta;
     velUniforms.uRepulsion.value = animState.repulsion;
     velUniforms.uDrag.value = animState.drag;
+    velUniforms.uSpiral.value = animState.spiral;
 
     gpgpu.posVar.material.uniforms.uDelta.value = clampedDelta;
 
