@@ -49,21 +49,20 @@ export const velocityShader = /* glsl */ `
     vec3 p = pos.xyz;
     vec3 v = vel.xyz;
 
-    // --- Gravitational pull toward origin ---
-    // 1/r² near center for wormhole depth, constant further out for steady drain.
+    // --- Gravitational pull toward origin (constant force — drain model) ---
+    // Per-particle hash breaks the uniform shell — no perfect circle outline.
     vec3 toCenter = -p;
     float dist = length(toCenter);
-    float gravHash = 0.7 + hash(uv * 1000.0) * 0.6;
-    // Wormhole pull: stronger 1/r² near center, linear far out
-    float gravScale = mix(1.0, 4.0 / (dist * dist + 1.0), smoothstep(3.0, 0.5, dist));
-    v += normalize(toCenter + 0.001) * uGravity * gravHash * gravScale * uDelta;
+    float gravHash = 0.7 + hash(uv * 1000.0) * 0.6;  // 0.7–1.3x gravity variation
+    v += normalize(toCenter + 0.001) * uGravity * gravHash * uDelta;
 
     // --- Orbital / spiral component (1/√r differential rotation) ---
-    // Stronger tangential force = more dramatic, visible spiral arms.
-    if (uGravity > 0.001) {
-      float tangentialMag = uGravity * 4.0 / (sqrt(dist) + 0.2);
+    // Inner particles orbit faster than outer → visible spiral arms.
+    // smoothstep fades tangential near center so particles fall in gracefully.
+    if (uGravity > 0.01) {
+      float tangentialMag = uGravity * 2.4 / (sqrt(dist) + 0.3);
       vec3 tangent = normalize(cross(toCenter, vec3(0.0, 0.0, 1.0)) + 0.001);
-      v += tangent * tangentialMag * smoothstep(0.3, 6.0, dist) * uDelta;
+      v += tangent * tangentialMag * smoothstep(0.5, 8.0, dist) * uDelta;
     }
 
     // --- Disk flattening (push Z toward 0 — camera-facing plane) ---
@@ -134,12 +133,6 @@ export const renderVertexShader = /* glsl */ `
 
   varying float vSpeed;
   varying float vDepth;
-  varying float vSizeRand;
-
-  // Per-particle hash for size variation
-  float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-  }
 
   void main() {
     vec4 posData = texture2D(uPositionTexture, reference);
@@ -148,19 +141,14 @@ export const renderVertexShader = /* glsl */ `
     vec3 pos = posData.xyz;
     vSpeed = length(velData.xyz);
 
-    // Per-particle size variation: most are medium, some are large bright stars
-    float h = hash(reference * 1000.0);
-    float sizeVar = mix(0.4, 2.5, pow(h, 3.0)); // cubic bias — few big, many small
-    vSizeRand = sizeVar;
-
     vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
     vDepth = -mvPosition.z;
 
     // Slow particles shrink — prevents big blobs stuck in ambient phase
     float speedScale = 0.3 + 0.7 * smoothstep(0.0, 0.5, vSpeed);
 
-    // Point size with depth attenuation and per-particle variation
-    gl_PointSize = uPointSize * sizeVar * speedScale * (80.0 / max(vDepth, 1.0));
+    // Point size with depth attenuation
+    gl_PointSize = uPointSize * speedScale * (80.0 / max(vDepth, 1.0));
     gl_Position = projectionMatrix * mvPosition;
   }
 `;
@@ -174,7 +162,6 @@ export const renderFragmentShader = /* glsl */ `
 
   varying float vSpeed;
   varying float vDepth;
-  varying float vSizeRand;
 
   // Attempt a basic blackbody color from temperature (simplified Planckian locus)
   vec3 temperatureToColor(float temp) {
@@ -217,13 +204,12 @@ export const renderFragmentShader = /* glsl */ `
 
     vec3 baseColor = temperatureToColor(uColorTemp);
 
-    // Larger particles glow brighter (star luminosity scales with size)
-    float brightness = 1.0 + vSpeed * 0.08 + vSizeRand * 0.3;
-    brightness = min(brightness, 2.0);
+    float brightness = 1.0 + vSpeed * 0.08;
+    brightness = min(brightness, 1.5);
 
     float depthFade = clamp(1.0 - vDepth / 80.0, 0.1, 1.0);
 
-    vec3 finalColor = baseColor * brightness * depthFade * 0.5;
+    vec3 finalColor = baseColor * brightness * depthFade * 0.25;
 
     gl_FragColor = vec4(finalColor, alpha * uOpacity);
   }

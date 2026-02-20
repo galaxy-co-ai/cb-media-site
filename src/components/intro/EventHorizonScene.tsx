@@ -28,16 +28,16 @@ export interface AnimState {
 
 function createAnimState(): AnimState {
   return {
-    gravity: 1.5,         // Already pulling from frame 1
-    diskFlatten: 0.3,     // Already disk-shaped
+    gravity: 0,
+    diskFlatten: 0,
     collapseForce: 0,
-    brownian: 0.005,      // Clean spiral, less noise
-    maxSpeed: 2.0,        // Fast enough to see motion immediately
+    brownian: 0.02,
+    maxSpeed: 0.1,
     repulsion: 0,
-    drag: 0.995,          // Bleeding energy into spiral
-    colorTemp: 4500,
+    drag: 0.998,
+    colorTemp: 4000,
     particleOpacity: 1.0,
-    bloomIntensity: 0.4,
+    bloomIntensity: 0.3,
     caOffset: 0,
     vignetteDarkness: 0.7,
   };
@@ -76,8 +76,8 @@ export default function EventHorizonScene({
     }
 
     // =====================================================================
-    // Phase 1: GALAXY REVEAL (0–2s)
-    // Already spiraling on load — fade in the drama
+    // Phase 1: DRIFT (0–4s)
+    // Canvas fades in, particles drift gently
     // =====================================================================
     tl.fromTo(
       container,
@@ -87,139 +87,133 @@ export default function EventHorizonScene({
     );
 
     // =====================================================================
-    // Phase 2: INTENSIFYING VORTEX (0–8s)
-    // Gravity ramps, spiral tightens, stars accelerate into the drain
+    // Phase 2: PULL (4–7s)
+    // Gravity activates, drag bleeds energy, spiral begins
     // =====================================================================
     tl.to(
       animState,
-      { gravity: 4.0, duration: 8, ease: 'power2.in' },
-      0,
+      { gravity: 2.0, duration: 3, ease: 'power2.in' },
+      4,
     );
     tl.to(
       animState,
-      { maxSpeed: 5.0, duration: 6, ease: 'power2.in' },
-      0,
+      { drag: 0.99, duration: 2, ease: 'power1.in' },
+      4,
     );
     tl.to(
       animState,
-      { drag: 0.985, duration: 8, ease: 'power1.in' },
-      0,
+      { maxSpeed: 3.0, duration: 3, ease: 'power1.in' },
+      4,
     );
     tl.to(
       animState,
-      { diskFlatten: 1.5, duration: 8, ease: 'power2.inOut' },
-      0,
-    );
-    tl.to(
-      animState,
-      { bloomIntensity: 0.8, duration: 6, ease: 'power1.in' },
-      1,
-    );
-    tl.to(
-      animState,
-      { colorTemp: 7000, duration: 8, ease: 'power1.in' },
-      0,
-    );
-    tl.to(
-      animState,
-      { caOffset: 0.0008, duration: 8, ease: 'power1.in' },
-      0,
+      { bloomIntensity: 0.6, duration: 3, ease: 'power1.in' },
+      4,
     );
 
     // =====================================================================
-    // Phase 3: WORMHOLE COLLAPSE (8–13s)
-    // Violent acceleration, everything spiraling into the singularity
+    // Phase 3: STEADY DRAIN (7–21.5s)
+    // 14.5 seconds of constant gravity + constant drag = uniform drain.
+    // Inner particles reach center first, outer follow steadily.
+    // (+20% duration from 12s to give outer particles time to arrive)
     // =====================================================================
+    // Subtle gravity ramp — accelerates gently as drain progresses
     tl.to(
       animState,
-      { gravity: 6.0, duration: 5, ease: 'power3.in' },
-      8,
+      { gravity: 3.5, duration: 14.5, ease: 'power2.in' },
+      7,
     );
     tl.to(
       animState,
-      { maxSpeed: 8.0, duration: 4, ease: 'power2.in' },
-      8,
+      { diskFlatten: 1.0, duration: 14.5, ease: 'power2.inOut' },
+      7,
     );
     tl.to(
       animState,
-      { colorTemp: 12000, duration: 5, ease: 'power2.in' },
-      8,
+      { colorTemp: 8000, duration: 14.5, ease: 'power1.in' },
+      7,
     );
     tl.to(
       animState,
-      { bloomIntensity: 1.8, duration: 5, ease: 'power2.in' },
-      8,
+      { bloomIntensity: 1.2, duration: 14.5, ease: 'power1.in' },
+      7,
     );
     tl.to(
       animState,
-      { diskFlatten: 2.5, duration: 5, ease: 'power2.in' },
-      8,
+      { caOffset: 0.001, duration: 14.5, ease: 'power1.in' },
+      7,
     );
     tl.to(
       animState,
-      { caOffset: 0.002, duration: 5, ease: 'power2.in' },
-      8,
+      { brownian: 0.005, duration: 7, ease: 'power1.in' },
+      7,
     );
 
     // =====================================================================
-    // Phase 4: SINGULARITY (13–15s)
-    // Final violent collapse — everything sucked to a point
+    // Phase 4: FINAL GATHER (21.5–23s)
+    // Gentle nudge for stragglers — NO violent collapse
     // =====================================================================
     tl.to(
       animState,
-      { collapseForce: 5, duration: 2, ease: 'power2.in' },
-      13,
+      { collapseForce: 3, duration: 1.5, ease: 'power1.in' },
+      21.5,
     );
     tl.to(
       animState,
-      { colorTemp: 15000, duration: 1.5, ease: 'power3.in' },
-      13,
+      { colorTemp: 15000, duration: 1.5, ease: 'power2.in' },
+      21.5,
     );
     tl.to(
       animState,
-      { bloomIntensity: 3.0, duration: 2, ease: 'power2.in' },
-      13,
+      { diskFlatten: 2.0, duration: 1.0, ease: 'power1.in' },
+      22,
+    );
+    tl.to(
+      animState,
+      { bloomIntensity: 2.5, duration: 1.5, ease: 'power1.in' },
+      21.5,
     );
 
     // =====================================================================
-    // Phase 5: FADE TO BLACK (15–17s)
-    // White-hot center implodes into darkness
+    // Phase 5: FADE TO BLACK (23–25s)
+    // Concentrated ball glows, then gracefully dims into darkness
     // =====================================================================
     tl.to(
       animState,
-      { bloomIntensity: 4.0, duration: 0.4, ease: 'power3.in' },
-      15,
+      { bloomIntensity: 3.5, duration: 0.4, ease: 'power2.in' },
+      23,
     );
     tl.to(
       animState,
-      { particleOpacity: 0, duration: 1.0, ease: 'power2.in' },
-      15.2,
+      { particleOpacity: 0, duration: 1.2, ease: 'power2.in' },
+      23.3,
     );
     tl.to(
       animState,
-      { bloomIntensity: 0, duration: 0.8, ease: 'power2.in' },
-      15.5,
+      { bloomIntensity: 0, duration: 1.0, ease: 'power2.in' },
+      23.5,
     );
     tl.to(
       container,
-      { opacity: 0, duration: 0.6, ease: 'power2.in' },
-      15.8,
+      { opacity: 0, duration: 0.8, ease: 'power2.in' },
+      23.8,
     );
 
     // =====================================================================
-    // Phase 6: VOID (17–18s)
-    // Pure black tension
+    // Phase 6: VOID (24.8–26s)
+    // ~1.2s pure black tension
     // =====================================================================
+    // (Container already at opacity 0 — just wait)
 
     // =====================================================================
-    // Phase 7: BLOOM (18–21s)
-    // Particles explode outward — galaxy rebirth
+    // Phase 7: BLOOM (26–28.5s)
+    // Particles expand outward with curl noise — organic galaxy scatter
     // =====================================================================
 
-    // Fire onComplete so hero text fades in during bloom
-    tl.call(onCompleteStable, undefined, 18);
+    // Fire onComplete early so hero text fades in during bloom
+    tl.call(onCompleteStable, undefined, 26);
 
-    // Instant physics reset
+    // Instant physics reset at t=26
     tl.to(
       animState,
       {
@@ -235,59 +229,60 @@ export default function EventHorizonScene({
         duration: 0.01,
         ease: 'none',
       },
-      18,
+      26,
     );
 
     // Container fades in, repulsion pushes particles outward
     tl.to(
       container,
-      { opacity: 1, duration: 2.0, ease: 'power2.out' },
-      18,
+      { opacity: 1, duration: 2.5, ease: 'power2.out' },
+      26,
     );
     tl.to(
       animState,
-      { particleOpacity: 0.8, duration: 2.0, ease: 'power2.out' },
-      18,
+      { particleOpacity: 0.8, duration: 2.5, ease: 'power2.out' },
+      26,
     );
     tl.to(
       animState,
-      { repulsion: 14.0, duration: 0.01, ease: 'none' },
-      18,
+      { repulsion: 12.0, duration: 0.01, ease: 'none' },
+      26,
     );
     tl.to(
       animState,
-      { bloomIntensity: 0.6, duration: 1.5, ease: 'power2.out' },
-      18,
+      { bloomIntensity: 0.6, duration: 2.0, ease: 'power2.out' },
+      26,
     );
+    // Begin tapering repulsion during bloom itself (not waiting for coast)
     tl.to(
       animState,
-      { repulsion: 3.0, duration: 2.0, ease: 'power1.out' },
-      18.5,
+      { repulsion: 3.0, duration: 2.5, ease: 'power1.out' },
+      26.5,
     );
 
     // =====================================================================
-    // Phase 8: COAST (21–26s)
-    // Gradual decay into ambient starfield
+    // Phase 8: COAST (29–34s)
+    // Gradual tail-off — everything decays slowly into ambient drift
     // =====================================================================
     tl.to(
       animState,
       { repulsion: 0, duration: 5.0, ease: 'power1.out' },
-      21,
+      29,
     );
     tl.to(
       animState,
       { maxSpeed: 0.05, duration: 4.0, ease: 'power1.out' },
-      21,
+      29,
     );
     tl.to(
       animState,
       { particleOpacity: 0.3, duration: 5.0, ease: 'power1.out' },
-      21,
+      29,
     );
     tl.to(
       animState,
       { bloomIntensity: 0.2, duration: 5.0, ease: 'power1.out' },
-      21,
+      29,
     );
 
     // Start timeline after a brief init delay
@@ -301,7 +296,7 @@ export default function EventHorizonScene({
   return (
     <>
       <color attach="background" args={['#000000']} />
-      <PerspectiveCamera makeDefault position={[0, 0, 40]} fov={60} />
+      <PerspectiveCamera makeDefault position={[0, 0, 25]} fov={60} />
       <GPGPUParticles animState={animState} />
       <IntroPostProcessing animState={animState} />
     </>

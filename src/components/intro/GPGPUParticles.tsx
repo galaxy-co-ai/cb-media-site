@@ -19,7 +19,7 @@ interface GPGPUParticlesProps {
 
 export default function GPGPUParticles({
   animState,
-  size = 128,
+  size = 256,
 }: GPGPUParticlesProps) {
   const { gl } = useThree();
   const meshRef = useRef<THREE.Points>(null);
@@ -34,36 +34,29 @@ export default function GPGPUParticles({
       console.warn('WebGL2 required for GPGPU particles');
     }
 
-    // --- Initial position data: galaxy disk distribution ---
+    // --- Initial position data: sphere volume distribution ---
     const posTexture = gpuCompute.createTexture();
     const posData = posTexture.image.data as Float32Array;
     for (let i = 0; i < count; i++) {
       const i4 = i * 4;
-      // Disk distribution — wide spread, flattened in Z
+      // Uniform sphere distribution via cube-root radius
       const theta = Math.random() * Math.PI * 2;
-      const r = Math.cbrt(Math.random()) * 45; // wide galaxy
-      const x = r * Math.cos(theta);
-      const y = r * Math.sin(theta);
-      const z = (Math.random() - 0.5) * 3; // thin disk
-      posData[i4 + 0] = x;
-      posData[i4 + 1] = y;
-      posData[i4 + 2] = z;
-      posData[i4 + 3] = 1.0;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = Math.cbrt(Math.random()) * 20;
+      posData[i4 + 0] = r * Math.sin(phi) * Math.cos(theta);
+      posData[i4 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      posData[i4 + 2] = r * Math.cos(phi);
+      posData[i4 + 3] = 1.0; // lifecycle / spare channel
     }
 
-    // --- Initial velocity data: already orbiting (tangential) ---
+    // --- Initial velocity data: near-zero with slight drift ---
     const velTexture = gpuCompute.createTexture();
     const velData = velTexture.image.data as Float32Array;
     for (let i = 0; i < count; i++) {
       const i4 = i * 4;
-      const px = posData[i4 + 0];
-      const py = posData[i4 + 1];
-      const dist = Math.sqrt(px * px + py * py) + 0.01;
-      // Tangential velocity: cross product with Z-axis, scaled by 1/sqrt(r)
-      const speed = 1.2 / Math.sqrt(dist / 10 + 0.3);
-      velData[i4 + 0] = (-py / dist) * speed;
-      velData[i4 + 1] = (px / dist) * speed;
-      velData[i4 + 2] = (Math.random() - 0.5) * 0.05;
+      velData[i4 + 0] = (Math.random() - 0.5) * 0.02;
+      velData[i4 + 1] = (Math.random() - 0.5) * 0.02;
+      velData[i4 + 2] = (Math.random() - 0.5) * 0.02;
       velData[i4 + 3] = 0;
     }
 
@@ -128,7 +121,7 @@ export default function GPGPUParticles({
         uniforms: {
           uPositionTexture: { value: null },
           uVelocityTexture: { value: null },
-          uPointSize: { value: 3.0 },
+          uPointSize: { value: 0.5 },
           uColorTemp: { value: 4000 },
           uOpacity: { value: 1.0 },
         },
