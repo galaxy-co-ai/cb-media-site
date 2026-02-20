@@ -1,9 +1,10 @@
 'use client'
 
-import { useRef, useEffect, useState, useCallback } from 'react'
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { SectionOrchestrator } from '@/components/sections/SectionOrchestrator'
+import { SectionNav } from '@/components/ui/SectionNav'
 import { useSmoothScroll } from '@/providers/SmoothScrollProvider'
 import type { Section } from '@/sanity/lib/types'
 
@@ -83,21 +84,11 @@ export function HomeClient({ sections }: HomeClientProps) {
     }
   }, [smoothX, smoothY, prefersReducedMotion])
 
-  const scrollToContent = () => {
-    if (lenis) {
-      lenis.scrollTo('#content', { duration: 1.8 })
-    } else {
-      document.getElementById('content')?.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
-  const scrollToHero = () => {
-    if (lenis) {
-      lenis.scrollTo(0, { duration: 1.8 })
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }
+  // Build ordered section IDs for nav: hero + content sections
+  const sectionIds = useMemo(
+    () => ['hero', ...sections.map((s) => s.slug)],
+    [sections],
+  )
 
   return (
     <>
@@ -125,10 +116,13 @@ export function HomeClient({ sections }: HomeClientProps) {
         </div>
       </footer>
 
-      {/* Main scrollable content — no snap, Lenis drives scroll */}
+      {/* Section nav — dot indicators + chevrons */}
+      <SectionNav sectionIds={sectionIds} visible={introComplete} />
+
+      {/* Main scrollable content — Lenis smooth scroll + mandatory snap */}
       <main className="main-content relative z-[51]">
         {/* Hero Section */}
-        <section className="h-screen flex flex-col items-center justify-center px-6 pb-24 relative">
+        <section id="hero" data-snap-section className="h-screen flex flex-col items-center justify-center px-6 pb-24 relative">
           {/* Cursor gradient overlay */}
           <div
             className="absolute inset-0 pointer-events-none"
@@ -173,60 +167,10 @@ export function HomeClient({ sections }: HomeClientProps) {
               )}
             </AnimatePresence>
           </div>
-
-          <AnimatePresence>
-            {introComplete && (
-              <motion.button
-                onClick={scrollToContent}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer z-[2]"
-                aria-label="Scroll to content"
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 8, ease: [0.25, 0.1, 0.25, 1], delay: 2.5 }}
-              >
-                <svg
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </motion.button>
-            )}
-          </AnimatePresence>
         </section>
 
         {/* Section content — orchestrated scroll-driven sections */}
         <div id="content">
-          {/* Scroll to Top Chevron */}
-          <div className="relative">
-            <motion.button
-              onClick={scrollToHero}
-              className="absolute top-4 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer z-10"
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Scroll to top"
-            >
-              <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="18 15 12 9 6 15" />
-              </svg>
-            </motion.button>
-          </div>
-
           <SectionOrchestrator sections={sections} />
         </div>
 

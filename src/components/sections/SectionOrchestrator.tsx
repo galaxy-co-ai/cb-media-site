@@ -26,10 +26,14 @@ export function SectionOrchestrator({ sections }: SectionOrchestratorProps) {
       {sections.map((section) => {
         const Component = sectionMap[section.slug] || GenericSection
         return (
-          <Component
+          <div
             key={section._id}
-            section={section}
-          />
+            id={section.slug}
+            data-snap-section
+            className="h-screen flex flex-col justify-center overflow-hidden"
+          >
+            <Component section={section} />
+          </div>
         )
       })}
     </>
