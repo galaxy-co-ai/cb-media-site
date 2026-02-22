@@ -1,6 +1,6 @@
 'use client'
 
-import type { Section } from '@/sanity/lib/types'
+import type { Section, SiteSettings } from '@/sanity/lib/types'
 import { WhatWeDo } from './WhatWeDo'
 import { WhoWeServe } from './WhoWeServe'
 import { HowWeThink } from './HowWeThink'
@@ -8,7 +8,7 @@ import { ResultsSection } from './ResultsSection'
 import { ContactSection } from './ContactSection'
 import { GenericSection } from './GenericSection'
 
-const sectionMap: Record<string, React.ComponentType<{ section: Section }>> = {
+const sectionMap: Record<string, React.ComponentType<{ section: Section; siteSettings?: SiteSettings }>> = {
   'what-we-do': WhatWeDo,
   'who-we-serve': WhoWeServe,
   'how-we-think': HowWeThink,
@@ -18,9 +18,10 @@ const sectionMap: Record<string, React.ComponentType<{ section: Section }>> = {
 
 interface SectionOrchestratorProps {
   sections: Section[]
+  siteSettings: SiteSettings
 }
 
-export function SectionOrchestrator({ sections }: SectionOrchestratorProps) {
+export function SectionOrchestrator({ sections, siteSettings }: SectionOrchestratorProps) {
   return (
     <>
       {sections.map((section) => {
@@ -31,7 +32,7 @@ export function SectionOrchestrator({ sections }: SectionOrchestratorProps) {
             id={section.slug}
             className="min-h-screen flex flex-col justify-center"
           >
-            <Component section={section} />
+            <Component section={section} siteSettings={siteSettings} />
           </div>
         )
       })}

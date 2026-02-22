@@ -1,15 +1,15 @@
 import { createClient, type QueryParams } from 'next-sanity'
 import { apiVersion, dataset, projectId, isSanityConfigured } from '../env'
 
-// Only create client if Sanity is configured
-const client = isSanityConfigured
-  ? createClient({
-      projectId,
-      dataset,
-      apiVersion,
-      useCdn: true,
-    })
-  : null
+export const client = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: true,
+  stega: {
+    studioUrl: '/studio',
+  },
+})
 
 export async function sanityFetch<T>({
   query,
@@ -20,7 +20,7 @@ export async function sanityFetch<T>({
   params?: QueryParams
   tags?: string[]
 }): Promise<T> {
-  if (!client) {
+  if (!isSanityConfigured) {
     throw new Error('Sanity client not configured')
   }
 

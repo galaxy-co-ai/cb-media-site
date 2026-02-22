@@ -4,7 +4,7 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { SectionOrchestrator } from '@/components/sections/SectionOrchestrator'
-import type { Section } from '@/sanity/lib/types'
+import type { Section, SiteSettings } from '@/sanity/lib/types'
 
 const CinematicIntro = dynamic(
   () => import('@/components/intro/CinematicIntro'),
@@ -13,9 +13,10 @@ const CinematicIntro = dynamic(
 
 interface HomeClientProps {
   sections: Section[]
+  siteSettings: SiteSettings
 }
 
-export function HomeClient({ sections }: HomeClientProps) {
+export function HomeClient({ sections, siteSettings }: HomeClientProps) {
   const heroRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLElement>(null)
   const prefersReducedMotion = useReducedMotion()
@@ -112,7 +113,7 @@ export function HomeClient({ sections }: HomeClientProps) {
         className="footer-reveal px-6 md:px-10 lg:px-16 py-6"
       >
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <span className="font-display text-xl tracking-wider footer-logo">CB MEDIA</span>
+          <span className="font-display text-xl tracking-wider footer-logo">{siteSettings.heroHeadline ?? 'CB MEDIA'}</span>
           <span className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} CB.Media. All rights reserved.
           </span>
@@ -152,7 +153,7 @@ export function HomeClient({ sections }: HomeClientProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 8, ease: [0.25, 0.1, 0.25, 1], delay: 0.5 }}
                   >
-                    CB MEDIA
+                    {siteSettings.heroHeadline ?? 'CB MEDIA'}
                   </motion.h1>
 
                   <motion.p
@@ -161,7 +162,7 @@ export function HomeClient({ sections }: HomeClientProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 8, ease: [0.25, 0.1, 0.25, 1], delay: 2.5 }}
                   >
-                    TURNING VISIBILITY INTO VALUE
+                    {siteSettings.heroTagline?.toUpperCase() ?? 'TURNING VISIBILITY INTO VALUE'}
                   </motion.p>
                 </motion.div>
               )}
@@ -171,7 +172,7 @@ export function HomeClient({ sections }: HomeClientProps) {
 
         {/* Section content — orchestrated scroll-driven sections */}
         <div id="content">
-          <SectionOrchestrator sections={sections} />
+          <SectionOrchestrator sections={sections} siteSettings={siteSettings} />
         </div>
 
       </main>

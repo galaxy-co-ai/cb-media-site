@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk, Montserrat } from 'next/font/google'
+import { draftMode } from 'next/headers'
+import { VisualEditing } from 'next-sanity/visual-editing'
 
 import './globals.css'
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider'
@@ -34,15 +36,18 @@ export const metadata: Metadata = {
   ],
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const draft = await draftMode()
+
   return (
     <html lang="en">
       <body className={`${inter.variable} ${spaceGrotesk.variable} ${montserrat.variable} font-sans`}>
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        {draft.isEnabled && <VisualEditing />}
       </body>
     </html>
   )

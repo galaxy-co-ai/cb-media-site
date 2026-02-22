@@ -1,7 +1,16 @@
-import type { Section } from '@/sanity/lib/types'
+import type { Section, SiteSettings } from '@/sanity/lib/types'
 
-// Fallback sections when Sanity is not configured
-// These use a simplified structure that matches the Sanity schema
+export const fallbackSiteSettings: SiteSettings = {
+  heroHeadline: 'CB MEDIA',
+  heroTagline: 'TURNING VISIBILITY INTO VALUE',
+  heroSubtext:
+    'Architects of culture, community, and impact. Engineering brands for long-term durability, not just short-term spikes.',
+  contactEmail: 'info@cb.media',
+  contactPhone: '+1 (000) 000-0000',
+  ctaText: 'GET IN TOUCH',
+  ctaLink: 'mailto:info@cb.media',
+}
+
 export const fallbackSections: Section[] = [
   {
     _id: 'what-we-do',

@@ -5,85 +5,95 @@ export default defineType({
   title: 'Site Settings',
   type: 'document',
   groups: [
-    { name: 'hero', title: '🦸 Hero Section', default: true },
-    { name: 'contact', title: '📞 Contact Info' },
-    { name: 'cta', title: '🎯 Call-to-Action' },
+    { name: 'hero', title: 'Hero Banner', default: true },
+    { name: 'contact', title: 'Contact Info' },
+    { name: 'cta', title: 'Main Button' },
   ],
   fields: [
-    // Hero Section Fields
     defineField({
       name: 'heroHeadline',
       title: 'Main Headline',
       type: 'string',
       group: 'hero',
-      description: 'The big text at the very top of your site',
+      description:
+        'The giant text visitors see first when they land on your site. This is your brand name — usually "CB MEDIA".',
       placeholder: 'CB MEDIA',
       initialValue: 'CB MEDIA',
-      validation: (Rule) => Rule.required().max(50),
+      validation: (Rule) =>
+        Rule.required().max(50).warning('Keep it short and punchy — this is displayed very large'),
     }),
     defineField({
       name: 'heroTagline',
       title: 'Tagline',
       type: 'string',
       group: 'hero',
-      description: 'The secondary headline right below the main one',
-      placeholder: 'Turn Visibility Into Value',
-      initialValue: 'Turn Visibility Into Value',
+      description:
+        'The one-liner right below your headline. This is your brand promise in a few words.',
+      placeholder: 'Turning Visibility Into Value',
+      initialValue: 'Turning Visibility Into Value',
+      validation: (Rule) => Rule.max(80),
     }),
     defineField({
       name: 'heroSubtext',
-      title: 'Description',
+      title: 'Short Description',
       type: 'text',
       group: 'hero',
       rows: 2,
-      description: 'A brief description of what you do (1-2 sentences)',
+      description:
+        'One or two sentences about what CB.Media does. This appears below the tagline on the homepage.',
       placeholder: 'Architects of culture, community, and impact...',
-      initialValue: 'Architects of culture, community, and impact. Engineering brands for long-term durability, not just short-term spikes.',
+      initialValue:
+        'Architects of culture, community, and impact. Engineering brands for long-term durability, not just short-term spikes.',
+      validation: (Rule) => Rule.max(200),
     }),
 
-    // Contact Info Fields
     defineField({
       name: 'contactEmail',
       title: 'Email Address',
       type: 'string',
       group: 'contact',
-      description: 'Where clients can reach you',
-      placeholder: 'hello@cbmedia.com',
-      validation: (Rule) => Rule.email().error('Please enter a valid email address'),
+      description:
+        'This appears in the Contact section at the bottom of your site and is used for the "Get In Touch" button.',
+      placeholder: 'info@cb.media',
+      validation: (Rule) =>
+        Rule.email().error('This doesn\'t look like a valid email — check for typos'),
     }),
     defineField({
       name: 'contactPhone',
       title: 'Phone Number',
       type: 'string',
       group: 'contact',
-      description: 'Your business phone (optional)',
+      description:
+        'Displayed next to your email in the contact section. Leave blank to hide the phone number.',
       placeholder: '+1 (555) 123-4567',
     }),
 
-    // CTA Fields
     defineField({
       name: 'ctaText',
       title: 'Button Text',
       type: 'string',
       group: 'cta',
-      description: 'Text that appears on your main call-to-action button',
-      placeholder: "Let's Talk",
-      initialValue: "Let's Talk",
+      description:
+        'The text on the big call-to-action button in your Contact section (e.g. "GET IN TOUCH", "BOOK A CALL").',
+      placeholder: 'GET IN TOUCH',
+      initialValue: 'GET IN TOUCH',
+      validation: (Rule) => Rule.max(25).warning('Button text should be 2-4 words'),
     }),
     defineField({
       name: 'ctaLink',
-      title: 'Button Link',
+      title: 'Button Destination',
       type: 'string',
       group: 'cta',
-      description: 'Where should the button go? (email, Calendly, contact page, etc.)',
-      placeholder: 'mailto:hello@cbmedia.com',
+      description:
+        'Where should the button take visitors? Examples: "mailto:info@cb.media" for email, or a Calendly link for booking calls.',
+      placeholder: 'mailto:info@cb.media',
     }),
   ],
   preview: {
     prepare() {
       return {
-        title: '⚙️ Site Settings',
-        subtitle: 'Hero, Contact & CTA configuration',
+        title: 'Site Settings',
+        subtitle: 'Hero, contact info, and call-to-action button',
       }
     },
   },
