@@ -249,10 +249,10 @@ export const renderFragmentShader = /* glsl */ `
 
     vec3 finalColor = baseColor * brightness * depthFade * 0.25;
 
-    // Per-particle twinkle — unique phase & speed from reference UV
+    // Per-particle twinkle — slow, subtle breathing
     float twinklePhase = fract(sin(dot(vRef, vec2(12.9898, 78.233))) * 43758.5453);
-    float twinkleSpeed = 0.4 + twinklePhase * 1.2;  // 0.4–1.6 Hz range
-    float twinkle = 0.65 + 0.35 * sin(uTime * twinkleSpeed + twinklePhase * 6.2831);
+    float twinkleSpeed = 0.08 + twinklePhase * 0.15;  // 0.08–0.23 rad/s (~30–80s per cycle)
+    float twinkle = 0.85 + 0.15 * sin(uTime * twinkleSpeed + twinklePhase * 6.2831);
 
     gl_FragColor = vec4(finalColor, alpha * uOpacity * twinkle);
   }

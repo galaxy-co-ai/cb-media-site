@@ -327,10 +327,10 @@ export default function EventHorizonScene({
       { pointSize: 1.8, duration: 4, ease: 'power1.out' },
       15,
     );
-    // Increase brownian for gentle ambient drift
+    // Gentle ambient drift — low enough to avoid visible jitter
     tl.to(
       animState,
-      { brownian: 0.04, duration: 4, ease: 'power1.out' },
+      { brownian: 0.012, duration: 4, ease: 'power1.out' },
       16,
     );
 
