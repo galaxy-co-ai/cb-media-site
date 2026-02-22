@@ -4,7 +4,6 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { SectionOrchestrator } from '@/components/sections/SectionOrchestrator'
-import { InterstellarBackground } from '@/components/InterstellarBackground'
 import type { Section, SiteSettings } from '@/sanity/lib/types'
 
 const CinematicIntro = dynamic(
@@ -91,22 +90,8 @@ export function HomeClient({ sections, siteSettings }: HomeClientProps) {
 
   return (
     <>
-      {/* Full-page starfield — only after intro so it doesn't compete with EventHorizon */}
-      {introComplete && <InterstellarBackground />}
-
-      {/* Event Horizon — cinematic intro, stays as ambient background */}
+      {/* Event Horizon — cinematic intro */}
       <CinematicIntro onComplete={handleIntroComplete} />
-
-      {/* Film grain overlay */}
-      <svg className="film-grain" aria-hidden="true">
-        <filter id="grain">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#grain)" />
-      </svg>
-
-      {/* Vignette overlay */}
-      <div className="vignette" aria-hidden="true" />
 
       {/* Footer — fixed behind main, scroll-driven reveal */}
       <motion.footer
