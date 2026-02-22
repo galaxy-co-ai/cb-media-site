@@ -4,9 +4,9 @@ import { useEffect, useRef, useCallback } from 'react'
 
 // ── Star Field Configuration ──────────────────────────────────
 const STAR_LAYERS = [
-  { count: 300, speedFactor: 0.05, sizeRange: [0.3, 1.0], opacityRange: [0.2, 0.5] },   // distant
-  { count: 150, speedFactor: 0.12, sizeRange: [0.6, 1.5], opacityRange: [0.3, 0.6] },   // mid
-  { count: 60,  speedFactor: 0.25, sizeRange: [1.0, 2.5], opacityRange: [0.5, 0.9] },   // close
+  { count: 80,  speedFactor: 0.05, sizeRange: [0.6, 1.2], opacityRange: [0.2, 0.5] },   // distant
+  { count: 60,  speedFactor: 0.12, sizeRange: [0.8, 1.6], opacityRange: [0.3, 0.6] },   // mid
+  { count: 55,  speedFactor: 0.25, sizeRange: [1.0, 2.5], opacityRange: [0.5, 0.9] },   // close
 ]
 
 const NEBULA_CLOUDS = [
