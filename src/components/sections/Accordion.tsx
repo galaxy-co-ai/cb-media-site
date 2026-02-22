@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import { motion, AnimatePresence, useInView } from 'framer-motion'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion'
 import type { Section } from '@/sanity/lib/types'
 import { PortableTextRenderer } from '@/components/content/PortableTextRenderer'
 import { StatsGrid } from '@/components/content/StatsGrid'
@@ -11,7 +11,6 @@ interface AccordionProps {
   sections: Section[]
 }
 
-// ── P8: Staggered content container variants ──────────────────
 const contentStagger = {
   hidden: { opacity: 0 },
   visible: {
@@ -25,14 +24,17 @@ const contentChild = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] as const },
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
   },
 }
 
 export function Accordion({ sections }: AccordionProps) {
   const [openSection, setOpenSection] = useState<string | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map())
   const scrollPositionRef = useRef<number>(0)
+  const rafRef = useRef(0)
+  const prefersReduced = useReducedMotion()
 
   const getScrollContainer = () => document.querySelector('main')
 
@@ -40,7 +42,6 @@ export function Accordion({ sections }: AccordionProps) {
     const scrollContainer = getScrollContainer()
 
     if (openSection === id) {
-      // Closing - restore scroll position
       setOpenSection(null)
       if (scrollContainer) {
         setTimeout(() => {
@@ -51,13 +52,11 @@ export function Accordion({ sections }: AccordionProps) {
         }, 100)
       }
     } else {
-      // Opening - save position and scroll to item
       if (scrollContainer) {
         scrollPositionRef.current = scrollContainer.scrollTop
       }
       setOpenSection(id)
 
-      // Scroll to the item after animation starts
       setTimeout(() => {
         const item = itemRefs.current.get(id)
         if (item) {
@@ -67,8 +66,43 @@ export function Accordion({ sections }: AccordionProps) {
     }
   }
 
+  const handleProximity = useCallback((e: MouseEvent) => {
+    cancelAnimationFrame(rafRef.current)
+    rafRef.current = requestAnimationFrame(() => {
+      itemRefs.current.forEach((el) => {
+        const rect = el.getBoundingClientRect()
+        const itemCenterY = rect.top + rect.height / 2
+        const dist = Math.abs(e.clientY - itemCenterY)
+        const proximity = Math.max(0, 1 - dist / 150)
+        el.style.setProperty('--proximity', String(proximity))
+      })
+    })
+  }, [])
+
+  const handleProximityLeave = useCallback(() => {
+    cancelAnimationFrame(rafRef.current)
+    itemRefs.current.forEach((el) => {
+      el.style.setProperty('--proximity', '0')
+    })
+  }, [])
+
+  useEffect(() => {
+    if (prefersReduced) return
+    if (!window.matchMedia('(hover: hover)').matches) return
+    const container = containerRef.current
+    if (!container) return
+
+    container.addEventListener('mousemove', handleProximity)
+    container.addEventListener('mouseleave', handleProximityLeave)
+    return () => {
+      container.removeEventListener('mousemove', handleProximity)
+      container.removeEventListener('mouseleave', handleProximityLeave)
+      cancelAnimationFrame(rafRef.current)
+    }
+  }, [handleProximity, handleProximityLeave, prefersReduced])
+
   return (
-    <div className="w-full">
+    <div ref={containerRef} className="w-full">
       {sections.map((section, index) => (
         <AccordionItem
           key={section._id}
@@ -108,24 +142,22 @@ const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(
           if (typeof ref === 'function') ref(el)
           else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el
         }}
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{
           duration: 0.5,
-          delay: index * 0.05,
-          ease: [0.33, 1, 0.68, 1] as const,
+          delay: index * 0.06,
+          ease: [0.22, 1, 0.36, 1] as const,
         }}
-        className={`border-b border-border transition-all duration-200 accordion-item ${
-          isOpen
-            ? 'border-l-2 border-l-white pl-4'
-            : 'border-l-2 border-l-transparent pl-4'
+        className={`border-b border-border border-l-2 pl-4 accordion-item ${
+          isOpen ? 'accordion-item-open' : ''
         }`}
       >
         <button
           onClick={onToggle}
           className="w-full py-6 md:py-8 flex items-center justify-between text-left group"
         >
-          <h2 className="font-display text-4xl md:text-6xl lg:text-7xl tracking-wide text-foreground group-hover:text-muted-foreground transition-colors accordion-title">
+          <h2 className="font-display text-[clamp(2.25rem,6vw,4.5rem)] tracking-wide text-foreground group-hover:text-muted-foreground transition-colors accordion-title">
             {section.title}
           </h2>
           <motion.span
@@ -221,9 +253,14 @@ function ContactBlock() {
           </a>
         </div>
       </div>
-      <button className="mt-4 px-8 py-3 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-display text-xl tracking-wide">
+      <motion.button
+        whileHover={{ y: -1 }}
+        whileTap={{ scale: 0.97 }}
+        transition={{ duration: 0.15 }}
+        className="mt-4 px-8 py-3 border border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors font-display text-xl tracking-wide cursor-pointer"
+      >
         LET&apos;S TALK
-      </button>
+      </motion.button>
     </div>
   )
 }

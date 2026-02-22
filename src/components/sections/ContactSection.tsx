@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { MagneticButton } from '@/components/ui/MagneticButton'
@@ -48,26 +48,28 @@ export function ContactSection({ section }: ContactSectionProps) {
         LET&apos;S TALK
       </h2>
 
-      {/* CTA Button */}
       <div className="mt-10 hidden md:block">
         <MagneticButton>
-          <a
+          <motion.a
             href="mailto:info@cb.media"
-            className="inline-block px-10 py-4 border border-foreground text-foreground font-display text-lg tracking-wider hover:bg-foreground hover:text-background transition-colors duration-200"
+            whileTap={{ scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+            className="inline-block px-10 py-4 border border-foreground text-foreground font-display text-lg tracking-wider transition-all duration-200 hover:bg-foreground hover:text-background hover:shadow-[0_0_30px_rgba(255,255,255,0.08)]"
           >
             GET IN TOUCH
-          </a>
+          </motion.a>
         </MagneticButton>
       </div>
 
-      {/* Mobile CTA (no magnetic) */}
       <div className="mt-8 md:hidden">
-        <a
+        <motion.a
           href="mailto:info@cb.media"
-          className="inline-block px-8 py-3 border border-foreground text-foreground font-display text-base tracking-wider hover:bg-foreground hover:text-background transition-colors duration-200"
+          whileTap={{ scale: 0.97 }}
+          transition={{ duration: 0.15 }}
+          className="inline-block px-8 py-3 border border-foreground text-foreground font-display text-base tracking-wider transition-all duration-200 hover:bg-foreground hover:text-background"
         >
           GET IN TOUCH
-        </a>
+        </motion.a>
       </div>
 
       {/* Contact details */}

@@ -42,20 +42,25 @@ export function ServiceGrid({ items }: ServiceGridProps) {
               {item.description}
             </p>
 
-            {/* CTA Button — P5: accent hover */}
             {item.ctaLink ? (
-              <a
+              <motion.a
                 href={item.ctaLink}
-                className="inline-block px-5 py-2.5 border border-foreground/60 text-foreground text-sm font-medium tracking-wider uppercase transition-all duration-150 hover:bg-[var(--accent-glow)] hover:border-[var(--accent-glow)] hover:text-background"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.15 }}
+                className="inline-block px-5 py-2.5 border border-foreground/60 text-foreground text-sm font-medium tracking-wider uppercase transition-colors duration-150 hover:bg-[var(--accent-glow)] hover:border-[var(--accent-glow)] hover:text-background"
               >
                 {item.ctaText}
-              </a>
+              </motion.a>
             ) : (
-              <button
-                className="px-5 py-2.5 border border-foreground/60 text-foreground text-sm font-medium tracking-wider uppercase transition-all duration-150 cursor-pointer hover:bg-[var(--accent-glow)] hover:border-[var(--accent-glow)] hover:text-background"
+              <motion.button
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.15 }}
+                className="px-5 py-2.5 border border-foreground/60 text-foreground text-sm font-medium tracking-wider uppercase transition-colors duration-150 cursor-pointer hover:bg-[var(--accent-glow)] hover:border-[var(--accent-glow)] hover:text-background"
               >
                 {item.ctaText}
-              </button>
+              </motion.button>
             )}
           </div>
         </motion.div>

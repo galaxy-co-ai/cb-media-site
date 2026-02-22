@@ -57,6 +57,7 @@ export function InterstellarBackground() {
     smoothMouseY: -1000,
     reducedMotion: false,
     initialized: false,
+    paused: false,
   })
 
   const initStars = useCallback((width: number, height: number): Star[] => {
@@ -103,10 +104,15 @@ export function InterstellarBackground() {
     const canvas = canvasRef.current
     if (!canvas) return
 
+    const state = stateRef.current
+
+    if (state.paused) {
+      animationRef.current = requestAnimationFrame(render)
+      return
+    }
+
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-
-    const state = stateRef.current
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     const w = canvas.width / dpr
     const h = canvas.height / dpr
@@ -310,6 +316,24 @@ export function InterstellarBackground() {
     }
     window.addEventListener('mousemove', handleMouseMove)
 
+    // Pause when tab is hidden
+    const handleVisibility = () => {
+      stateRef.current.paused = document.hidden
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    // Pause when canvas is scrolled off-screen
+    let observer: IntersectionObserver | null = null
+    if (canvasRef.current) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          stateRef.current.paused = !entry.isIntersecting || document.hidden
+        },
+        { threshold: 0 },
+      )
+      observer.observe(canvasRef.current)
+    }
+
     handleResize()
     window.addEventListener('resize', handleResize)
     animationRef.current = requestAnimationFrame(render)
@@ -319,7 +343,9 @@ export function InterstellarBackground() {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('resize', handleResize)
+      document.removeEventListener('visibilitychange', handleVisibility)
       prefersReducedMotion.removeEventListener('change', handleMotionChange)
+      observer?.disconnect()
       if (animationRef.current) cancelAnimationFrame(animationRef.current)
     }
   }, [handleResize, render])

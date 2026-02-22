@@ -38,16 +38,16 @@ export function ResultsSection({ section }: ResultsSectionProps) {
         {stats.map((stat, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.4 + i * 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+            initial={{ opacity: 0, y: 40, filter: 'blur(6px)' }}
+            animate={isInView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+            transition={{ duration: 0.8, delay: 0.4 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
             className={`flex flex-col ${
               i % 2 === 0 ? 'md:items-start' : 'md:items-end'
             }`}
           >
             <DigitRoll
               value={stat.value}
-              className="text-5xl md:text-7xl lg:text-8xl"
+              className="text-[clamp(3rem,8vw,6rem)]"
             />
             <p className="mt-2 font-display text-base md:text-lg tracking-wider text-muted-foreground uppercase">
               {stat.label}

@@ -105,9 +105,9 @@ function PhilosophyCard({
 }) {
   return (
     <motion.div
-      initial={prefersReduced ? undefined : { opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: 0.2 + index * 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+      initial={prefersReduced ? undefined : { opacity: 0, y: 30, filter: 'blur(4px)' }}
+      animate={isInView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.7, delay: 0.2 + index * 0.15, ease: [0.22, 1, 0.36, 1] }}
       className="philosophy-card bg-[oklch(0.08_0_0)] border border-border rounded-lg p-6 md:p-8 md:min-h-[220px] flex flex-col justify-center"
     >
       <div className="flex items-baseline gap-4 mb-4">

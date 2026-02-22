@@ -46,13 +46,14 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* Hide scrollbar but reserve gutter space to prevent layout shift */
   html {
-    overflow-y: scroll; /* Always show scrollbar gutter */
-    scrollbar-gutter: stable; /* Reserve space even when not scrolling */
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   /* Hide the actual scrollbar visually */
@@ -68,6 +69,7 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
   }
 
   /* Smooth scrolling with Lenis */
@@ -136,7 +138,7 @@
   background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.3) 100%);
 }
 
-/* ── Footer reveal: fixed behind main, slides into view ────── */
+/* ── Footer reveal: fixed behind main, scroll-driven fade ──── */
 .footer-reveal {
   position: fixed;
   bottom: 0;
@@ -146,6 +148,16 @@
   background: var(--background);
 }
 
+.footer-reveal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
 .main-content {
   margin-bottom: 60px; /* Height of footer — exposes it at scroll end */
 }
@@ -153,6 +165,17 @@
 /* Solid background only below the hero so CinematicIntro shows through */
 #content {
   background: var(--background);
+}
+
+/* ── Accordion cursor-proximity glow ──────────────────────── */
+.accordion-item {
+  --proximity: 0;
+  border-left-color: rgba(255, 255, 255, calc(var(--proximity) * 0.3));
+  transition: border-left-color 0.15s ease;
+}
+
+.accordion-item-open {
+  border-left-color: white;
 }
 
 /* ── Footer logo hover accent ──────────────────────────────── */

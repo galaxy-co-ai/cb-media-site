@@ -1,11 +1,9 @@
 'use client'
 
-import { useRef, useEffect, useState, useCallback, useMemo } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { SectionOrchestrator } from '@/components/sections/SectionOrchestrator'
-import { SectionNav } from '@/components/ui/SectionNav'
-import { useSmoothScroll } from '@/providers/SmoothScrollProvider'
 import type { Section } from '@/sanity/lib/types'
 
 const CinematicIntro = dynamic(
@@ -19,21 +17,26 @@ interface HomeClientProps {
 
 export function HomeClient({ sections }: HomeClientProps) {
   const heroRef = useRef<HTMLDivElement>(null)
+  const mainRef = useRef<HTMLElement>(null)
   const prefersReducedMotion = useReducedMotion()
   const [introComplete, setIntroComplete] = useState(false)
-  const { lenis } = useSmoothScroll()
 
   const handleIntroComplete = useCallback(() => {
     setIntroComplete(true)
   }, [])
 
-  // ── Scroll-based hero transition (window scroll, not container) ──
+  // ── Scroll-based hero transition ──
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ['start start', 'end start'],
   })
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.97])
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.8])
+
+  // ── Footer scroll-driven reveal ──
+  const { scrollYProgress: pageProgress } = useScroll()
+  const footerOpacity = useTransform(pageProgress, [0.85, 0.98], [0, 1])
+  const footerY = useTransform(pageProgress, [0.85, 0.98], [20, 0])
   // ── Cursor-aware hero gradient ──
   const mouseX = useMotionValue(0.5)
   const mouseY = useMotionValue(0.5)
@@ -69,12 +72,12 @@ export function HomeClient({ sections }: HomeClientProps) {
 
     const unsubX = smoothX.on('change', () => {
       setGradientStyle({
-        background: `radial-gradient(600px circle at ${smoothX.get() * 100}% ${smoothY.get() * 100}%, rgba(80, 120, 200, 0.04), transparent 70%)`,
+        background: `radial-gradient(600px circle at ${smoothX.get() * 100}% ${smoothY.get() * 100}%, rgba(80, 120, 200, 0.07), transparent 70%)`,
       })
     })
     const unsubY = smoothY.on('change', () => {
       setGradientStyle({
-        background: `radial-gradient(600px circle at ${smoothX.get() * 100}% ${smoothY.get() * 100}%, rgba(80, 120, 200, 0.04), transparent 70%)`,
+        background: `radial-gradient(600px circle at ${smoothX.get() * 100}% ${smoothY.get() * 100}%, rgba(80, 120, 200, 0.07), transparent 70%)`,
       })
     })
 
@@ -83,12 +86,6 @@ export function HomeClient({ sections }: HomeClientProps) {
       unsubY()
     }
   }, [smoothX, smoothY, prefersReducedMotion])
-
-  // Build ordered section IDs for nav: hero + content sections
-  const sectionIds = useMemo(
-    () => ['hero', ...sections.map((s) => s.slug)],
-    [sections],
-  )
 
   return (
     <>
@@ -106,23 +103,26 @@ export function HomeClient({ sections }: HomeClientProps) {
       {/* Vignette overlay */}
       <div className="vignette" aria-hidden="true" />
 
-      {/* Footer — fixed behind main, revealed as main scrolls away */}
-      <footer className="footer-reveal border-t border-border px-6 md:px-10 lg:px-16 py-6">
+      {/* Footer — fixed behind main, scroll-driven reveal */}
+      <motion.footer
+        style={{
+          opacity: prefersReducedMotion ? 1 : footerOpacity,
+          y: prefersReducedMotion ? 0 : footerY,
+        }}
+        className="footer-reveal px-6 md:px-10 lg:px-16 py-6"
+      >
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="font-display text-xl tracking-wider footer-logo">CB MEDIA</span>
           <span className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} CB.Media. All rights reserved.
           </span>
         </div>
-      </footer>
+      </motion.footer>
 
-      {/* Section nav — dot indicators + chevrons */}
-      <SectionNav sectionIds={sectionIds} visible={introComplete} />
-
-      {/* Main scrollable content — Lenis smooth scroll + mandatory snap */}
+      {/* Main scrollable content — Lenis smooth scroll */}
       <main className="main-content relative z-[51]">
         {/* Hero Section */}
-        <section id="hero" data-snap-section className="h-screen flex flex-col items-center justify-center px-6 pb-16 relative">
+        <section id="hero" className="h-screen flex flex-col items-center justify-center px-6 pb-16 relative">
           {/* Cursor gradient overlay */}
           <div
             className="absolute inset-0 pointer-events-none"

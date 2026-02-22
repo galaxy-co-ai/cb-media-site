@@ -43,25 +43,33 @@ export function WhatWeDo({ section }: WhatWeDoProps) {
               key={item._key}
               onMouseEnter={() => setActiveIndex(i)}
               onFocus={() => setActiveIndex(i)}
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.4 + i * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.4 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
               className={`w-full text-left py-4 border-b border-border group flex items-baseline gap-4 transition-colors duration-200 ${
                 activeIndex === i
                   ? 'border-l-2 border-l-[var(--accent-glow)] pl-4'
                   : 'border-l-2 border-l-transparent pl-4'
               }`}
             >
-              <span className="font-display text-sm text-muted-foreground tabular-nums">
+              <motion.span
+                initial={{ opacity: 0, x: -8 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.4, delay: 0.5 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                className="font-display text-sm text-muted-foreground tabular-nums"
+              >
                 {String(i + 1).padStart(2, '0')}
-              </span>
-              <span
+              </motion.span>
+              <motion.span
+                initial={{ opacity: 0, y: 16 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 0.45 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 className={`font-display text-xl lg:text-2xl tracking-wide transition-colors duration-200 ${
                   activeIndex === i ? 'text-foreground' : 'text-muted-foreground'
                 }`}
               >
                 {item.title}
-              </span>
+              </motion.span>
             </motion.button>
           ))}
         </div>

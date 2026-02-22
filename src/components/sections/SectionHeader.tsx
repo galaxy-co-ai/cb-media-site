@@ -66,7 +66,7 @@ export function SectionHeader({ title, className = '' }: SectionHeaderProps) {
   return (
     <h2
       ref={containerRef}
-      className={`font-display text-3xl md:text-5xl lg:text-6xl tracking-wide text-foreground ${className}`}
+      className={`font-display text-[clamp(1.875rem,5vw,3.75rem)] tracking-wide text-foreground ${className}`}
     >
       {title}
     </h2>

@@ -62,7 +62,7 @@ function AnimatedStat({ stat, delay }: { stat: Stat; delay: number }) {
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay, ease: [0.33, 1, 0.68, 1] as const }}
     >
-      <div className="font-display text-4xl md:text-5xl text-foreground tabular-nums">
+      <div className="font-display text-[clamp(2.25rem,4vw,3rem)] text-foreground tabular-nums">
         {numericValue !== null ? (
           <span ref={displayRef}>{`${prefix}0${suffix}`}</span>
         ) : (

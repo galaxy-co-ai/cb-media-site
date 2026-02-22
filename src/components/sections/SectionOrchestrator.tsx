@@ -29,7 +29,6 @@ export function SectionOrchestrator({ sections }: SectionOrchestratorProps) {
           <div
             key={section._id}
             id={section.slug}
-            data-snap-section
             className="min-h-screen flex flex-col justify-center"
           >
             <Component section={section} />
