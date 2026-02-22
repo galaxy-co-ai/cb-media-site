@@ -18,6 +18,7 @@ export interface AnimState {
   repulsion: number;
   drag: number;
   spiral: number;
+  centerDampen: number;
   // Rendering
   colorTemp: number;
   particleOpacity: number;
@@ -32,11 +33,12 @@ function createAnimState(): AnimState {
     gravity: 0,
     diskFlatten: 0,
     collapseForce: 0,
-    brownian: 0.02,
+    brownian: 0.015,
     maxSpeed: 0.1,
     repulsion: 0,
     drag: 0.998,
     spiral: 0,
+    centerDampen: 0,
     colorTemp: 4000,
     particleOpacity: 1.0,
     bloomIntensity: 0.3,
@@ -78,7 +80,7 @@ export default function EventHorizonScene({
     }
 
     // =====================================================================
-    // Phase 1: DRIFT (0–4s)
+    // Phase 1: DRIFT (0–2s)
     // Canvas fades in, particles drift gently
     // =====================================================================
     tl.fromTo(
@@ -89,149 +91,161 @@ export default function EventHorizonScene({
     );
 
     // =====================================================================
-    // Phase 2: PULL (4–7s)
-    // Gravity activates, drag bleeds energy, cyclonic spiral begins
+    // Phase 2: PULL (2–4s)
+    // Gravity activates, cyclonic spiral begins
     // =====================================================================
     tl.to(
       animState,
-      { gravity: 2.0, duration: 3, ease: 'power2.in' },
-      4,
+      { gravity: 2.0, duration: 2, ease: 'power2.in' },
+      2,
     );
     tl.to(
       animState,
-      { spiral: 4.0, duration: 3, ease: 'power2.in' },
-      4,
+      { spiral: 4.0, duration: 2, ease: 'power2.in' },
+      2,
     );
     tl.to(
       animState,
-      { drag: 0.99, duration: 2, ease: 'power1.in' },
-      4,
+      { drag: 0.995, duration: 1.5, ease: 'power1.in' },
+      2,
     );
     tl.to(
       animState,
-      { maxSpeed: 3.0, duration: 3, ease: 'power1.in' },
-      4,
+      { maxSpeed: 3.0, duration: 2, ease: 'power1.in' },
+      2,
     );
     tl.to(
       animState,
-      { bloomIntensity: 0.6, duration: 3, ease: 'power1.in' },
-      4,
+      { bloomIntensity: 0.6, duration: 2, ease: 'power1.in' },
+      2,
     );
 
     // =====================================================================
-    // Phase 3: STEADY DRAIN (7–21.5s)
-    // 14.5 seconds of constant gravity + constant drag = uniform drain.
-    // Inner particles reach center first, outer follow steadily.
-    // (+20% duration from 12s to give outer particles time to arrive)
+    // Phase 3: STEADY DRAIN (4–10s)
+    // 6 seconds — power4.in easing front-loads the drama so the last
+    // third accelerates hard instead of drifting.
     // =====================================================================
-    // Gravity + cyclonic spiral ramp — accelerating rate through the drain
     tl.to(
       animState,
-      { gravity: 3.5, duration: 14.5, ease: 'power2.in' },
-      7,
+      { gravity: 5.0, duration: 6, ease: 'power4.in' },
+      4,
     );
     tl.to(
       animState,
-      { spiral: 12.0, duration: 14.5, ease: 'power3.in' },
-      7,
+      { spiral: 12.0, duration: 6, ease: 'power4.in' },
+      4,
     );
     tl.to(
       animState,
-      { diskFlatten: 1.0, duration: 14.5, ease: 'power2.inOut' },
-      7,
+      { diskFlatten: 1.0, duration: 6, ease: 'power2.inOut' },
+      4,
     );
     tl.to(
       animState,
-      { colorTemp: 8000, duration: 14.5, ease: 'power1.in' },
-      7,
+      { colorTemp: 8000, duration: 6, ease: 'power2.in' },
+      4,
     );
     tl.to(
       animState,
-      { bloomIntensity: 1.2, duration: 14.5, ease: 'power1.in' },
-      7,
+      { bloomIntensity: 1.2, duration: 6, ease: 'power2.in' },
+      4,
     );
     tl.to(
       animState,
-      { caOffset: 0.001, duration: 14.5, ease: 'power1.in' },
-      7,
+      { caOffset: 0.001, duration: 6, ease: 'power1.in' },
+      4,
     );
     tl.to(
       animState,
-      { brownian: 0.005, duration: 7, ease: 'power1.in' },
+      { brownian: 0.005, duration: 3, ease: 'power1.in' },
+      4,
+    );
+    // Center dampen ramps in late DRAIN — kills orbital momentum so
+    // particles fall INTO the center instead of orbiting with a void.
+    tl.to(
+      animState,
+      { centerDampen: 3.0, duration: 3, ease: 'power2.in' },
       7,
     );
 
     // =====================================================================
-    // Phase 4: FINAL GATHER (21.5–23s)
-    // Gentle nudge for stragglers — NO violent collapse
+    // Phase 4: FINAL GATHER (10–11.5s)
+    // Aggressive collapse + center dampen peak — fill the void with a
+    // solid white-hot glow. No more hollow center.
     // =====================================================================
     tl.to(
       animState,
-      { collapseForce: 3, duration: 1.5, ease: 'power1.in' },
-      21.5,
+      { collapseForce: 5, duration: 1.5, ease: 'power2.in' },
+      10,
+    );
+    tl.to(
+      animState,
+      { centerDampen: 6.0, duration: 1.0, ease: 'power1.in' },
+      10,
     );
     tl.to(
       animState,
       { colorTemp: 15000, duration: 1.5, ease: 'power2.in' },
-      21.5,
+      10,
     );
     tl.to(
       animState,
       { diskFlatten: 2.0, duration: 1.0, ease: 'power1.in' },
-      22,
+      10.2,
     );
     tl.to(
       animState,
-      { bloomIntensity: 2.5, duration: 1.5, ease: 'power1.in' },
-      21.5,
+      { bloomIntensity: 3.0, duration: 1.5, ease: 'power2.in' },
+      10,
     );
 
     // =====================================================================
-    // Phase 5: FADE TO BLACK (23–25s)
-    // Concentrated ball glows, then gracefully dims into darkness
+    // Phase 5: FADE TO BLACK (11.5–12.5s)
+    // Bloom peaks white-hot, then everything dims to black
     // =====================================================================
     tl.to(
       animState,
-      { bloomIntensity: 3.5, duration: 0.4, ease: 'power2.in' },
-      23,
+      { bloomIntensity: 4.0, duration: 0.3, ease: 'power2.in' },
+      11.5,
     );
     tl.to(
       animState,
-      { particleOpacity: 0, duration: 1.2, ease: 'power2.in' },
-      23.3,
+      { particleOpacity: 0, duration: 0.7, ease: 'power2.in' },
+      11.7,
     );
     tl.to(
       animState,
-      { bloomIntensity: 0, duration: 1.0, ease: 'power2.in' },
-      23.5,
+      { bloomIntensity: 0, duration: 0.6, ease: 'power2.in' },
+      11.8,
     );
     tl.to(
       container,
-      { opacity: 0, duration: 0.8, ease: 'power2.in' },
-      23.8,
+      { opacity: 0, duration: 0.5, ease: 'power2.in' },
+      12.0,
     );
 
     // =====================================================================
-    // Phase 6: VOID (24.8–26s)
-    // ~1.2s pure black tension
+    // Phase 6: VOID (12.5–13s)
+    // ~0.5s pure black tension
     // =====================================================================
     // (Container already at opacity 0 — just wait)
 
     // =====================================================================
-    // Phase 7: BLOOM (26–28.5s)
+    // Phase 7: BLOOM (13–15s)
     // Particles expand outward with curl noise — organic galaxy scatter
     // =====================================================================
 
     // Fire onComplete early so hero text fades in during bloom
-    tl.call(onCompleteStable, undefined, 26);
+    tl.call(onCompleteStable, undefined, 13);
 
-    // Instant physics reset at t=26
+    // Instant physics reset at t=13
     tl.to(
       animState,
       {
         gravity: 0,
         diskFlatten: 0,
         collapseForce: 0,
+        centerDampen: 0,
         spiral: 0,
         brownian: 0.01,
         maxSpeed: 15.0,
@@ -242,60 +256,60 @@ export default function EventHorizonScene({
         duration: 0.01,
         ease: 'none',
       },
-      26,
+      13,
     );
 
     // Container fades in, repulsion pushes particles outward
     tl.to(
       container,
-      { opacity: 1, duration: 2.5, ease: 'power2.out' },
-      26,
+      { opacity: 1, duration: 2.0, ease: 'power2.out' },
+      13,
     );
     tl.to(
       animState,
-      { particleOpacity: 0.8, duration: 2.5, ease: 'power2.out' },
-      26,
+      { particleOpacity: 0.8, duration: 2.0, ease: 'power2.out' },
+      13,
     );
     tl.to(
       animState,
       { repulsion: 12.0, duration: 0.01, ease: 'none' },
-      26,
+      13,
     );
     tl.to(
       animState,
-      { bloomIntensity: 0.6, duration: 2.0, ease: 'power2.out' },
-      26,
+      { bloomIntensity: 0.6, duration: 1.5, ease: 'power2.out' },
+      13,
     );
-    // Begin tapering repulsion during bloom itself (not waiting for coast)
+    // Begin tapering repulsion during bloom itself
     tl.to(
       animState,
-      { repulsion: 3.0, duration: 2.5, ease: 'power1.out' },
-      26.5,
+      { repulsion: 3.0, duration: 2.0, ease: 'power1.out' },
+      13.5,
     );
 
     // =====================================================================
-    // Phase 8: COAST (29–34s)
-    // Gradual tail-off — everything decays slowly into ambient drift
+    // Phase 8: COAST (15–19.5s)
+    // Gradual tail-off — everything decays into ambient galaxy drift
     // =====================================================================
     tl.to(
       animState,
-      { repulsion: 0, duration: 5.0, ease: 'power1.out' },
-      29,
+      { repulsion: 0, duration: 4.5, ease: 'power1.out' },
+      15,
     );
     tl.to(
       animState,
-      { maxSpeed: 0.05, duration: 4.0, ease: 'power1.out' },
-      29,
+      { maxSpeed: 0.15, duration: 3.5, ease: 'power1.out' },
+      15,
     );
     tl.to(
       animState,
-      { particleOpacity: 0.3, duration: 5.0, ease: 'power1.out' },
-      29,
+      { particleOpacity: 0.7, duration: 4.5, ease: 'power1.out' },
+      15,
     );
     tl.to(
       animState,
-      { bloomIntensity: 0.2, duration: 5.0, ease: 'power1.out' },
-      29,
+      { bloomIntensity: 0.4, duration: 4.5, ease: 'power1.out' },
+      15,
     );
 
     // Start timeline after a brief init delay

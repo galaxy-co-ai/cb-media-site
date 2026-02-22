@@ -48,9 +48,15 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
     setSkipped(true);
 
     const tl = timelineRef.current;
-    // Fast-forward: jump to emergence phase
-    tl.progress(1);
-  }, [skipped]);
+    // Seek to BLOOM phase (13s) — NOT the end.
+    // tl.progress(1) only sets physics *parameters* to their final state,
+    // but particles haven't actually moved through the GPU simulation.
+    // Seeking to BLOOM gives particles the repulsion burst so they scatter
+    // naturally, and the timeline plays through BLOOM → COAST (~6.5s).
+    tl.seek(13);
+    // Manually fire onComplete in case seek() suppresses embedded callbacks
+    handleComplete();
+  }, [skipped, handleComplete]);
 
   return (
     <div

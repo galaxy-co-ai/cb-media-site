@@ -88,6 +88,7 @@ export default function GPGPUParticles({
     velUniforms.uRepulsion = { value: 0 };
     velUniforms.uDrag = { value: 0.998 };
     velUniforms.uSpiral = { value: 0 };
+    velUniforms.uCenterDampen = { value: 0 };
 
     const posUniforms = posVar.material.uniforms;
     posUniforms.uDelta = { value: 0.016 };
@@ -122,7 +123,7 @@ export default function GPGPUParticles({
         uniforms: {
           uPositionTexture: { value: null },
           uVelocityTexture: { value: null },
-          uPointSize: { value: 0.5 },
+          uPointSize: { value: 0.7 },
           uColorTemp: { value: 4000 },
           uOpacity: { value: 1.0 },
         },
@@ -154,6 +155,7 @@ export default function GPGPUParticles({
     velUniforms.uRepulsion.value = animState.repulsion;
     velUniforms.uDrag.value = animState.drag;
     velUniforms.uSpiral.value = animState.spiral;
+    velUniforms.uCenterDampen.value = animState.centerDampen;
 
     gpgpu.posVar.material.uniforms.uDelta.value = clampedDelta;
 

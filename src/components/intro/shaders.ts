@@ -22,6 +22,7 @@ export const velocityShader = /* glsl */ `
   uniform float uRepulsion;
   uniform float uDrag;
   uniform float uSpiral;
+  uniform float uCenterDampen;
 
   // Hash-based pseudo-random (deterministic per texel + time)
   float hash(vec2 p) {
@@ -50,20 +51,33 @@ export const velocityShader = /* glsl */ `
     vec3 p = pos.xyz;
     vec3 v = vel.xyz;
 
-    // --- Gravitational pull toward origin (constant force — drain model) ---
+    // --- Gravitational pull toward origin (drain model + center well) ---
     // Per-particle hash breaks the uniform shell — no perfect circle outline.
     vec3 toCenter = -p;
     float dist = length(toCenter);
     float gravHash = 0.7 + hash(uv * 1000.0) * 0.6;  // 0.7–1.3x gravity variation
-    v += normalize(toCenter + 0.001) * uGravity * gravHash * uDelta;
+    // Base gravity + center well: particles within r<3 feel 2x pull for dense core
+    float centerBoost = 1.0 + smoothstep(3.0, 0.5, dist);
+    v += normalize(toCenter + 0.001) * uGravity * gravHash * centerBoost * uDelta;
 
     // --- Cyclonic spiral component ---
     // uSpiral controls tangential intensity independently from gravity.
-    // 1/r^0.4 profile: faster rotation near the eye, visible spiral arms.
+    // 1/r^0.7 profile: steeper falloff pulls particles inward faster,
+    // forming a denser center ball instead of loose spiral arms.
     if (uSpiral > 0.001) {
-      float tangentialMag = uSpiral / (pow(dist, 0.4) + 0.2);
+      float tangentialMag = uSpiral / (pow(dist, 0.7) + 0.2);
       vec3 tangent = normalize(cross(toCenter, vec3(0.0, 0.0, 1.0)) + 0.001);
-      v += tangent * tangentialMag * smoothstep(0.3, 8.0, dist) * uDelta;
+      v += tangent * tangentialMag * smoothstep(0.3, 6.0, dist) * uDelta;
+    }
+
+    // --- Center tangential damping ---
+    // Kills orbital angular momentum near the core so particles actually
+    // fall into the center instead of orbiting with a hollow void.
+    if (uCenterDampen > 0.001 && dist < 5.0) {
+      vec3 radial = normalize(toCenter + 0.001);
+      vec3 tangential = v - radial * dot(v, radial); // velocity component perpendicular to radial
+      float dampenStrength = uCenterDampen * smoothstep(5.0, 0.5, dist);
+      v -= tangential * dampenStrength * uDelta;
     }
 
     // --- Disk flattening (push Z toward 0 — camera-facing plane) ---
@@ -135,6 +149,11 @@ export const renderVertexShader = /* glsl */ `
   varying float vSpeed;
   varying float vDepth;
 
+  // Per-particle hash for stable random size
+  float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+  }
+
   void main() {
     vec4 posData = texture2D(uPositionTexture, reference);
     vec4 velData = texture2D(uVelocityTexture, reference);
@@ -145,11 +164,18 @@ export const renderVertexShader = /* glsl */ `
     vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
     vDepth = -mvPosition.z;
 
-    // Slow particles shrink — prevents big blobs stuck in ambient phase
-    float speedScale = 0.3 + 0.7 * smoothstep(0.0, 0.5, vSpeed);
+    // Per-particle size class — creates galaxy-like depth variation.
+    // ~5% are "bright stars" (2.5-4x), ~20% medium (1.2-2.5x), rest are dust (0.4-1.2x)
+    float sizeHash = hash(reference * 1000.0);
+    float sizeClass = sizeHash > 0.95 ? mix(2.5, 4.0, (sizeHash - 0.95) * 20.0)
+                    : sizeHash > 0.75 ? mix(1.2, 2.5, (sizeHash - 0.75) * 5.0)
+                    : mix(0.4, 1.2, sizeHash / 0.75);
 
-    // Point size with depth attenuation
-    gl_PointSize = uPointSize * speedScale * (80.0 / max(vDepth, 1.0));
+    // Speed scaling — high floor so ambient (slow) particles stay full size
+    float speedScale = 0.7 + 0.3 * smoothstep(0.0, 0.5, vSpeed);
+
+    // Point size with depth attenuation + per-particle variation
+    gl_PointSize = uPointSize * sizeClass * speedScale * (80.0 / max(vDepth, 1.0));
     gl_Position = projectionMatrix * mvPosition;
   }
 `;
