@@ -91,8 +91,8 @@ export function HomeClient({ sections, siteSettings }: HomeClientProps) {
 
   return (
     <>
-      {/* Full-page starfield — fixed canvas behind everything */}
-      <InterstellarBackground />
+      {/* Full-page starfield — only after intro so it doesn't compete with EventHorizon */}
+      {introComplete && <InterstellarBackground />}
 
       {/* Event Horizon — cinematic intro, stays as ambient background */}
       <CinematicIntro onComplete={handleIntroComplete} />
