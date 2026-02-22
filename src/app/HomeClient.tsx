@@ -4,6 +4,7 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { SectionOrchestrator } from '@/components/sections/SectionOrchestrator'
+import { InterstellarBackground } from '@/components/InterstellarBackground'
 import type { Section, SiteSettings } from '@/sanity/lib/types'
 
 const CinematicIntro = dynamic(
@@ -90,6 +91,9 @@ export function HomeClient({ sections, siteSettings }: HomeClientProps) {
 
   return (
     <>
+      {/* Full-page starfield — fixed canvas behind everything */}
+      <InterstellarBackground />
+
       {/* Event Horizon — cinematic intro, stays as ambient background */}
       <CinematicIntro onComplete={handleIntroComplete} />
 

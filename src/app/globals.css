@@ -162,9 +162,23 @@
   margin-bottom: 60px; /* Height of footer — exposes it at scroll end */
 }
 
-/* Solid background only below the hero so CinematicIntro shows through */
+/* Semi-transparent overlay lets starfield bleed through at reduced intensity */
 #content {
-  background: var(--background);
+  background: rgba(2, 2, 8, 0.88);
+  position: relative;
+}
+
+/* Gradient fade from full-intensity hero into dimmed content area */
+#content::before {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent, rgba(2, 2, 8, 0.88));
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* ── Accordion cursor-proximity glow ──────────────────────── */

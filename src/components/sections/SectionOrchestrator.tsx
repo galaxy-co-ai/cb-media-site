@@ -30,7 +30,7 @@ export function SectionOrchestrator({ sections, siteSettings }: SectionOrchestra
           <div
             key={section._id}
             id={section.slug}
-            className="min-h-screen flex flex-col justify-center"
+            className="min-h-screen flex flex-col justify-center relative z-[1]"
           >
             <Component section={section} siteSettings={siteSettings} />
           </div>
