@@ -89,6 +89,7 @@ export default function GPGPUParticles({
     velUniforms.uDrag = { value: 0.998 };
     velUniforms.uSpiral = { value: 0 };
     velUniforms.uCenterDampen = { value: 0 };
+    velUniforms.uBoundaryRadius = { value: 999 };
 
     const posUniforms = posVar.material.uniforms;
     posUniforms.uDelta = { value: 0.016 };
@@ -126,6 +127,7 @@ export default function GPGPUParticles({
           uPointSize: { value: 0.7 },
           uColorTemp: { value: 4000 },
           uOpacity: { value: 1.0 },
+          uTime: { value: 0 },
         },
         transparent: true,
         blending: THREE.AdditiveBlending,
@@ -156,6 +158,7 @@ export default function GPGPUParticles({
     velUniforms.uDrag.value = animState.drag;
     velUniforms.uSpiral.value = animState.spiral;
     velUniforms.uCenterDampen.value = animState.centerDampen;
+    velUniforms.uBoundaryRadius.value = animState.boundaryRadius;
 
     gpgpu.posVar.material.uniforms.uDelta.value = clampedDelta;
 
@@ -169,6 +172,8 @@ export default function GPGPUParticles({
       gpgpu.gpuCompute.getCurrentRenderTarget(gpgpu.velVar).texture;
     material.uniforms.uColorTemp.value = animState.colorTemp;
     material.uniforms.uOpacity.value = animState.particleOpacity;
+    material.uniforms.uPointSize.value = animState.pointSize;
+    material.uniforms.uTime.value = velUniforms.uTime.value;
   });
 
   // --- Cleanup ---

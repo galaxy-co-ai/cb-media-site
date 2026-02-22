@@ -23,6 +23,7 @@ export const velocityShader = /* glsl */ `
   uniform float uDrag;
   uniform float uSpiral;
   uniform float uCenterDampen;
+  uniform float uBoundaryRadius;
 
   // Hash-based pseudo-random (deterministic per texel + time)
   float hash(vec2 p) {
@@ -115,6 +116,11 @@ export const velocityShader = /* glsl */ `
     // --- Drag (bleeds orbital energy for spiral infall) ---
     v *= uDrag;
 
+    // --- Soft boundary containment ---
+    float boundaryDist = length(p);
+    float boundaryFade = smoothstep(uBoundaryRadius * 0.6, uBoundaryRadius, boundaryDist);
+    v -= normalize(p + 0.001) * boundaryFade * 3.0 * uDelta;
+
     gl_FragColor = vec4(v, 1.0);
   }
 `;
@@ -143,11 +149,13 @@ export const renderVertexShader = /* glsl */ `
   uniform sampler2D uPositionTexture;
   uniform sampler2D uVelocityTexture;
   uniform float uPointSize;
+  uniform float uTime;
 
   attribute vec2 reference;
 
   varying float vSpeed;
   varying float vDepth;
+  varying vec2 vRef;
 
   // Per-particle hash for stable random size
   float hash(vec2 p) {
@@ -155,6 +163,7 @@ export const renderVertexShader = /* glsl */ `
   }
 
   void main() {
+    vRef = reference;
     vec4 posData = texture2D(uPositionTexture, reference);
     vec4 velData = texture2D(uVelocityTexture, reference);
 
@@ -167,8 +176,8 @@ export const renderVertexShader = /* glsl */ `
     // Per-particle size class — creates galaxy-like depth variation.
     // ~5% are "bright stars" (2.5-4x), ~20% medium (1.2-2.5x), rest are dust (0.4-1.2x)
     float sizeHash = hash(reference * 1000.0);
-    float sizeClass = sizeHash > 0.95 ? mix(2.5, 4.0, (sizeHash - 0.95) * 20.0)
-                    : sizeHash > 0.75 ? mix(1.2, 2.5, (sizeHash - 0.75) * 5.0)
+    float sizeClass = sizeHash > 0.95 ? mix(4.0, 7.0, (sizeHash - 0.95) * 20.0)
+                    : sizeHash > 0.75 ? mix(1.5, 3.0, (sizeHash - 0.75) * 5.0)
                     : mix(0.4, 1.2, sizeHash / 0.75);
 
     // Speed scaling — high floor so ambient (slow) particles stay full size
@@ -186,9 +195,11 @@ export const renderVertexShader = /* glsl */ `
 export const renderFragmentShader = /* glsl */ `
   uniform float uColorTemp;
   uniform float uOpacity;
+  uniform float uTime;
 
   varying float vSpeed;
   varying float vDepth;
+  varying vec2 vRef;
 
   // Attempt a basic blackbody color from temperature (simplified Planckian locus)
   vec3 temperatureToColor(float temp) {
@@ -238,6 +249,11 @@ export const renderFragmentShader = /* glsl */ `
 
     vec3 finalColor = baseColor * brightness * depthFade * 0.25;
 
-    gl_FragColor = vec4(finalColor, alpha * uOpacity);
+    // Per-particle twinkle — unique phase & speed from reference UV
+    float twinklePhase = fract(sin(dot(vRef, vec2(12.9898, 78.233))) * 43758.5453);
+    float twinkleSpeed = 0.4 + twinklePhase * 1.2;  // 0.4–1.6 Hz range
+    float twinkle = 0.65 + 0.35 * sin(uTime * twinkleSpeed + twinklePhase * 6.2831);
+
+    gl_FragColor = vec4(finalColor, alpha * uOpacity * twinkle);
   }
 `;

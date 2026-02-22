@@ -22,6 +22,8 @@ export interface AnimState {
   // Rendering
   colorTemp: number;
   particleOpacity: number;
+  boundaryRadius: number;
+  pointSize: number;
   // Post-processing
   bloomIntensity: number;
   caOffset: number;
@@ -41,6 +43,8 @@ function createAnimState(): AnimState {
     centerDampen: 0,
     colorTemp: 4000,
     particleOpacity: 1.0,
+    boundaryRadius: 999,
+    pointSize: 0.7,
     bloomIntensity: 0.3,
     caOffset: 0,
     vignetteDarkness: 0.7,
@@ -303,13 +307,31 @@ export default function EventHorizonScene({
     );
     tl.to(
       animState,
-      { particleOpacity: 0.7, duration: 4.5, ease: 'power1.out' },
+      { particleOpacity: 0.4, duration: 4.5, ease: 'power1.out' },
       15,
     );
     tl.to(
       animState,
       { bloomIntensity: 0.4, duration: 4.5, ease: 'power1.out' },
       15,
+    );
+    // Boundary containment fades in — keeps particles on screen
+    tl.to(
+      animState,
+      { boundaryRadius: 30, duration: 3, ease: 'power1.out' },
+      15,
+    );
+    // Stars grow larger as they settle
+    tl.to(
+      animState,
+      { pointSize: 1.8, duration: 4, ease: 'power1.out' },
+      15,
+    );
+    // Increase brownian for gentle ambient drift
+    tl.to(
+      animState,
+      { brownian: 0.04, duration: 4, ease: 'power1.out' },
+      16,
     );
 
     // Start timeline after a brief init delay

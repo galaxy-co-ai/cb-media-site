@@ -69,6 +69,7 @@ export default function CinematicIntro({ onComplete }: CinematicIntroProps) {
         opacity: 0,
         zIndex: 50,
         background: '#000',
+        pointerEvents: completed ? 'none' : 'auto',
       }}
     >
       <Canvas
