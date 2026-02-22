@@ -33,7 +33,7 @@ const PREVIEW_URL =
   process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3007'
 
 export default defineConfig({
-  name: 'cb-media-studio',
+  name: 'default',
   title: 'CB Media Studio',
   basePath: '/studio',
 
@@ -81,10 +81,8 @@ export default defineConfig({
     }),
     presentationTool({
       previewUrl: {
-        initial: PREVIEW_URL,
-        previewMode: {
-          enable: '/api/draft-mode/enable',
-          disable: '/api/draft-mode/disable',
+        draftMode: {
+          enable: `${PREVIEW_URL}/api/draft-mode/enable`,
         },
       },
       resolve: {
