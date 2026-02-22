@@ -128,6 +128,7 @@ export default function GPGPUParticles({
           uColorTemp: { value: 4000 },
           uOpacity: { value: 1.0 },
           uTime: { value: 0 },
+          uStarBrightness: { value: 1.0 },
         },
         transparent: true,
         blending: THREE.AdditiveBlending,
@@ -174,6 +175,7 @@ export default function GPGPUParticles({
     material.uniforms.uOpacity.value = animState.particleOpacity;
     material.uniforms.uPointSize.value = animState.pointSize;
     material.uniforms.uTime.value = velUniforms.uTime.value;
+    material.uniforms.uStarBrightness.value = animState.starBrightness;
   });
 
   // --- Cleanup ---

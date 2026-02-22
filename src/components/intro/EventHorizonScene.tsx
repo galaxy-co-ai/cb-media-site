@@ -24,6 +24,7 @@ export interface AnimState {
   particleOpacity: number;
   boundaryRadius: number;
   pointSize: number;
+  starBrightness: number;
   // Post-processing
   bloomIntensity: number;
   caOffset: number;
@@ -45,6 +46,7 @@ function createAnimState(): AnimState {
     particleOpacity: 1.0,
     boundaryRadius: 999,
     pointSize: 0.7,
+    starBrightness: 1.0,
     bloomIntensity: 0.3,
     caOffset: 0,
     vignetteDarkness: 0.7,
@@ -307,7 +309,7 @@ export default function EventHorizonScene({
     );
     tl.to(
       animState,
-      { particleOpacity: 0.4, duration: 4.5, ease: 'power1.out' },
+      { particleOpacity: 0.15, duration: 4.5, ease: 'power1.out' },
       15,
     );
     tl.to(
@@ -325,6 +327,12 @@ export default function EventHorizonScene({
     tl.to(
       animState,
       { pointSize: 1.8, duration: 4, ease: 'power1.out' },
+      15,
+    );
+    // Brightness ramp — compensates for low opacity, makes surviving stars luminous
+    tl.to(
+      animState,
+      { starBrightness: 3.0, duration: 4, ease: 'power1.out' },
       15,
     );
     // Gentle ambient drift — low enough to avoid visible jitter

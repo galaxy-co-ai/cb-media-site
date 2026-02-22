@@ -196,6 +196,7 @@ export const renderFragmentShader = /* glsl */ `
   uniform float uColorTemp;
   uniform float uOpacity;
   uniform float uTime;
+  uniform float uStarBrightness;
 
   varying float vSpeed;
   varying float vDepth;
@@ -247,7 +248,7 @@ export const renderFragmentShader = /* glsl */ `
 
     float depthFade = clamp(1.0 - vDepth / 80.0, 0.1, 1.0);
 
-    vec3 finalColor = baseColor * brightness * depthFade * 0.25;
+    vec3 finalColor = baseColor * brightness * depthFade * 0.25 * uStarBrightness;
 
     // Per-particle twinkle — slow, subtle breathing
     float twinklePhase = fract(sin(dot(vRef, vec2(12.9898, 78.233))) * 43758.5453);
