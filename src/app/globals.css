@@ -162,14 +162,14 @@
   margin-bottom: 60px; /* Height of footer — exposes it at scroll end */
 }
 
-/* Semi-transparent overlay lets starfield bleed through at reduced intensity */
+/* Transparent — starfield fully visible behind content sections */
 #content {
-  background: rgba(2, 2, 8, 0.88);
+  background: transparent;
   position: relative;
 }
 
-/* Gradient fade from full-intensity hero into dimmed content area */
-#content::before {
+/* Gradient fade — disabled while testing transparent content bg */
+/* #content::before {
   content: '';
   position: absolute;
   top: -200px;
@@ -179,7 +179,7 @@
   background: linear-gradient(to bottom, transparent, rgba(2, 2, 8, 0.88));
   pointer-events: none;
   z-index: 0;
-}
+} */
 
 /* ── Accordion cursor-proximity glow ──────────────────────── */
 .accordion-item {
