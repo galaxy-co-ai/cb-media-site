@@ -6,19 +6,19 @@ const QUICK_ACTIONS = [
     title: 'Edit Homepage Sections',
     description: 'Update your "What We Do", "Who We Serve", results, and more.',
     intent: { type: 'edit' as const, params: {} },
-    path: '/structure/section',
+    path: '/studio/structure/section',
   },
   {
     title: 'Update Contact Info',
     description: 'Change your email, phone number, or call-to-action button.',
     intent: { type: 'edit' as const, params: { id: 'siteSettings' } },
-    path: '/structure/siteSettings',
+    path: '/studio/structure/siteSettings',
   },
   {
     title: 'Open Visual Editor',
     description: 'See your changes in real-time on the live site as you type.',
     intent: null,
-    path: '/presentation',
+    path: '/studio/presentation',
   },
 ]
 
