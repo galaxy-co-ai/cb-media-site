@@ -4,9 +4,8 @@ import { useEffect, useRef, useCallback } from 'react'
 
 // ── Star Field Configuration ──────────────────────────────────
 const STAR_LAYERS = [
-  { count: 50,  speedFactor: 0.05, sizeRange: [0.3, 0.8], opacityRange: [0.1, 0.3] },   // distant — barely there
-  { count: 25,  speedFactor: 0.12, sizeRange: [0.5, 1.0], opacityRange: [0.2, 0.45] },  // mid — subtle
-  { count: 12,  speedFactor: 0.25, sizeRange: [0.8, 1.6], opacityRange: [0.4, 0.8] },   // close — few bright anchors
+  { count: 20,  speedFactor: 0.04, sizeRange: [0.8, 1.5], opacityRange: [0.3, 0.6] },   // distant pinpricks
+  { count: 8,   speedFactor: 0.15, sizeRange: [3.0, 6.0], opacityRange: [0.7, 1.0] },   // hero glossy spheres
 ]
 
 const NEBULA_CLOUDS = [
@@ -27,6 +26,10 @@ interface Star {
   twinklePhase: number
   twinkleSpeed: number
   layer: number
+  // Glossy sphere properties
+  aspect: number       // 0.75–1.0, how elliptical
+  rotation: number     // radians, ellipse tilt
+  hue: number          // slight color variation (cool white–blue range)
 }
 
 interface ShootingStar {
@@ -72,8 +75,11 @@ export function InterstellarBackground() {
           size: lerp(layer.sizeRange[0], layer.sizeRange[1], Math.random()),
           opacity: lerp(layer.opacityRange[0], layer.opacityRange[1], Math.random()),
           twinklePhase: Math.random() * Math.PI * 2,
-          twinkleSpeed: 0.3 + Math.random() * 0.8,
+          twinkleSpeed: 0.15 + Math.random() * 0.4,
           layer: layerIndex,
+          aspect: 0.75 + Math.random() * 0.25,
+          rotation: Math.random() * Math.PI,
+          hue: 210 + Math.random() * 30, // 210–240 range (cool blue–white)
         })
       }
     })
@@ -182,7 +188,7 @@ export function InterstellarBackground() {
       ctx.stroke()
     }
 
-    // ═══ Layer 3: Star field with parallax + twinkle ═══
+    // ═══ Layer 3: Glossy star spheres with parallax + twinkle ═══
     const cursorOffsetX = (state.smoothMouseX - w / 2) / w
     const cursorOffsetY = (state.smoothMouseY - h / 2) / h
 
@@ -193,30 +199,56 @@ export function InterstellarBackground() {
       const px = star.x + cursorOffsetX * layer.speedFactor * -80
       const py = star.y + cursorOffsetY * layer.speedFactor * -80
 
-      // Twinkle
-      const twinkle = Math.sin(timestamp * 0.001 * star.twinkleSpeed + star.twinklePhase) * 0.3 + 0.7
+      // Slow, gentle twinkle
+      const twinkle = Math.sin(timestamp * 0.001 * star.twinkleSpeed + star.twinklePhase) * 0.15 + 0.85
       const finalOpacity = star.opacity * twinkle
 
-      // Cursor proximity glow — stars near cursor get brighter
+      // Cursor proximity brightening
       const dx = px - state.smoothMouseX
       const dy = py - state.smoothMouseY
       const dist = Math.sqrt(dx * dx + dy * dy)
-      const proximityBoost = dist < 250 ? lerp(1.8, 1, dist / 250) : 1
+      const proximityBoost = dist < 300 ? lerp(1.4, 1, dist / 300) : 1
 
       const adjustedOpacity = Math.min(finalOpacity * proximityBoost, 1)
 
-      // Draw star — only the brightest few get a soft glow
-      if (star.size > 1.2) {
-        ctx.fillStyle = `rgba(180, 200, 255, ${adjustedOpacity * 0.05})`
+      if (star.layer === 0) {
+        // ── Distant: crisp pinpricks, no glow ──
+        ctx.fillStyle = `rgba(220, 230, 255, ${adjustedOpacity})`
         ctx.beginPath()
-        ctx.arc(px, py, star.size * 2.5, 0, Math.PI * 2)
+        ctx.arc(px, py, star.size, 0, Math.PI * 2)
         ctx.fill()
-      }
+      } else {
+        // ── Hero: glossy neumorphic spheres ──
+        const r = star.size
+        ctx.save()
+        ctx.translate(px, py)
+        ctx.rotate(star.rotation)
 
-      ctx.fillStyle = `rgba(220, 230, 255, ${adjustedOpacity})`
-      ctx.beginPath()
-      ctx.arc(px, py, star.size, 0, Math.PI * 2)
-      ctx.fill()
+        // Body — subtly misshapen ellipse, vivid fill
+        const bodyL = 70 + adjustedOpacity * 25 // lightness 70–95%
+        ctx.fillStyle = `hsla(${star.hue}, 30%, ${bodyL}%, ${adjustedOpacity})`
+        ctx.beginPath()
+        ctx.ellipse(0, 0, r, r * star.aspect, 0, 0, Math.PI * 2)
+        ctx.fill()
+
+        // Specular highlight — hot white crescent, offset upper-left
+        const hlR = r * 0.45
+        const hlX = -r * 0.25
+        const hlY = -r * 0.3
+        ctx.fillStyle = `rgba(255, 255, 255, ${adjustedOpacity * 0.85})`
+        ctx.beginPath()
+        ctx.ellipse(hlX, hlY, hlR, hlR * 0.7, -0.4, 0, Math.PI * 2)
+        ctx.fill()
+
+        // Rim light — thin bright edge on the opposite side
+        ctx.strokeStyle = `rgba(200, 220, 255, ${adjustedOpacity * 0.3})`
+        ctx.lineWidth = 0.5
+        ctx.beginPath()
+        ctx.ellipse(0, 0, r * 0.95, r * star.aspect * 0.95, 0, 0.8, 2.2)
+        ctx.stroke()
+
+        ctx.restore()
+      }
     })
 
     // ═══ Layer 4: Shooting stars ═══
