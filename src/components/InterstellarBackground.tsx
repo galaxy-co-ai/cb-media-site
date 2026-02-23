@@ -4,9 +4,9 @@ import { useEffect, useRef, useCallback } from 'react'
 
 // ── Star Field Configuration ──────────────────────────────────
 const STAR_LAYERS = [
-  { count: 80,  speedFactor: 0.05, sizeRange: [0.6, 1.2], opacityRange: [0.2, 0.5] },   // distant
-  { count: 60,  speedFactor: 0.12, sizeRange: [0.8, 1.6], opacityRange: [0.3, 0.6] },   // mid
-  { count: 55,  speedFactor: 0.25, sizeRange: [1.0, 2.5], opacityRange: [0.5, 0.9] },   // close
+  { count: 50,  speedFactor: 0.05, sizeRange: [0.3, 0.8], opacityRange: [0.1, 0.3] },   // distant — barely there
+  { count: 25,  speedFactor: 0.12, sizeRange: [0.5, 1.0], opacityRange: [0.2, 0.45] },  // mid — subtle
+  { count: 12,  speedFactor: 0.25, sizeRange: [0.8, 1.6], opacityRange: [0.4, 0.8] },   // close — few bright anchors
 ]
 
 const NEBULA_CLOUDS = [
@@ -205,21 +205,14 @@ export function InterstellarBackground() {
 
       const adjustedOpacity = Math.min(finalOpacity * proximityBoost, 1)
 
-      // Draw star — use concentric alpha circles instead of per-star gradients
-      if (star.size > 1.5) {
-        // Outer glow (faint)
-        ctx.fillStyle = `rgba(180, 200, 255, ${adjustedOpacity * 0.08})`
+      // Draw star — only the brightest few get a soft glow
+      if (star.size > 1.2) {
+        ctx.fillStyle = `rgba(180, 200, 255, ${adjustedOpacity * 0.05})`
         ctx.beginPath()
-        ctx.arc(px, py, star.size * 3, 0, Math.PI * 2)
-        ctx.fill()
-        // Inner glow
-        ctx.fillStyle = `rgba(200, 220, 255, ${adjustedOpacity * 0.25})`
-        ctx.beginPath()
-        ctx.arc(px, py, star.size * 1.8, 0, Math.PI * 2)
+        ctx.arc(px, py, star.size * 2.5, 0, Math.PI * 2)
         ctx.fill()
       }
 
-      // Core
       ctx.fillStyle = `rgba(220, 230, 255, ${adjustedOpacity})`
       ctx.beginPath()
       ctx.arc(px, py, star.size, 0, Math.PI * 2)
