@@ -8,14 +8,14 @@ import { StudioWelcome } from './src/sanity/components/StudioWelcome'
 
 const theme = buildLegacyTheme({
   '--black': '#0a0a0a',
-  '--white': '#f5f5f5',
-  '--gray-base': '#1a1a1a',
+  '--white': '#f0f0f0',
+  '--gray-base': '#141414',
   '--gray': '#666666',
   '--component-bg': '#111111',
-  '--component-text-color': '#e5e5e5',
-  '--brand-primary': '#ffffff',
-  '--default-button-color': '#ffffff',
-  '--default-button-primary-color': '#ffffff',
+  '--component-text-color': '#e0e0e0',
+  '--brand-primary': '#E8C872',
+  '--default-button-color': '#E8C872',
+  '--default-button-primary-color': '#E8C872',
   '--default-button-success-color': '#4ade80',
   '--default-button-warning-color': '#facc15',
   '--default-button-danger-color': '#f87171',
@@ -23,7 +23,8 @@ const theme = buildLegacyTheme({
   '--state-success-color': '#4ade80',
   '--state-warning-color': '#facc15',
   '--state-danger-color': '#f87171',
-  '--focus-color': '#60a5fa',
+  '--focus-color': '#E8C872',
+  '--main-navigation-color': '#0a0a0a',
 })
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
@@ -56,26 +57,55 @@ export default defineConfig({
         S.list()
           .title('Your Website')
           .items([
+            // Hero & Branding — singleton, opens directly to form
             S.listItem()
-              .title('Site Settings')
+              .title('Hero & Branding')
               .id('siteSettings')
-              .icon(() => '⚙️')
+              .icon(() => '✏️')
               .child(
                 S.document()
                   .schemaType('siteSettings')
                   .documentId('siteSettings')
-                  .title('Hero, Contact & CTA')
+                  .title('Your headline, contact info, and call-to-action')
               ),
 
             S.divider(),
 
+            // Homepage Sections — with sub-filters
             S.listItem()
-              .title('Website Sections')
+              .title('Homepage Sections')
               .icon(() => '📄')
               .child(
-                S.documentTypeList('section')
-                  .title('All Sections')
-                  .defaultOrdering([{ field: 'order', direction: 'asc' }])
+                S.list()
+                  .title('Homepage Sections')
+                  .items([
+                    S.listItem()
+                      .title('All Sections')
+                      .icon(() => '📋')
+                      .child(
+                        S.documentTypeList('section')
+                          .title('All Sections')
+                          .defaultOrdering([{ field: 'order', direction: 'asc' }])
+                      ),
+                    S.listItem()
+                      .title('Visible on Site')
+                      .icon(() => '🟢')
+                      .child(
+                        S.documentList()
+                          .title('Visible on Site')
+                          .filter('_type == "section" && isVisible == true')
+                          .defaultOrdering([{ field: 'order', direction: 'asc' }])
+                      ),
+                    S.listItem()
+                      .title('Hidden')
+                      .icon(() => '⚫')
+                      .child(
+                        S.documentList()
+                          .title('Hidden Sections')
+                          .filter('_type == "section" && isVisible != true')
+                          .defaultOrdering([{ field: 'order', direction: 'asc' }])
+                      ),
+                  ])
               ),
           ]),
     }),
