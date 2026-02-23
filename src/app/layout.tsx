@@ -34,6 +34,9 @@ export const metadata: Metadata = {
     'marketing',
     'culture',
   ],
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default async function RootLayout({
