@@ -1,4 +1,6 @@
 import { defineField, defineType } from 'sanity'
+import { orderRankField, orderRankOrdering } from '@sanity/orderable-document-list'
+import { CharCountInput } from '../components/CharCountInput'
 
 export default defineType({
   name: 'section',
@@ -10,6 +12,7 @@ export default defineType({
     { name: 'settings', title: 'Page Settings' },
   ],
   fields: [
+    orderRankField({ type: 'section' }),
     defineField({
       name: 'title',
       title: 'Section Title',
@@ -17,6 +20,7 @@ export default defineType({
       group: 'content',
       description:
         'The big heading visitors see for this section (e.g. "What We Do")',
+      components: { input: CharCountInput },
       validation: (Rule) =>
         Rule.required()
           .max(60)
@@ -68,6 +72,8 @@ export default defineType({
       of: [{ type: 'stat' }],
       description:
         'Add headline statistics that scroll-animate on the page. Use the format: "+193%", "-57%", "+454M"',
+      hidden: ({ document }) =>
+        Array.isArray(document?.serviceItems) && document.serviceItems.length > 0,
     }),
     defineField({
       name: 'serviceItems',
@@ -76,6 +82,8 @@ export default defineType({
       group: 'cards',
       description:
         'Each card has a title, short description, and a call-to-action label. These appear as an interactive list on desktop and expandable cards on mobile.',
+      hidden: ({ document }) =>
+        Array.isArray(document?.stats) && document.stats.length > 0,
       of: [
         {
           type: 'object',
@@ -144,13 +152,13 @@ export default defineType({
     }),
     defineField({
       name: 'order',
-      title: 'Position on Page',
+      title: 'Position on Page (Legacy)',
       type: 'number',
       group: 'settings',
-      description:
-        'Controls where this section appears. 1 = first, 2 = second, etc.',
+      hidden: true,
+      description: 'Legacy field — use drag-and-drop in "All Sections" instead.',
       initialValue: 10,
-      validation: (Rule) => Rule.required().min(0).integer(),
+      validation: (Rule) => Rule.min(0).integer(),
     }),
     defineField({
       name: 'isVisible',
@@ -162,23 +170,31 @@ export default defineType({
       initialValue: true,
     }),
   ],
-  orderings: [
-    {
-      title: 'Page Order',
-      name: 'orderAsc',
-      by: [{ field: 'order', direction: 'asc' }],
-    },
-  ],
+  orderings: [orderRankOrdering],
   preview: {
     select: {
       title: 'title',
-      order: 'order',
       isVisible: 'isVisible',
+      hasStats: 'stats',
+      hasServices: 'serviceItems',
     },
-    prepare({ title, order, isVisible }) {
+    prepare({ title, isVisible, hasStats, hasServices }) {
+      const contentType =
+        Array.isArray(hasServices) && hasServices.length > 0
+          ? '🃏'
+          : Array.isArray(hasStats) && hasStats.length > 0
+            ? '📊'
+            : '📝'
+      const visibility = isVisible === false ? ' · Hidden' : ''
       return {
-        title: `${order ?? '?'}. ${title || 'Untitled Section'}`,
-        subtitle: isVisible === false ? 'Hidden from website' : 'Live on website',
+        title: `${contentType} ${title || 'Untitled Section'}`,
+        subtitle: `${
+          Array.isArray(hasServices) && hasServices.length > 0
+            ? `${hasServices.length} cards`
+            : Array.isArray(hasStats) && hasStats.length > 0
+              ? `${hasStats.length} stats`
+              : 'Text content'
+        }${visibility}`,
       }
     },
   },

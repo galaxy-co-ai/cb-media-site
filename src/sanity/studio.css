@@ -1,4 +1,7 @@
-/* Graph paper grid — 20px cells, warm pencil at 3.5% opacity */
+/* Space Grotesk for studio components */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+/* Graph paper grid — 20px cells, warm pencil at 5% opacity (strengthened) */
 [data-ui='ToolScreen'],
 [data-ui='Pane'] > [data-ui='PaneContent'] {
   background-image:
@@ -6,14 +9,41 @@
       to right,
       transparent,
       transparent 19px,
-      rgba(80, 74, 61, 0.035) 19px,
-      rgba(80, 74, 61, 0.035) 20px
+      rgba(80, 74, 61, 0.05) 19px,
+      rgba(80, 74, 61, 0.05) 20px
     ),
     repeating-linear-gradient(
       to bottom,
       transparent,
       transparent 19px,
-      rgba(80, 74, 61, 0.035) 19px,
-      rgba(80, 74, 61, 0.035) 20px
+      rgba(80, 74, 61, 0.05) 19px,
+      rgba(80, 74, 61, 0.05) 20px
     );
+}
+
+/* Gold accent on active nav tool */
+[data-ui='Tab'][data-selected] {
+  border-bottom-color: #E8C872 !important;
+}
+
+/* Gold accent on active sidebar item */
+[data-ui='TreeItem'][data-selected] > [data-ui='Flex'] {
+  border-left: 2px solid #E8C872;
+}
+
+/* Style form/preview tab bar */
+[data-ui='TabList'] {
+  border-bottom: 1px solid rgba(80, 74, 61, 0.1);
+}
+
+[data-ui='TabList'] [data-ui='Tab'] {
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.03em;
+  font-weight: 500;
+}
+
+/* Gold focus ring on form inputs */
+[data-ui='TextInput']:focus-within,
+[data-ui='TextArea']:focus-within {
+  --card-focus-ring-color: #E8C872;
 }

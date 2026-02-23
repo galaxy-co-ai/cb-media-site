@@ -18,10 +18,21 @@ export interface Section {
   title: string
   slug: string
   order: number
+  orderRank?: string
   content: PortableTextBlock[]
   stats?: Stat[]
   serviceItems?: ServiceItem[]
   isVisible: boolean
+}
+
+export interface ResolvedImage {
+  asset?: { _id: string; url: string }
+  hotspot?: { x: number; y: number }
+}
+
+export interface SocialLink {
+  platform: 'linkedin' | 'instagram' | 'twitter' | 'facebook' | 'youtube'
+  url: string
 }
 
 export interface SiteSettings {
@@ -32,4 +43,11 @@ export interface SiteSettings {
   contactPhone?: string
   ctaText?: string
   ctaLink?: string
+  metaTitle?: string
+  metaDescription?: string
+  ogImage?: ResolvedImage
+  favicon?: { asset?: { _id: string; url: string } }
+  socialLinks?: SocialLink[]
+  logo?: ResolvedImage
+  logoDark?: ResolvedImage
 }

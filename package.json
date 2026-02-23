@@ -15,7 +15,9 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@react-three/postprocessing": "^3.0.4",
+    "@sanity/assist": "^5.0.4",
     "@sanity/image-url": "^2.0.3",
+    "@sanity/orderable-document-list": "^1.5.0",
     "@sanity/ui": "^3.1.11",
     "@sanity/vision": "^5.8.1",
     "@upstash/redis": "^1.36.2",
@@ -35,6 +37,7 @@
     "react-dom": "19.2.3",
     "resend": "^6.9.1",
     "sanity": "^5.8.1",
+    "sanity-plugin-media": "^4.1.1",
     "tailwind-merge": "^3.4.0",
     "three": "^0.183.0"
   },

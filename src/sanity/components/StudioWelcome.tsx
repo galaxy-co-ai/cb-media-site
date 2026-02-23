@@ -1,20 +1,29 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Card, Stack, Text, Heading, Flex, Button, Grid } from '@sanity/ui'
 import { useRouter } from 'sanity/router'
 import { useClient } from 'sanity'
 
 interface ContentStats {
   sectionCount: number
+  hiddenCount: number
+  draftCount: number
   lastEdited: string | null
 }
 
 function useContentStats() {
   const client = useClient({ apiVersion: '2024-01-01' })
-  const [stats, setStats] = useState<ContentStats>({ sectionCount: 0, lastEdited: null })
+  const [stats, setStats] = useState<ContentStats>({
+    sectionCount: 0,
+    hiddenCount: 0,
+    draftCount: 0,
+    lastEdited: null,
+  })
 
   useEffect(() => {
     const query = `{
       "sectionCount": count(*[_type == "section" && !(_id in path("drafts.**"))]),
+      "hiddenCount": count(*[_type == "section" && !(_id in path("drafts.**")) && isVisible != true]),
+      "draftCount": count(*[_type == "section" && _id in path("drafts.**")]),
       "lastEdited": *[_type == "section"] | order(_updatedAt desc)[0]._updatedAt
     }`
     client.fetch(query).then((result: ContentStats) => setStats(result))
@@ -34,6 +43,17 @@ function formatTimeAgo(dateStr: string | null): string {
   return `${days}d ago`
 }
 
+const TIPS = [
+  'Click any section in the sidebar to edit it',
+  'Hit "Publish" to push changes live instantly',
+  'Toggle "Show on Website" to hide a section without deleting',
+  'Drag sections in "All Sections" to reorder them on the page',
+  'Use the Preview tab to see your site while editing',
+  'Upload images via the Media tool in the top nav',
+  'Add social links in Hero & Branding → SEO & Social',
+  'The AI sparkle icon on text fields can help draft copy',
+]
+
 const QUICK_ACTIONS = [
   {
     icon: '📄',
@@ -48,10 +68,11 @@ const QUICK_ACTIONS = [
     path: '/studio/structure/siteSettings',
   },
   {
-    icon: '👁',
-    title: 'Open Visual Editor',
-    description: 'See your changes in real-time as you type',
-    path: '/studio/presentation',
+    icon: '🌐',
+    title: 'Preview Site',
+    description: 'Open your live website in a new tab',
+    href: process.env.NEXT_PUBLIC_SITE_URL || 'https://cb-media-site.vercel.app',
+    external: true,
   },
 ]
 
@@ -59,17 +80,25 @@ export function StudioWelcome() {
   const router = useRouter()
   const stats = useContentStats()
 
+  const todayTip = useMemo(() => {
+    const dayIndex = Math.floor(Date.now() / 86400000) % TIPS.length
+    return TIPS[dayIndex]
+  }, [])
+
   return (
     <Flex align="center" justify="center" style={{ height: '100%', padding: '2rem' }}>
       <Stack space={5} style={{ maxWidth: 560, width: '100%' }}>
         {/* Header */}
-        <Stack space={3}>
+        <Stack space={2}>
           <Heading
             size={4}
             style={{
               fontFamily: '"Space Grotesk", sans-serif',
               fontWeight: 600,
               letterSpacing: '0.08em',
+              borderBottom: '2px solid #E8C872',
+              paddingBottom: '0.5rem',
+              display: 'inline-block',
             }}
           >
             <span style={{ color: '#b8952e' }}>CB MEDIA</span>{' '}
@@ -81,38 +110,62 @@ export function StudioWelcome() {
         </Stack>
 
         {/* Status Cards */}
-        <Grid columns={2} gap={3}>
+        <Grid columns={3} gap={3}>
           <Card padding={4} radius={2} tone="default" border>
             <Stack space={2}>
-              <Text size={1} muted>Sections published</Text>
+              <Text size={0} muted style={{ letterSpacing: '0.04em' }}>PUBLISHED</Text>
               <Heading size={3}>{stats.sectionCount}</Heading>
             </Stack>
           </Card>
           <Card padding={4} radius={2} tone="default" border>
             <Stack space={2}>
-              <Text size={1} muted>Last edited</Text>
-              <Heading size={3}>{formatTimeAgo(stats.lastEdited)}</Heading>
+              <Text size={0} muted style={{ letterSpacing: '0.04em' }}>HIDDEN</Text>
+              <Heading size={3}>{stats.hiddenCount}</Heading>
+            </Stack>
+          </Card>
+          <Card padding={4} radius={2} tone="default" border>
+            <Stack space={2}>
+              <Text size={0} muted style={{ letterSpacing: '0.04em' }}>LAST EDIT</Text>
+              <Heading size={3} style={{ fontSize: '1.1rem' }}>{formatTimeAgo(stats.lastEdited)}</Heading>
             </Stack>
           </Card>
         </Grid>
 
+        {/* Drafts Warning */}
+        {stats.draftCount > 0 && (
+          <Card padding={3} radius={2} tone="caution" border>
+            <Flex align="center" gap={2}>
+              <Text size={1}>⚠️</Text>
+              <Text size={1}>
+                {stats.draftCount} unpublished {stats.draftCount === 1 ? 'draft' : 'drafts'} — remember to publish when ready
+              </Text>
+            </Flex>
+          </Card>
+        )}
+
         {/* Quick Actions */}
         <Stack space={2}>
-          <Text size={1} weight="semibold" style={{ letterSpacing: '0.06em' }}>
+          <Text size={0} weight="semibold" style={{ letterSpacing: '0.06em' }}>
             QUICK ACTIONS
           </Text>
           <Card radius={2} border overflow="hidden">
             <Stack>
               {QUICK_ACTIONS.map((action, i) => (
                 <Card
-                  key={action.path}
+                  key={action.title}
                   padding={4}
                   tone="default"
                   style={{
                     cursor: 'pointer',
                     borderTop: i > 0 ? '1px solid var(--card-border-color)' : undefined,
                   }}
-                  onClick={() => router.navigateUrl({ path: action.path })}
+                  onClick={() => {
+                    if (action.external && action.href) {
+                      window.open(action.href, '_blank', 'noopener,noreferrer')
+                    } else if (action.path) {
+                      router.navigateUrl({ path: action.path })
+                    }
+                  }}
                 >
                   <Flex align="center" gap={3}>
                     <Text size={2}>{action.icon}</Text>
@@ -120,7 +173,7 @@ export function StudioWelcome() {
                       <Text size={1} weight="semibold">{action.title}</Text>
                       <Text size={1} muted>{action.description}</Text>
                     </Stack>
-                    <Text size={1} muted>→</Text>
+                    <Text size={1} muted>{action.external ? '↗' : '→'}</Text>
                   </Flex>
                 </Card>
               ))}
@@ -128,32 +181,18 @@ export function StudioWelcome() {
           </Card>
         </Stack>
 
-        {/* Getting Started */}
+        {/* Tip of the Day */}
         <Card padding={4} radius={2} border tone="default">
-          <Stack space={3}>
-            <Text size={1} weight="semibold">Getting Started</Text>
-            <Stack space={2}>
-              <Text size={1} muted>• Click any section in the sidebar to edit it</Text>
-              <Text size={1} muted>• Hit &quot;Publish&quot; to push changes live</Text>
-              <Text size={1} muted>• Use the Visual Editor to preview as you type</Text>
-              <Text size={1} muted>• Toggle &quot;Show on Website&quot; to hide a section without deleting</Text>
+          <Flex align="flex-start" gap={3}>
+            <Text size={1} style={{ color: '#E8C872' }}>💡</Text>
+            <Stack space={1}>
+              <Text size={0} weight="semibold" style={{ letterSpacing: '0.04em', color: '#b8952e' }}>
+                TIP OF THE DAY
+              </Text>
+              <Text size={1} muted>{todayTip}</Text>
             </Stack>
-          </Stack>
+          </Flex>
         </Card>
-
-        {/* View Live Site */}
-        <Flex justify="center">
-          <Button
-            as="a"
-            href={process.env.NEXT_PUBLIC_SITE_URL || 'https://cb-media-site.vercel.app'}
-            target="_blank"
-            rel="noopener noreferrer"
-            text="View Live Site ↗"
-            tone="primary"
-            mode="ghost"
-            style={{ letterSpacing: '0.06em' }}
-          />
-        </Flex>
       </Stack>
     </Flex>
   )

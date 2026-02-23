@@ -1,10 +1,14 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
-import { presentationTool } from 'sanity/presentation'
+import { visionTool } from '@sanity/vision'
+import { media } from 'sanity-plugin-media'
+import { assist } from '@sanity/assist'
+import { orderableDocumentListDeskItem } from '@sanity/orderable-document-list'
 import { buildLegacyTheme } from 'sanity'
 import { schemaTypes } from './src/sanity/schemas'
 import { StudioNavbar } from './src/sanity/components/StudioNavbar'
 import { StudioWelcome } from './src/sanity/components/StudioWelcome'
+import { IframePreview } from './src/sanity/components/IframePreview'
 
 const theme = buildLegacyTheme({
   '--black': '#2d2926',
@@ -30,9 +34,6 @@ const theme = buildLegacyTheme({
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!
 
-const PREVIEW_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3007'
-
 export default defineConfig({
   name: 'default',
   title: 'CB Media Studio',
@@ -53,7 +54,7 @@ export default defineConfig({
 
   plugins: [
     structureTool({
-      structure: (S) =>
+      structure: (S, context) =>
         S.list()
           .title('Your Website')
           .items([
@@ -79,14 +80,13 @@ export default defineConfig({
                 S.list()
                   .title('Homepage Sections')
                   .items([
-                    S.listItem()
-                      .title('All Sections')
-                      .icon(() => '📋')
-                      .child(
-                        S.documentTypeList('section')
-                          .title('All Sections')
-                          .defaultOrdering([{ field: 'order', direction: 'asc' }])
-                      ),
+                    orderableDocumentListDeskItem({
+                      type: 'section',
+                      title: 'All Sections',
+                      icon: () => '📋',
+                      S,
+                      context,
+                    }),
                     S.listItem()
                       .title('Visible on Site')
                       .icon(() => '🟢')
@@ -94,7 +94,7 @@ export default defineConfig({
                         S.documentList()
                           .title('Visible on Site')
                           .filter('_type == "section" && isVisible == true')
-                          .defaultOrdering([{ field: 'order', direction: 'asc' }])
+                          .defaultOrdering([{ field: 'orderRank', direction: 'asc' }])
                       ),
                     S.listItem()
                       .title('Hidden')
@@ -103,41 +103,24 @@ export default defineConfig({
                         S.documentList()
                           .title('Hidden Sections')
                           .filter('_type == "section" && isVisible != true')
-                          .defaultOrdering([{ field: 'order', direction: 'asc' }])
+                          .defaultOrdering([{ field: 'orderRank', direction: 'asc' }])
                       ),
                   ])
               ),
           ]),
-    }),
-    presentationTool({
-      previewUrl: {
-        draftMode: {
-          enable: `${PREVIEW_URL}/api/draft-mode/enable`,
-        },
-      },
-      resolve: {
-        locations: {
-          section: {
-            select: { title: 'title', slug: 'slug.current' },
-            resolve: (doc) => ({
-              locations: [
-                {
-                  title: doc?.title || 'Section',
-                  href: `/#${doc?.slug || ''}`,
-                },
-                { title: 'Homepage', href: '/' },
-              ],
-            }),
-          },
-          siteSettings: {
-            select: { title: 'heroHeadline' },
-            resolve: () => ({
-              locations: [{ title: 'Homepage', href: '/' }],
-            }),
-          },
-        },
+      defaultDocumentNode: (S, { schemaType }) => {
+        if (schemaType === 'section' || schemaType === 'siteSettings') {
+          return S.document().views([
+            S.view.form(),
+            S.view.component(IframePreview).title('Preview'),
+          ])
+        }
+        return S.document().views([S.view.form()])
       },
     }),
+    visionTool({ defaultApiVersion: '2024-01-01' }),
+    media(),
+    assist(),
   ],
 
   theme,
