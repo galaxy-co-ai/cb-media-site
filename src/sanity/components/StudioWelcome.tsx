@@ -72,7 +72,7 @@ export function StudioWelcome() {
               letterSpacing: '0.08em',
             }}
           >
-            <span style={{ color: '#E8C872' }}>CB MEDIA</span>{' '}
+            <span style={{ color: '#b8952e' }}>CB MEDIA</span>{' '}
             Content Studio
           </Heading>
           <Text size={2} muted>

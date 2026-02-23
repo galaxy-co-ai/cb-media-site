@@ -19,7 +19,7 @@ export function StudioNavbar(props: NavbarProps) {
             letterSpacing: '0.12em',
           }}
         >
-          <span style={{ color: '#E8C872' }}>CB</span>{' '}
+          <span style={{ color: '#b8952e' }}>CB</span>{' '}
           MEDIA
         </Text>
         <Text size={0} muted style={{ letterSpacing: '0.08em' }}>

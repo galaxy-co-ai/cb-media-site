@@ -1,0 +1,19 @@
+/* Graph paper grid — 20px cells, warm pencil at 3.5% opacity */
+[data-ui='ToolScreen'],
+[data-ui='Pane'] > [data-ui='PaneContent'] {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      transparent,
+      transparent 19px,
+      rgba(80, 74, 61, 0.035) 19px,
+      rgba(80, 74, 61, 0.035) 20px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 19px,
+      rgba(80, 74, 61, 0.035) 19px,
+      rgba(80, 74, 61, 0.035) 20px
+    );
+}

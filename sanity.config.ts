@@ -7,24 +7,24 @@ import { StudioNavbar } from './src/sanity/components/StudioNavbar'
 import { StudioWelcome } from './src/sanity/components/StudioWelcome'
 
 const theme = buildLegacyTheme({
-  '--black': '#0a0a0a',
-  '--white': '#f0f0f0',
-  '--gray-base': '#141414',
-  '--gray': '#666666',
-  '--component-bg': '#111111',
-  '--component-text-color': '#e0e0e0',
+  '--black': '#2d2926',
+  '--white': '#f7f4f0',
+  '--gray-base': '#faf8f5',
+  '--gray': '#8a8279',
+  '--component-bg': '#fefcfa',
+  '--component-text-color': '#2d2926',
   '--brand-primary': '#E8C872',
   '--default-button-color': '#E8C872',
   '--default-button-primary-color': '#E8C872',
-  '--default-button-success-color': '#4ade80',
-  '--default-button-warning-color': '#facc15',
-  '--default-button-danger-color': '#f87171',
-  '--state-info-color': '#60a5fa',
-  '--state-success-color': '#4ade80',
-  '--state-warning-color': '#facc15',
-  '--state-danger-color': '#f87171',
+  '--default-button-success-color': '#3d9a50',
+  '--default-button-warning-color': '#c9960c',
+  '--default-button-danger-color': '#c53030',
+  '--state-info-color': '#3b82b8',
+  '--state-success-color': '#3d9a50',
+  '--state-warning-color': '#c9960c',
+  '--state-danger-color': '#c53030',
   '--focus-color': '#E8C872',
-  '--main-navigation-color': '#0a0a0a',
+  '--main-navigation-color': '#f0ebe4',
 })
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
