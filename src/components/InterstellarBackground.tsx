@@ -58,6 +58,8 @@ export function InterstellarBackground() {
     reducedMotion: false,
     initialized: false,
     paused: false,
+    bgGradient: null as CanvasGradient | null,
+    bgDimensions: { w: 0, h: 0 },
   })
 
   const initStars = useCallback((width: number, height: number): Star[] => {
@@ -131,12 +133,16 @@ export function InterstellarBackground() {
     ctx.save()
     ctx.scale(dpr, dpr)
 
-    // ═══ Layer 0: Deep space gradient base ═══
-    const bgGrad = ctx.createRadialGradient(w * 0.5, h * 0.4, 0, w * 0.5, h * 0.4, w * 0.8)
-    bgGrad.addColorStop(0, 'rgba(8, 8, 20, 1)')
-    bgGrad.addColorStop(0.5, 'rgba(4, 4, 12, 1)')
-    bgGrad.addColorStop(1, 'rgba(2, 2, 6, 1)')
-    ctx.fillStyle = bgGrad
+    // ═══ Layer 0: Deep space gradient base (cached — only recreate on resize) ═══
+    if (!state.bgGradient || state.bgDimensions.w !== w || state.bgDimensions.h !== h) {
+      const bgGrad = ctx.createRadialGradient(w * 0.5, h * 0.4, 0, w * 0.5, h * 0.4, w * 0.8)
+      bgGrad.addColorStop(0, 'rgba(8, 8, 20, 1)')
+      bgGrad.addColorStop(0.5, 'rgba(4, 4, 12, 1)')
+      bgGrad.addColorStop(1, 'rgba(2, 2, 6, 1)')
+      state.bgGradient = bgGrad
+      state.bgDimensions = { w, h }
+    }
+    ctx.fillStyle = state.bgGradient
     ctx.fillRect(0, 0, w, h)
 
     // ═══ Layer 1: Nebula clouds ═══
@@ -199,19 +205,21 @@ export function InterstellarBackground() {
 
       const adjustedOpacity = Math.min(finalOpacity * proximityBoost, 1)
 
-      // Draw star
+      // Draw star — use concentric alpha circles instead of per-star gradients
       if (star.size > 1.5) {
-        // Larger stars get a soft glow
-        const glowGrad = ctx.createRadialGradient(px, py, 0, px, py, star.size * 3)
-        glowGrad.addColorStop(0, `rgba(200, 220, 255, ${adjustedOpacity})`)
-        glowGrad.addColorStop(0.3, `rgba(180, 200, 255, ${adjustedOpacity * 0.3})`)
-        glowGrad.addColorStop(1, 'rgba(180, 200, 255, 0)')
-        ctx.fillStyle = glowGrad
+        // Outer glow (faint)
+        ctx.fillStyle = `rgba(180, 200, 255, ${adjustedOpacity * 0.08})`
         ctx.beginPath()
         ctx.arc(px, py, star.size * 3, 0, Math.PI * 2)
         ctx.fill()
+        // Inner glow
+        ctx.fillStyle = `rgba(200, 220, 255, ${adjustedOpacity * 0.25})`
+        ctx.beginPath()
+        ctx.arc(px, py, star.size * 1.8, 0, Math.PI * 2)
+        ctx.fill()
       }
 
+      // Core
       ctx.fillStyle = `rgba(220, 230, 255, ${adjustedOpacity})`
       ctx.beginPath()
       ctx.arc(px, py, star.size, 0, Math.PI * 2)
@@ -296,8 +304,9 @@ export function InterstellarBackground() {
     canvas.height = window.innerHeight * dpr
     canvas.style.width = `${window.innerWidth}px`
     canvas.style.height = `${window.innerHeight}px`
-    // Re-init stars for new dimensions
+    // Re-init stars and invalidate cached gradient for new dimensions
     stateRef.current.stars = initStars(window.innerWidth, window.innerHeight)
+    stateRef.current.bgGradient = null
   }, [initStars])
 
   useEffect(() => {
