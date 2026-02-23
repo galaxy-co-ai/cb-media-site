@@ -5,6 +5,7 @@ import { VisualEditing } from 'next-sanity/visual-editing'
 
 import './globals.css'
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider'
+import { SanityLive } from '@/sanity/lib/live'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -50,6 +51,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${spaceGrotesk.variable} ${montserrat.variable} font-sans`}>
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <SanityLive />
         {draft.isEnabled && <VisualEditing />}
       </body>
     </html>
