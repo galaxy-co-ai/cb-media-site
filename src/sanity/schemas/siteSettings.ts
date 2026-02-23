@@ -5,9 +5,9 @@ export default defineType({
   title: 'Site Settings',
   type: 'document',
   groups: [
-    { name: 'hero', title: 'Hero Banner', default: true },
+    { name: 'hero', title: 'Your Headline', default: true },
     { name: 'contact', title: 'Contact Info' },
-    { name: 'cta', title: 'Main Button' },
+    { name: 'cta', title: 'Call-to-Action Button' },
   ],
   fields: [
     defineField({

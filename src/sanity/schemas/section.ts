@@ -6,8 +6,8 @@ export default defineType({
   type: 'document',
   groups: [
     { name: 'content', title: 'Content', default: true },
-    { name: 'cards', title: 'Cards & Stats' },
-    { name: 'settings', title: 'Settings' },
+    { name: 'cards', title: 'Numbers & Cards' },
+    { name: 'settings', title: 'Page Settings' },
   ],
   fields: [
     defineField({
@@ -137,8 +137,8 @@ export default defineType({
       title: 'Section ID',
       type: 'slug',
       group: 'settings',
-      description:
-        'Auto-generated from the title. Used in the page URL. You generally don\'t need to change this.',
+      hidden: true,
+      description: 'Auto-generated from the title.',
       options: { source: 'title', maxLength: 96 },
       validation: (Rule) => Rule.required(),
     }),
