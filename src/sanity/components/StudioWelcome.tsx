@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Stack, Text, Heading, Flex, Grid } from '@sanity/ui'
 import { useRouter } from 'sanity/router'
 import { useClient } from 'sanity'
 
 /* ── Tokens ── */
 const GOLD = '#E8C872'
-const GOLD_DIM = '#b8952e'
 const TEXT = '#E8E4DE'
 const MUTED = '#6B6560'
 const SURFACE = '#1A1918'
 const BORDER = 'rgba(255,255,255,0.08)'
 const HOVER_BG = 'rgba(232,200,114,0.04)'
+const FONT_UI = '"Space Grotesk", sans-serif'
 
 /* ── Types ── */
 interface ContentStats {
@@ -73,12 +72,33 @@ const QUICK_ACTIONS = [
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cb-media-site.vercel.app'
 
-/* ── Styles ── */
+/* ── Shared styles ── */
+const overline: React.CSSProperties = {
+  color: MUTED,
+  fontSize: 11,
+  fontWeight: 600,
+  fontFamily: FONT_UI,
+  letterSpacing: '0.06em',
+  textTransform: 'uppercase',
+  margin: 0,
+}
+
+const statValue: React.CSSProperties = {
+  color: TEXT,
+  fontSize: 28,
+  fontWeight: 700,
+  fontFamily: FONT_UI,
+  fontVariantNumeric: 'tabular-nums',
+  lineHeight: 1.1,
+  margin: 0,
+}
+
 const cardStyle: React.CSSProperties = {
   backgroundColor: SURFACE,
   border: `1px solid ${BORDER}`,
   borderLeft: `2px solid ${GOLD}`,
   borderRadius: 6,
+  padding: '16px 16px 16px 14px',
 }
 
 const actionCardBase: React.CSSProperties = {
@@ -87,6 +107,10 @@ const actionCardBase: React.CSSProperties = {
   borderRadius: 6,
   cursor: 'pointer',
   transition: 'background-color 150ms ease, transform 150ms ease',
+  padding: 16,
+  display: 'flex',
+  alignItems: 'center',
+  gap: 12,
 }
 
 /* ── Component ── */
@@ -96,31 +120,37 @@ export function StudioWelcome() {
   const [hoveredAction, setHoveredAction] = useState<number | null>(null)
 
   return (
-    <Flex
-      align="center"
-      justify="center"
-      style={{ height: '100%', padding: '2rem', backgroundColor: '#111010' }}
+    <div
+      style={{
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem',
+        backgroundColor: '#111010',
+      }}
     >
-      <Stack space={5} style={{ maxWidth: 580, width: '100%' }}>
+      <div style={{ maxWidth: 580, width: '100%' }}>
         {/* ── Header ── */}
-        <Stack space={3}>
-          <Heading
-            size={4}
+        <div style={{ marginBottom: 32 }}>
+          <h2
             style={{
-              fontFamily: '"Space Grotesk", sans-serif',
+              fontFamily: FONT_UI,
               fontWeight: 600,
+              fontSize: 28,
               letterSpacing: '0.08em',
               color: TEXT,
+              margin: 0,
             }}
           >
             <span style={{ color: GOLD }}>CB MEDIA</span>{' '}
             Content Studio
-          </Heading>
-          <div style={{ width: 64, height: 2, backgroundColor: GOLD, borderRadius: 1 }} />
-          <Flex align="center" justify="space-between">
-            <Text size={1} style={{ color: MUTED }}>
+          </h2>
+          <div style={{ width: 64, height: 2, backgroundColor: GOLD, borderRadius: 1, marginTop: 12 }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12 }}>
+            <span style={{ color: MUTED, fontSize: 14, fontFamily: FONT_UI }}>
               Your site at a glance
-            </Text>
+            </span>
             <a
               href={SITE_URL}
               target="_blank"
@@ -129,7 +159,7 @@ export function StudioWelcome() {
                 color: MUTED,
                 fontSize: 13,
                 textDecoration: 'none',
-                fontFamily: '"Space Grotesk", sans-serif',
+                fontFamily: FONT_UI,
                 letterSpacing: '0.02em',
                 transition: 'color 150ms ease',
               }}
@@ -138,93 +168,42 @@ export function StudioWelcome() {
             >
               View live site ↗
             </a>
-          </Flex>
-        </Stack>
+          </div>
+        </div>
 
         {/* ── Stats ── */}
-        <Grid columns={stats.draftCount > 0 ? 4 : 3} gap={3}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: stats.draftCount > 0 ? 'repeat(4, 1fr)' : 'repeat(3, 1fr)',
+            gap: 12,
+            marginBottom: 24,
+          }}
+        >
           <div style={cardStyle}>
-            <div style={{ padding: '16px 16px 16px 14px' }}>
-              <Text
-                size={0}
-                style={{ color: MUTED, letterSpacing: '0.06em', textTransform: 'uppercase' as const, fontSize: 11 }}
-              >
-                Published
-              </Text>
-              <div style={{ marginTop: 6 }}>
-                <Text
-                  size={4}
-                  weight="bold"
-                  style={{ color: TEXT, fontVariantNumeric: 'tabular-nums', fontFamily: '"Space Grotesk", sans-serif' }}
-                >
-                  {stats.sectionCount}
-                </Text>
-              </div>
-            </div>
+            <p style={overline}>Published</p>
+            <p style={{ ...statValue, marginTop: 6 }}>{stats.sectionCount}</p>
           </div>
 
           <div style={cardStyle}>
-            <div style={{ padding: '16px 16px 16px 14px' }}>
-              <Text
-                size={0}
-                style={{ color: MUTED, letterSpacing: '0.06em', textTransform: 'uppercase' as const, fontSize: 11 }}
-              >
-                Hidden
-              </Text>
-              <div style={{ marginTop: 6 }}>
-                <Text
-                  size={4}
-                  weight="bold"
-                  style={{ color: TEXT, fontVariantNumeric: 'tabular-nums', fontFamily: '"Space Grotesk", sans-serif' }}
-                >
-                  {stats.hiddenCount}
-                </Text>
-              </div>
-            </div>
+            <p style={overline}>Hidden</p>
+            <p style={{ ...statValue, marginTop: 6 }}>{stats.hiddenCount}</p>
           </div>
 
           <div style={cardStyle}>
-            <div style={{ padding: '16px 16px 16px 14px' }}>
-              <Text
-                size={0}
-                style={{ color: MUTED, letterSpacing: '0.06em', textTransform: 'uppercase' as const, fontSize: 11 }}
-              >
-                Last edit
-              </Text>
-              <div style={{ marginTop: 6 }}>
-                <Text
-                  size={4}
-                  weight="bold"
-                  style={{ color: TEXT, fontVariantNumeric: 'tabular-nums', fontFamily: '"Space Grotesk", sans-serif', fontSize: stats.lastEdited ? 18 : undefined }}
-                >
-                  {formatTimeAgo(stats.lastEdited)}
-                </Text>
-              </div>
-            </div>
+            <p style={overline}>Last edit</p>
+            <p style={{ ...statValue, marginTop: 6, fontSize: 20 }}>
+              {formatTimeAgo(stats.lastEdited)}
+            </p>
           </div>
 
           {stats.draftCount > 0 && (
             <div style={{ ...cardStyle, borderLeftColor: '#c9960c' }}>
-              <div style={{ padding: '16px 16px 16px 14px' }}>
-                <Text
-                  size={0}
-                  style={{ color: '#c9960c', letterSpacing: '0.06em', textTransform: 'uppercase' as const, fontSize: 11 }}
-                >
-                  Drafts
-                </Text>
-                <div style={{ marginTop: 6 }}>
-                  <Text
-                    size={4}
-                    weight="bold"
-                    style={{ color: TEXT, fontVariantNumeric: 'tabular-nums', fontFamily: '"Space Grotesk", sans-serif' }}
-                  >
-                    {stats.draftCount}
-                  </Text>
-                </div>
-              </div>
+              <p style={{ ...overline, color: '#c9960c' }}>Drafts</p>
+              <p style={{ ...statValue, marginTop: 6 }}>{stats.draftCount}</p>
             </div>
           )}
-        </Grid>
+        </div>
 
         {/* ── Draft warning ── */}
         {stats.draftCount > 0 && (
@@ -235,23 +214,19 @@ export function StudioWelcome() {
               borderLeft: '2px solid #c9960c',
               borderRadius: 6,
               padding: '12px 16px 12px 14px',
+              marginBottom: 24,
             }}
           >
-            <Text size={1} style={{ color: '#c9960c' }}>
+            <span style={{ color: '#c9960c', fontSize: 14, fontFamily: FONT_UI }}>
               {stats.draftCount} unpublished {stats.draftCount === 1 ? 'draft' : 'drafts'} — publish when ready
-            </Text>
+            </span>
           </div>
         )}
 
         {/* ── Quick Actions ── */}
-        <Stack space={3}>
-          <Text
-            size={0}
-            style={{ color: MUTED, letterSpacing: '0.06em', textTransform: 'uppercase' as const, fontSize: 11, fontWeight: 600 }}
-          >
-            Quick actions
-          </Text>
-          <Stack space={2}>
+        <div>
+          <p style={{ ...overline, marginBottom: 12 }}>Quick actions</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {QUICK_ACTIONS.map((action, i) => (
               <div
                 key={action.title}
@@ -276,19 +251,23 @@ export function StudioWelcome() {
                   }
                 }}
               >
-                <Flex align="center" gap={3} style={{ padding: '16px' }}>
-                  <Text size={2} style={{ color: GOLD, fontFamily: 'serif' }}>{action.icon}</Text>
-                  <Stack space={1} style={{ flex: 1 }}>
-                    <Text size={1} weight="semibold" style={{ color: TEXT }}>{action.title}</Text>
-                    <Text size={1} style={{ color: MUTED }}>{action.description}</Text>
-                  </Stack>
-                  <Text size={1} style={{ color: MUTED }}>→</Text>
-                </Flex>
+                <span style={{ color: GOLD, fontSize: 18, fontFamily: 'serif', flexShrink: 0 }}>
+                  {action.icon}
+                </span>
+                <div style={{ flex: 1 }}>
+                  <p style={{ color: TEXT, fontSize: 14, fontWeight: 600, fontFamily: FONT_UI, margin: 0 }}>
+                    {action.title}
+                  </p>
+                  <p style={{ color: MUTED, fontSize: 13, fontFamily: FONT_UI, margin: '2px 0 0' }}>
+                    {action.description}
+                  </p>
+                </div>
+                <span style={{ color: MUTED, fontSize: 14 }}>→</span>
               </div>
             ))}
-          </Stack>
-        </Stack>
-      </Stack>
-    </Flex>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

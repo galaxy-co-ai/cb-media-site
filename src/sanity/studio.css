@@ -68,3 +68,26 @@
 [data-ui='Navbar'] {
   border-bottom: 1px solid rgba(232, 200, 114, 0.15) !important;
 }
+
+/* ── Force dark-theme text colors on @sanity/ui components ── */
+/* buildLegacyTheme swaps black/white but styled-components
+   intermediate tones still render too dark — override explicitly */
+[data-ui='Text'],
+[data-ui='Heading'],
+[data-ui='Label'] {
+  color: #E8E4DE !important;
+}
+
+/* Muted text variant — Sanity uses data-muted attribute */
+[data-ui='Text'][data-muted='true'] {
+  color: #8A8279 !important;
+}
+
+/* Navbar tab text needs to stay readable */
+[data-ui='Tab'] [data-ui='Text'] {
+  color: #A09A92 !important;
+}
+
+[data-ui='Tab'][data-selected] [data-ui='Text'] {
+  color: #E8E4DE !important;
+}
