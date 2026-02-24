@@ -1,8 +1,18 @@
-import { useEffect, useState, useMemo } from 'react'
-import { Card, Stack, Text, Heading, Flex, Button, Grid } from '@sanity/ui'
+import { useEffect, useState } from 'react'
+import { Stack, Text, Heading, Flex, Grid } from '@sanity/ui'
 import { useRouter } from 'sanity/router'
 import { useClient } from 'sanity'
 
+/* ── Tokens ── */
+const GOLD = '#E8C872'
+const GOLD_DIM = '#b8952e'
+const TEXT = '#E8E4DE'
+const MUTED = '#6B6560'
+const SURFACE = '#1A1918'
+const BORDER = 'rgba(255,255,255,0.08)'
+const HOVER_BG = 'rgba(232,200,114,0.04)'
+
+/* ── Types ── */
 interface ContentStats {
   sectionCount: number
   hiddenCount: number
@@ -10,6 +20,7 @@ interface ContentStats {
   lastEdited: string | null
 }
 
+/* ── Data hook ── */
 function useContentStats() {
   const client = useClient({ apiVersion: '2024-01-01' })
   const [stats, setStats] = useState<ContentStats>({
@@ -32,6 +43,7 @@ function useContentStats() {
   return stats
 }
 
+/* ── Helpers ── */
 function formatTimeAgo(dateStr: string | null): string {
   if (!dateStr) return 'Never'
   const diff = Date.now() - new Date(dateStr).getTime()
@@ -43,156 +55,239 @@ function formatTimeAgo(dateStr: string | null): string {
   return `${days}d ago`
 }
 
-const TIPS = [
-  'Click any section in the sidebar to edit it',
-  'Hit "Publish" to push changes live instantly',
-  'Toggle "Show on Website" to hide a section without deleting',
-  'Drag sections in "All Sections" to reorder them on the page',
-  'Use the Preview tab to see your site while editing',
-  'Upload images via the Media tool in the top nav',
-  'Add social links in Hero & Branding → SEO & Social',
-  'The AI sparkle icon on text fields can help draft copy',
-]
-
+/* ── Quick Actions ── */
 const QUICK_ACTIONS = [
   {
-    icon: '📄',
-    title: 'Edit Homepage Sections',
+    icon: '◆',
+    title: 'Edit homepage sections',
     description: 'Update what visitors see on your website',
     path: '/studio/structure/section',
   },
   {
-    icon: '✏️',
-    title: 'Update Hero & Contact Info',
+    icon: '✦',
+    title: 'Update hero & contact info',
     description: 'Change your headline, email, or call-to-action',
     path: '/studio/structure/siteSettings',
   },
-  {
-    icon: '🌐',
-    title: 'Preview Site',
-    description: 'Open your live website in a new tab',
-    href: process.env.NEXT_PUBLIC_SITE_URL || 'https://cb-media-site.vercel.app',
-    external: true,
-  },
 ]
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cb-media-site.vercel.app'
+
+/* ── Styles ── */
+const cardStyle: React.CSSProperties = {
+  backgroundColor: SURFACE,
+  border: `1px solid ${BORDER}`,
+  borderLeft: `2px solid ${GOLD}`,
+  borderRadius: 6,
+}
+
+const actionCardBase: React.CSSProperties = {
+  backgroundColor: SURFACE,
+  border: `1px solid ${BORDER}`,
+  borderRadius: 6,
+  cursor: 'pointer',
+  transition: 'background-color 150ms ease, transform 150ms ease',
+}
+
+/* ── Component ── */
 export function StudioWelcome() {
   const router = useRouter()
   const stats = useContentStats()
-
-  const todayTip = useMemo(() => {
-    const dayIndex = Math.floor(Date.now() / 86400000) % TIPS.length
-    return TIPS[dayIndex]
-  }, [])
+  const [hoveredAction, setHoveredAction] = useState<number | null>(null)
 
   return (
-    <Flex align="center" justify="center" style={{ height: '100%', padding: '2rem' }}>
-      <Stack space={5} style={{ maxWidth: 560, width: '100%' }}>
-        {/* Header */}
-        <Stack space={2}>
+    <Flex
+      align="center"
+      justify="center"
+      style={{ height: '100%', padding: '2rem', backgroundColor: '#111010' }}
+    >
+      <Stack space={5} style={{ maxWidth: 580, width: '100%' }}>
+        {/* ── Header ── */}
+        <Stack space={3}>
           <Heading
             size={4}
             style={{
               fontFamily: '"Space Grotesk", sans-serif',
               fontWeight: 600,
               letterSpacing: '0.08em',
-              borderBottom: '2px solid #E8C872',
-              paddingBottom: '0.5rem',
-              display: 'inline-block',
+              color: TEXT,
             }}
           >
-            <span style={{ color: '#b8952e' }}>CB MEDIA</span>{' '}
+            <span style={{ color: GOLD }}>CB MEDIA</span>{' '}
             Content Studio
           </Heading>
-          <Text size={2} muted>
-            Welcome back. Here&apos;s where things stand.
-          </Text>
+          <div style={{ width: 64, height: 2, backgroundColor: GOLD, borderRadius: 1 }} />
+          <Flex align="center" justify="space-between">
+            <Text size={1} style={{ color: MUTED }}>
+              Your site at a glance
+            </Text>
+            <a
+              href={SITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: MUTED,
+                fontSize: 13,
+                textDecoration: 'none',
+                fontFamily: '"Space Grotesk", sans-serif',
+                letterSpacing: '0.02em',
+                transition: 'color 150ms ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = GOLD }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = MUTED }}
+            >
+              View live site ↗
+            </a>
+          </Flex>
         </Stack>
 
-        {/* Status Cards */}
-        <Grid columns={3} gap={3}>
-          <Card padding={4} radius={2} tone="default" border>
-            <Stack space={2}>
-              <Text size={0} muted style={{ letterSpacing: '0.04em' }}>PUBLISHED</Text>
-              <Heading size={3}>{stats.sectionCount}</Heading>
-            </Stack>
-          </Card>
-          <Card padding={4} radius={2} tone="default" border>
-            <Stack space={2}>
-              <Text size={0} muted style={{ letterSpacing: '0.04em' }}>HIDDEN</Text>
-              <Heading size={3}>{stats.hiddenCount}</Heading>
-            </Stack>
-          </Card>
-          <Card padding={4} radius={2} tone="default" border>
-            <Stack space={2}>
-              <Text size={0} muted style={{ letterSpacing: '0.04em' }}>LAST EDIT</Text>
-              <Heading size={3} style={{ fontSize: '1.1rem' }}>{formatTimeAgo(stats.lastEdited)}</Heading>
-            </Stack>
-          </Card>
+        {/* ── Stats ── */}
+        <Grid columns={stats.draftCount > 0 ? 4 : 3} gap={3}>
+          <div style={cardStyle}>
+            <div style={{ padding: '16px 16px 16px 14px' }}>
+              <Text
+                size={0}
+                style={{ color: MUTED, letterSpacing: '0.06em', textTransform: 'uppercase' as const, fontSize: 11 }}
+              >
+                Published
+              </Text>
+              <div style={{ marginTop: 6 }}>
+                <Text
+                  size={4}
+                  weight="bold"
+                  style={{ color: TEXT, fontVariantNumeric: 'tabular-nums', fontFamily: '"Space Grotesk", sans-serif' }}
+                >
+                  {stats.sectionCount}
+                </Text>
+              </div>
+            </div>
+          </div>
+
+          <div style={cardStyle}>
+            <div style={{ padding: '16px 16px 16px 14px' }}>
+              <Text
+                size={0}
+                style={{ color: MUTED, letterSpacing: '0.06em', textTransform: 'uppercase' as const, fontSize: 11 }}
+              >
+                Hidden
+              </Text>
+              <div style={{ marginTop: 6 }}>
+                <Text
+                  size={4}
+                  weight="bold"
+                  style={{ color: TEXT, fontVariantNumeric: 'tabular-nums', fontFamily: '"Space Grotesk", sans-serif' }}
+                >
+                  {stats.hiddenCount}
+                </Text>
+              </div>
+            </div>
+          </div>
+
+          <div style={cardStyle}>
+            <div style={{ padding: '16px 16px 16px 14px' }}>
+              <Text
+                size={0}
+                style={{ color: MUTED, letterSpacing: '0.06em', textTransform: 'uppercase' as const, fontSize: 11 }}
+              >
+                Last edit
+              </Text>
+              <div style={{ marginTop: 6 }}>
+                <Text
+                  size={4}
+                  weight="bold"
+                  style={{ color: TEXT, fontVariantNumeric: 'tabular-nums', fontFamily: '"Space Grotesk", sans-serif', fontSize: stats.lastEdited ? 18 : undefined }}
+                >
+                  {formatTimeAgo(stats.lastEdited)}
+                </Text>
+              </div>
+            </div>
+          </div>
+
+          {stats.draftCount > 0 && (
+            <div style={{ ...cardStyle, borderLeftColor: '#c9960c' }}>
+              <div style={{ padding: '16px 16px 16px 14px' }}>
+                <Text
+                  size={0}
+                  style={{ color: '#c9960c', letterSpacing: '0.06em', textTransform: 'uppercase' as const, fontSize: 11 }}
+                >
+                  Drafts
+                </Text>
+                <div style={{ marginTop: 6 }}>
+                  <Text
+                    size={4}
+                    weight="bold"
+                    style={{ color: TEXT, fontVariantNumeric: 'tabular-nums', fontFamily: '"Space Grotesk", sans-serif' }}
+                  >
+                    {stats.draftCount}
+                  </Text>
+                </div>
+              </div>
+            </div>
+          )}
         </Grid>
 
-        {/* Drafts Warning */}
+        {/* ── Draft warning ── */}
         {stats.draftCount > 0 && (
-          <Card padding={3} radius={2} tone="caution" border>
-            <Flex align="center" gap={2}>
-              <Text size={1}>⚠️</Text>
-              <Text size={1}>
-                {stats.draftCount} unpublished {stats.draftCount === 1 ? 'draft' : 'drafts'} — remember to publish when ready
-              </Text>
-            </Flex>
-          </Card>
+          <div
+            style={{
+              backgroundColor: 'rgba(201,150,12,0.06)',
+              border: '1px solid rgba(201,150,12,0.15)',
+              borderLeft: '2px solid #c9960c',
+              borderRadius: 6,
+              padding: '12px 16px 12px 14px',
+            }}
+          >
+            <Text size={1} style={{ color: '#c9960c' }}>
+              {stats.draftCount} unpublished {stats.draftCount === 1 ? 'draft' : 'drafts'} — publish when ready
+            </Text>
+          </div>
         )}
 
-        {/* Quick Actions */}
-        <Stack space={2}>
-          <Text size={0} weight="semibold" style={{ letterSpacing: '0.06em' }}>
-            QUICK ACTIONS
+        {/* ── Quick Actions ── */}
+        <Stack space={3}>
+          <Text
+            size={0}
+            style={{ color: MUTED, letterSpacing: '0.06em', textTransform: 'uppercase' as const, fontSize: 11, fontWeight: 600 }}
+          >
+            Quick actions
           </Text>
-          <Card radius={2} border overflow="hidden">
-            <Stack>
-              {QUICK_ACTIONS.map((action, i) => (
-                <Card
-                  key={action.title}
-                  padding={4}
-                  tone="default"
-                  style={{
-                    cursor: 'pointer',
-                    borderTop: i > 0 ? '1px solid var(--card-border-color)' : undefined,
-                  }}
-                  onClick={() => {
-                    if (action.external && action.href) {
-                      window.open(action.href, '_blank', 'noopener,noreferrer')
-                    } else if (action.path) {
-                      router.navigateUrl({ path: action.path })
-                    }
-                  }}
-                >
-                  <Flex align="center" gap={3}>
-                    <Text size={2}>{action.icon}</Text>
-                    <Stack space={1} style={{ flex: 1 }}>
-                      <Text size={1} weight="semibold">{action.title}</Text>
-                      <Text size={1} muted>{action.description}</Text>
-                    </Stack>
-                    <Text size={1} muted>{action.external ? '↗' : '→'}</Text>
-                  </Flex>
-                </Card>
-              ))}
-            </Stack>
-          </Card>
+          <Stack space={2}>
+            {QUICK_ACTIONS.map((action, i) => (
+              <div
+                key={action.title}
+                role="button"
+                tabIndex={0}
+                style={{
+                  ...actionCardBase,
+                  backgroundColor: hoveredAction === i ? HOVER_BG : SURFACE,
+                  transform: hoveredAction === i ? 'translateY(-1px)' : 'none',
+                }}
+                onMouseEnter={() => setHoveredAction(i)}
+                onMouseLeave={() => setHoveredAction(null)}
+                onClick={() => {
+                  if (action.path) {
+                    router.navigateUrl({ path: action.path })
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    if (action.path) router.navigateUrl({ path: action.path })
+                  }
+                }}
+              >
+                <Flex align="center" gap={3} style={{ padding: '16px' }}>
+                  <Text size={2} style={{ color: GOLD, fontFamily: 'serif' }}>{action.icon}</Text>
+                  <Stack space={1} style={{ flex: 1 }}>
+                    <Text size={1} weight="semibold" style={{ color: TEXT }}>{action.title}</Text>
+                    <Text size={1} style={{ color: MUTED }}>{action.description}</Text>
+                  </Stack>
+                  <Text size={1} style={{ color: MUTED }}>→</Text>
+                </Flex>
+              </div>
+            ))}
+          </Stack>
         </Stack>
-
-        {/* Tip of the Day */}
-        <Card padding={4} radius={2} border tone="default">
-          <Flex align="flex-start" gap={3}>
-            <Text size={1} style={{ color: '#E8C872' }}>💡</Text>
-            <Stack space={1}>
-              <Text size={0} weight="semibold" style={{ letterSpacing: '0.04em', color: '#b8952e' }}>
-                TIP OF THE DAY
-              </Text>
-              <Text size={1} muted>{todayTip}</Text>
-            </Stack>
-          </Flex>
-        </Card>
       </Stack>
     </Flex>
   )
