@@ -13,16 +13,23 @@ export function StudioNavbar(props: NavbarProps) {
       >
         <Text
           size={1}
-          weight="semibold"
+          weight="bold"
           style={{
             fontFamily: '"Space Grotesk", sans-serif',
-            letterSpacing: '0.12em',
+            letterSpacing: '0.14em',
           }}
         >
-          <span style={{ color: '#b8952e' }}>CB</span>{' '}
-          MEDIA
+          <span style={{ color: '#E8C872' }}>CB</span>{' '}
+          <span style={{ color: '#E8E4DE' }}>MEDIA</span>
         </Text>
-        <Text size={0} muted style={{ letterSpacing: '0.08em' }}>
+        <Text
+          size={0}
+          style={{
+            color: '#6B6560',
+            letterSpacing: '0.08em',
+            fontFamily: '"Space Grotesk", sans-serif',
+          }}
+        >
           Studio
         </Text>
       </Flex>
