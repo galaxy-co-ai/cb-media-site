@@ -33,10 +33,64 @@
   font-weight: 500;
 }
 
-/* ── Form input focus ring ── */
+/* ── Form inputs — neumorphic inset, readable text ── */
+[data-ui='TextInput'],
+[data-ui='TextArea'] {
+  background-color: #1A1918 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 6px !important;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.45),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.03) !important;
+  transition: box-shadow 150ms ease, border-color 150ms ease !important;
+}
+
 [data-ui='TextInput']:focus-within,
 [data-ui='TextArea']:focus-within {
   --card-focus-ring-color: #E8C872;
+  border-color: rgba(232, 200, 114, 0.25) !important;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.45),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.03),
+    0 0 0 1px rgba(232, 200, 114, 0.15) !important;
+}
+
+/* Input text — light on dark so values are visible */
+[data-ui='TextInput'] input,
+[data-ui='TextInput'] textarea,
+[data-ui='TextArea'] textarea {
+  color: #E8E4DE !important;
+  caret-color: #E8C872;
+}
+
+/* Placeholder text — dimmed */
+[data-ui='TextInput'] input::placeholder,
+[data-ui='TextInput'] textarea::placeholder,
+[data-ui='TextArea'] textarea::placeholder {
+  color: #4A4642 !important;
+}
+
+/* Portable Text editor (rich text fields) */
+[data-testid='pt-editor'] [contenteditable] {
+  color: #E8E4DE !important;
+  caret-color: #E8C872;
+}
+
+[data-testid='pt-editor'] {
+  background-color: #1A1918 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 6px !important;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.45),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.03) !important;
+}
+
+[data-testid='pt-editor']:focus-within {
+  border-color: rgba(232, 200, 114, 0.25) !important;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.45),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.03),
+    0 0 0 1px rgba(232, 200, 114, 0.15) !important;
 }
 
 /* ── Selection color ── */
