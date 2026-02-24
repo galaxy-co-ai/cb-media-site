@@ -8,6 +8,7 @@ pnpm build            # Production build
 pnpm test             # Vitest (watch mode)
 pnpm test:run         # Vitest (single run)
 pnpm lint             # ESLint
+pnpm typegen          # Generate Sanity TypeScript types (run after schema changes)
 ```
 
 ## Project Overview
@@ -49,6 +50,9 @@ src/
 │   ├── studio/[[...tool]]/   # Sanity Studio route
 │   └── api/
 │       ├── chat/route.ts     # POST send / GET poll
+│       ├── draft/enable/     # GET — enables Next.js draft mode (Presentation Tool)
+│       ├── draft/disable/    # GET — disables draft mode
+│       ├── revalidate/       # POST — on-demand cache revalidation (Sanity webhook)
 │       └── feedback/route.ts # POST with screenshot → email + Telegram
 ├── components/
 │   ├── sections/Accordion.tsx         # Framer Motion accordion
@@ -62,7 +66,9 @@ src/
 │   └── feedback/FeedbackWidget.tsx    # Floating feedback modal
 ├── sanity/
 │   ├── schemas/   # section, siteSettings, stat
-│   ├── lib/       # client, queries, types, image
+│   ├── lib/       # client, queries, types, image, live
+│   ├── components/ # StudioNavbar, StudioWelcome, IframePreview, CharCountInput
+│   ├── studio.css # Studio visual polish (graph paper, gold accents)
 │   └── env.ts     # isSanityConfigured flag
 ├── lib/
 │   ├── fallback-content.ts   # 5 hardcoded sections (Sanity fallback)
@@ -82,6 +88,12 @@ Required `.env.local`:
 NEXT_PUBLIC_SANITY_PROJECT_ID=ctm1hbbr
 NEXT_PUBLIC_SANITY_DATASET=production
 NEXT_PUBLIC_SANITY_API_VERSION=2024-01-01
+```
+
+Required for Presentation Tool / Visual Editing:
+```bash
+SANITY_VIEWER_TOKEN=          # Viewer-role token from manage.sanity.io
+SANITY_REVALIDATE_SECRET=     # Shared secret for webhook signature validation
 ```
 
 Optional (chat/feedback features):
@@ -106,6 +118,25 @@ SANITY_API_WRITE_TOKEN=xxx pnpm exec tsx scripts/seed-sanity.ts
 | Accordion / UI | Space Grotesk | 300–700 | 8% |
 | Body | Inter | 400 | default |
 
+## Sanity Studio Features
+
+- **Presentation Tool** — Live visual editing with draft mode (`/api/draft/enable`)
+- **Visual Editing** — Click-to-edit overlays via stega encoding (already in layout)
+- **SanityLive** — Real-time content updates (already in layout)
+- **On-demand revalidation** — Webhook at `/api/revalidate` (needs GROQ webhook configured at manage.sanity.io)
+- **Type generation** — `pnpm typegen` generates `sanity.types.ts` from schemas + GROQ queries
+- **AI Assist** — `@sanity/assist` for AI-powered field suggestions
+- **Media Library** — `sanity-plugin-media` for asset browsing
+- **Orderable Lists** — Drag-to-reorder sections
+- **Custom components** — StudioWelcome dashboard, CharCountInput, IframePreview, branded navbar
+
+### Post-Deploy Checklist (Presentation Tool)
+
+1. Add `SANITY_VIEWER_TOKEN` to Vercel env vars
+2. Add `SANITY_REVALIDATE_SECRET` to Vercel env vars
+3. Create GROQ webhook at manage.sanity.io → `/api/revalidate` (filter: `_type in ["section", "siteSettings"]`)
+4. Add production URL to Sanity CORS origins (with credentials)
+
 ## Gotchas
 
 - Dev server runs on port **3007**, not 3000
@@ -115,3 +146,6 @@ SANITY_API_WRITE_TOKEN=xxx pnpm exec tsx scripts/seed-sanity.ts
 - Sanity content falls back to `lib/fallback-content.ts` when unconfigured — the site works without CMS
 - Chat webhook route (`api/chat/webhook`) is a stub — not fully implemented
 - `public/` still has default Next.js SVGs (file.svg, globe.svg, etc.) — safe to replace
+- Production cache uses tag-based revalidation only (no TTL) — requires webhook for instant updates
+- `sanity-plugin-seo-pane` is NOT compatible with React 19 / Sanity v5 — don't install it
+- Run `pnpm typegen` after any schema changes to keep `sanity.types.ts` in sync

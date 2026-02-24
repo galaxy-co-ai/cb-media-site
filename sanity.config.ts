@@ -1,5 +1,6 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
+import { presentationTool } from 'sanity/presentation'
 import { visionTool } from '@sanity/vision'
 import { media } from 'sanity-plugin-media'
 import { assist } from '@sanity/assist'
@@ -116,6 +117,13 @@ export default defineConfig({
           ])
         }
         return S.document().views([S.view.form()])
+      },
+    }),
+    presentationTool({
+      previewUrl: {
+        draftMode: {
+          enable: '/api/draft/enable',
+        },
       },
     }),
     visionTool({ defaultApiVersion: '2024-01-01' }),
