@@ -12,12 +12,12 @@ import { StudioWelcome } from './src/sanity/components/StudioWelcome'
 import { IframePreview } from './src/sanity/components/IframePreview'
 
 const theme = buildLegacyTheme({
-  '--black': '#2d2926',
-  '--white': '#f7f4f0',
-  '--gray-base': '#faf8f5',
-  '--gray': '#8a8279',
-  '--component-bg': '#fefcfa',
-  '--component-text-color': '#2d2926',
+  '--black': '#E8E4DE',
+  '--white': '#111010',
+  '--gray-base': '#161514',
+  '--gray': '#6B6560',
+  '--component-bg': '#1A1918',
+  '--component-text-color': '#E8E4DE',
   '--brand-primary': '#E8C872',
   '--default-button-color': '#E8C872',
   '--default-button-primary-color': '#E8C872',
@@ -29,7 +29,7 @@ const theme = buildLegacyTheme({
   '--state-warning-color': '#c9960c',
   '--state-danger-color': '#c53030',
   '--focus-color': '#E8C872',
-  '--main-navigation-color': '#f0ebe4',
+  '--main-navigation-color': '#111010',
 })
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
@@ -47,7 +47,7 @@ export default defineConfig({
     {
       name: 'home',
       title: 'Home',
-      icon: () => '🏠',
+      icon: () => '◆',
       component: StudioWelcome,
     },
     ...prev,
@@ -63,7 +63,7 @@ export default defineConfig({
             S.listItem()
               .title('Hero & Branding')
               .id('siteSettings')
-              .icon(() => '✏️')
+              .icon(() => '◆')
               .child(
                 S.document()
                   .schemaType('siteSettings')
@@ -76,7 +76,7 @@ export default defineConfig({
             // Homepage Sections — with sub-filters
             S.listItem()
               .title('Homepage Sections')
-              .icon(() => '📄')
+              .icon(() => '▤')
               .child(
                 S.list()
                   .title('Homepage Sections')
@@ -84,13 +84,13 @@ export default defineConfig({
                     orderableDocumentListDeskItem({
                       type: 'section',
                       title: 'All Sections',
-                      icon: () => '📋',
+                      icon: () => '≡',
                       S,
                       context,
                     }),
                     S.listItem()
                       .title('Visible on Site')
-                      .icon(() => '🟢')
+                      .icon(() => '●')
                       .child(
                         S.documentList()
                           .title('Visible on Site')
@@ -99,7 +99,7 @@ export default defineConfig({
                       ),
                     S.listItem()
                       .title('Hidden')
-                      .icon(() => '⚫')
+                      .icon(() => '○')
                       .child(
                         S.documentList()
                           .title('Hidden Sections')
