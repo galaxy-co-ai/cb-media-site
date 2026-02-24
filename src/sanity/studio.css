@@ -1,39 +1,30 @@
-/* Space Grotesk for studio components */
+/* Space Grotesk for studio UI */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
-/* Graph paper grid — 20px cells, warm pencil at 5% opacity (strengthened) */
+/* ── Dark surfaces ── */
 [data-ui='ToolScreen'],
 [data-ui='Pane'] > [data-ui='PaneContent'] {
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      transparent,
-      transparent 19px,
-      rgba(80, 74, 61, 0.05) 19px,
-      rgba(80, 74, 61, 0.05) 20px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      transparent,
-      transparent 19px,
-      rgba(80, 74, 61, 0.05) 19px,
-      rgba(80, 74, 61, 0.05) 20px
-    );
+  background-color: #111010;
 }
 
-/* Gold accent on active nav tool */
+/* ── Gold accent on active nav tab ── */
 [data-ui='Tab'][data-selected] {
   border-bottom-color: #E8C872 !important;
 }
 
-/* Gold accent on active sidebar item */
+/* ── Gold accent on active sidebar item ── */
 [data-ui='TreeItem'][data-selected] > [data-ui='Flex'] {
   border-left: 2px solid #E8C872;
 }
 
-/* Style form/preview tab bar */
+/* ── Sidebar hover ── */
+[data-ui='TreeItem']:hover > [data-ui='Flex'] {
+  background-color: rgba(232, 200, 114, 0.06);
+}
+
+/* ── Tab bar ── */
 [data-ui='TabList'] {
-  border-bottom: 1px solid rgba(80, 74, 61, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 [data-ui='TabList'] [data-ui='Tab'] {
@@ -42,8 +33,38 @@
   font-weight: 500;
 }
 
-/* Gold focus ring on form inputs */
+/* ── Form input focus ring ── */
 [data-ui='TextInput']:focus-within,
 [data-ui='TextArea']:focus-within {
   --card-focus-ring-color: #E8C872;
+}
+
+/* ── Selection color ── */
+::selection {
+  background: rgba(232, 200, 114, 0.3);
+  color: #E8E4DE;
+}
+
+/* ── Scrollbar (webkit) ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111010;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2827;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3A3837;
+}
+
+/* ── Navbar bottom border ── */
+[data-ui='Navbar'] {
+  border-bottom: 1px solid rgba(232, 200, 114, 0.15) !important;
 }
