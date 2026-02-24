@@ -45,22 +45,27 @@
   color: #E8E4DE;
 }
 
-/* ── Scrollbar (webkit) ── */
-::-webkit-scrollbar {
+/* ── Scrollbar — scoped to Studio ── */
+html.sanity-studio * {
+  scrollbar-width: thin;
+  scrollbar-color: #2A2827 #111010;
+}
+
+html.sanity-studio ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-::-webkit-scrollbar-track {
+html.sanity-studio ::-webkit-scrollbar-track {
   background: #111010;
 }
 
-::-webkit-scrollbar-thumb {
+html.sanity-studio ::-webkit-scrollbar-thumb {
   background: #2A2827;
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+html.sanity-studio ::-webkit-scrollbar-thumb:hover {
   background: #3A3837;
 }
 

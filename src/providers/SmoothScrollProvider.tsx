@@ -21,6 +21,9 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const [ctx, setCtx] = useState<SmoothScrollContextValue>({ lenis: null })
 
   useEffect(() => {
+    // Don't hijack scrolling in Sanity Studio — it manages its own panes
+    if (window.location.pathname.startsWith('/studio')) return
+
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReduced) return
 

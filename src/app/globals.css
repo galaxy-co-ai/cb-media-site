@@ -56,13 +56,13 @@
     -webkit-text-size-adjust: 100%;
   }
 
-  /* Hide the actual scrollbar visually */
-  * {
+  /* Hide scrollbars on the main site — NOT in Sanity Studio */
+  html:not(.sanity-studio) * {
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
   }
 
-  *::-webkit-scrollbar {
+  html:not(.sanity-studio) *::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
 
