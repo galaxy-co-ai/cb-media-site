@@ -150,3 +150,89 @@ html.sanity-studio ::-webkit-scrollbar-thumb:hover {
 [data-ui='Tab'][data-selected] [data-ui='Text'] {
   color: #E8E4DE !important;
 }
+
+/* ── 1. Publish button — gold CTA ── */
+[data-testid="action-publish"] {
+  background-color: #E8C872 !important;
+  color: #111010 !important;
+}
+[data-testid="action-publish"]:hover {
+  background-color: #d4b35f !important;
+}
+
+/* ── 2. Published / Draft toggle chips ── */
+[data-testid="pane-header"] [data-ui="Button"] {
+  color: #E8E4DE !important;
+}
+[data-ui="Button"][data-selected] {
+  background-color: rgba(232, 200, 114, 0.12) !important;
+  color: #E8C872 !important;
+  border-color: rgba(232, 200, 114, 0.25) !important;
+}
+
+/* ── 3. Toolbar icon buttons (review, inspect, split, close) ── */
+[data-ui="PaneHeader"] [data-ui="Button"],
+[data-ui="DocumentPaneHeader"] [data-ui="Button"] {
+  color: #6B6560 !important;
+}
+[data-ui="PaneHeader"] [data-ui="Button"]:hover,
+[data-ui="DocumentPaneHeader"] [data-ui="Button"]:hover {
+  color: #E8E4DE !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ── 4. Rich text toolbar (Bold, Italic, List, Link, etc.) ── */
+[data-testid="pt-editor"] [data-ui="Button"] {
+  color: #6B6560 !important;
+}
+[data-testid="pt-editor"] [data-ui="Button"]:hover,
+[data-testid="pt-editor"] [data-ui="Button"][data-selected] {
+  color: #E8C872 !important;
+  background-color: rgba(232, 200, 114, 0.08) !important;
+}
+[data-testid="pt-editor"] [data-ui="Select"],
+[data-testid="pt-editor"] select {
+  color: #E8E4DE !important;
+  background-color: #1A1918 !important;
+}
+
+/* ── 5. Field group tabs (All fields / Content / Numbers / Settings) ── */
+[data-ui="TabList"] [data-ui="Tab"]:not([data-selected]) {
+  color: #6B6560 !important;
+}
+[data-ui="TabList"] [data-ui="Tab"]:not([data-selected]):hover {
+  color: #A09A92 !important;
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+[data-ui="TabList"] [data-ui="Tab"][data-selected] {
+  color: #E8E4DE !important;
+}
+
+/* ── 6. Sidebar list buttons & checkboxes ── */
+[data-ui="PaneHeader"] [data-ui="Button"][aria-label],
+[data-ui="PaneContent"] [data-ui="Button"][aria-label] {
+  color: #6B6560 !important;
+}
+[data-ui="PaneHeader"] [data-ui="Button"][aria-label]:hover {
+  color: #E8C872 !important;
+}
+[data-ui="Checkbox"] input[type="checkbox"],
+[data-ui="Checkbox"] {
+  accent-color: #E8C872;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ── 7. Bottom status bar ── */
+[data-ui="DocumentStatusBar"] {
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background-color: #111010 !important;
+}
+[data-ui="DocumentStatusBar"] [data-ui="Text"] {
+  color: #6B6560 !important;
+}
+
+/* ── 8. Character counter text near inputs ── */
+[data-ui="TextInput"] ~ [data-ui="Text"],
+[data-ui="TextArea"] ~ [data-ui="Text"] {
+  color: #6B6560 !important;
+}
