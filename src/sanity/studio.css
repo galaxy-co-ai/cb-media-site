@@ -1,108 +1,82 @@
-/* Space Grotesk for studio UI */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+/* ── Font — Inter for all Studio UI ── */
+[data-ui='Text'],
+[data-ui='Heading'],
+[data-ui='Label'],
+[data-ui='Tab'] {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
 
-/* ── Dark surfaces ── */
+[data-ui='TextInput'] input,
+[data-ui='TextInput'] textarea,
+[data-ui='TextArea'] textarea,
+[data-testid='pt-editor'] [contenteditable] {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* ── Warm cream surfaces ── */
 [data-ui='ToolScreen'],
 [data-ui='Pane'] > [data-ui='PaneContent'] {
-  background-color: #111010;
+  background-color: #F5F0EB;
 }
 
-/* ── Gold accent on active nav tab ── */
+/* ── Accent on active nav tab ── */
 [data-ui='Tab'][data-selected] {
-  border-bottom-color: #E8C872 !important;
+  border-bottom-color: #C4875A !important;
 }
 
-/* ── Gold accent on active sidebar item ── */
+/* ── Active sidebar item ── */
 [data-ui='TreeItem'][data-selected] > [data-ui='Flex'] {
-  border-left: 2px solid #E8C872;
+  border-left: 2px solid #C4875A;
+  background-color: rgba(196, 135, 90, 0.06);
 }
 
 /* ── Sidebar hover ── */
 [data-ui='TreeItem']:hover > [data-ui='Flex'] {
-  background-color: rgba(232, 200, 114, 0.06);
+  background-color: rgba(196, 135, 90, 0.04);
 }
 
 /* ── Tab bar ── */
 [data-ui='TabList'] {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-[data-ui='TabList'] [data-ui='Tab'] {
-  font-family: 'Space Grotesk', sans-serif;
-  letter-spacing: 0.03em;
-  font-weight: 500;
-}
-
-/* ── Form inputs — neumorphic inset, readable text ── */
+/* ── Inputs — clean white, subtle border ── */
 [data-ui='TextInput'],
 [data-ui='TextArea'] {
-  background-color: #1A1918 !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
   border-radius: 6px !important;
-  box-shadow:
-    inset 2px 2px 4px rgba(0, 0, 0, 0.45),
-    inset -1px -1px 3px rgba(255, 255, 255, 0.03) !important;
-  transition: box-shadow 150ms ease, border-color 150ms ease !important;
+  transition: border-color 150ms ease, box-shadow 150ms ease !important;
 }
 
 [data-ui='TextInput']:focus-within,
 [data-ui='TextArea']:focus-within {
-  --card-focus-ring-color: #E8C872;
-  border-color: rgba(232, 200, 114, 0.25) !important;
-  box-shadow:
-    inset 2px 2px 4px rgba(0, 0, 0, 0.45),
-    inset -1px -1px 3px rgba(255, 255, 255, 0.03),
-    0 0 0 1px rgba(232, 200, 114, 0.15) !important;
+  border-color: #C4875A !important;
+  box-shadow: 0 0 0 1px rgba(196, 135, 90, 0.3) !important;
 }
 
-/* Input text — light on dark so values are visible */
-[data-ui='TextInput'] input,
-[data-ui='TextInput'] textarea,
-[data-ui='TextArea'] textarea {
-  color: #E8E4DE !important;
-  caret-color: #E8C872;
-}
-
-/* Placeholder text — dimmed */
-[data-ui='TextInput'] input::placeholder,
-[data-ui='TextInput'] textarea::placeholder,
-[data-ui='TextArea'] textarea::placeholder {
-  color: #4A4642 !important;
-}
-
-/* Portable Text editor (rich text fields) */
-[data-testid='pt-editor'] [contenteditable] {
-  color: #E8E4DE !important;
-  caret-color: #E8C872;
-}
-
+/* ── Portable Text editor ── */
 [data-testid='pt-editor'] {
-  background-color: #1A1918 !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
   border-radius: 6px !important;
-  box-shadow:
-    inset 2px 2px 4px rgba(0, 0, 0, 0.45),
-    inset -1px -1px 3px rgba(255, 255, 255, 0.03) !important;
 }
 
 [data-testid='pt-editor']:focus-within {
-  border-color: rgba(232, 200, 114, 0.25) !important;
-  box-shadow:
-    inset 2px 2px 4px rgba(0, 0, 0, 0.45),
-    inset -1px -1px 3px rgba(255, 255, 255, 0.03),
-    0 0 0 1px rgba(232, 200, 114, 0.15) !important;
+  border-color: #C4875A !important;
+  box-shadow: 0 0 0 1px rgba(196, 135, 90, 0.3) !important;
 }
 
 /* ── Selection color ── */
 ::selection {
-  background: rgba(232, 200, 114, 0.3);
-  color: #E8E4DE;
+  background: rgba(196, 135, 90, 0.25);
+  color: #2C2825;
 }
 
 /* ── Scrollbar — scoped to Studio ── */
 html.sanity-studio * {
   scrollbar-width: thin;
-  scrollbar-color: #2A2827 #111010;
+  scrollbar-color: #D5CEC7 #F5F0EB;
 }
 
 html.sanity-studio ::-webkit-scrollbar {
@@ -111,128 +85,50 @@ html.sanity-studio ::-webkit-scrollbar {
 }
 
 html.sanity-studio ::-webkit-scrollbar-track {
-  background: #111010;
+  background: #F5F0EB;
 }
 
 html.sanity-studio ::-webkit-scrollbar-thumb {
-  background: #2A2827;
+  background: #D5CEC7;
   border-radius: 4px;
 }
 
 html.sanity-studio ::-webkit-scrollbar-thumb:hover {
-  background: #3A3837;
+  background: #C0B8B0;
 }
 
-/* ── Navbar bottom border ── */
+/* ── Navbar border ── */
 [data-ui='Navbar'] {
-  border-bottom: 1px solid rgba(232, 200, 114, 0.15) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
 
-/* ── Force dark-theme text colors on @sanity/ui components ── */
-/* buildLegacyTheme swaps black/white but styled-components
-   intermediate tones still render too dark — override explicitly */
-[data-ui='Text'],
-[data-ui='Heading'],
-[data-ui='Label'] {
-  color: #E8E4DE !important;
+/* ── Publish button ── */
+[data-testid="action-publish"] {
+  background-color: #C4875A !important;
+  color: #FFFFFF !important;
 }
 
-/* Muted text variant — Sanity uses data-muted attribute */
-[data-ui='Text'][data-muted='true'] {
+[data-testid="action-publish"]:hover {
+  background-color: #B3764A !important;
+}
+
+/* ── Selected button/chip (active toggle state) ── */
+[data-ui="Button"][data-selected] {
+  background-color: rgba(196, 135, 90, 0.1) !important;
+  color: #C4875A !important;
+  border-color: rgba(196, 135, 90, 0.2) !important;
+}
+
+/* ── Field group tabs ── */
+[data-ui="TabList"] [data-ui="Tab"]:not([data-selected]) {
   color: #8A8279 !important;
 }
 
-/* Navbar tab text needs to stay readable */
-[data-ui='Tab'] [data-ui='Text'] {
-  color: #A09A92 !important;
-}
-
-[data-ui='Tab'][data-selected] [data-ui='Text'] {
-  color: #E8E4DE !important;
-}
-
-/* ── 1. Publish button — gold CTA ── */
-[data-testid="action-publish"] {
-  background-color: #E8C872 !important;
-  color: #111010 !important;
-}
-[data-testid="action-publish"]:hover {
-  background-color: #d4b35f !important;
-}
-
-/* ── 2. Published / Draft toggle chips ── */
-[data-testid="pane-header"] [data-ui="Button"] {
-  color: #E8E4DE !important;
-}
-[data-ui="Button"][data-selected] {
-  background-color: rgba(232, 200, 114, 0.12) !important;
-  color: #E8C872 !important;
-  border-color: rgba(232, 200, 114, 0.25) !important;
-}
-
-/* ── 3. Toolbar icon buttons (review, inspect, split, close) ── */
-[data-ui="PaneHeader"] [data-ui="Button"],
-[data-ui="DocumentPaneHeader"] [data-ui="Button"] {
-  color: #6B6560 !important;
-}
-[data-ui="PaneHeader"] [data-ui="Button"]:hover,
-[data-ui="DocumentPaneHeader"] [data-ui="Button"]:hover {
-  color: #E8E4DE !important;
-  background-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-/* ── 4. Rich text toolbar (Bold, Italic, List, Link, etc.) ── */
-[data-testid="pt-editor"] [data-ui="Button"] {
-  color: #6B6560 !important;
-}
-[data-testid="pt-editor"] [data-ui="Button"]:hover,
-[data-testid="pt-editor"] [data-ui="Button"][data-selected] {
-  color: #E8C872 !important;
-  background-color: rgba(232, 200, 114, 0.08) !important;
-}
-[data-testid="pt-editor"] [data-ui="Select"],
-[data-testid="pt-editor"] select {
-  color: #E8E4DE !important;
-  background-color: #1A1918 !important;
-}
-
-/* ── 5. Field group tabs (All fields / Content / Numbers / Settings) ── */
-[data-ui="TabList"] [data-ui="Tab"]:not([data-selected]) {
-  color: #6B6560 !important;
-}
 [data-ui="TabList"] [data-ui="Tab"]:not([data-selected]):hover {
-  color: #A09A92 !important;
-  background-color: rgba(255, 255, 255, 0.04) !important;
+  color: #5A5550 !important;
+  background-color: rgba(0, 0, 0, 0.03) !important;
 }
+
 [data-ui="TabList"] [data-ui="Tab"][data-selected] {
-  color: #E8E4DE !important;
-}
-
-/* ── 6. Sidebar list buttons & checkboxes ── */
-[data-ui="PaneHeader"] [data-ui="Button"][aria-label],
-[data-ui="PaneContent"] [data-ui="Button"][aria-label] {
-  color: #6B6560 !important;
-}
-[data-ui="PaneHeader"] [data-ui="Button"][aria-label]:hover {
-  color: #E8C872 !important;
-}
-[data-ui="Checkbox"] input[type="checkbox"],
-[data-ui="Checkbox"] {
-  accent-color: #E8C872;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-}
-
-/* ── 7. Bottom status bar ── */
-[data-ui="DocumentStatusBar"] {
-  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
-  background-color: #111010 !important;
-}
-[data-ui="DocumentStatusBar"] [data-ui="Text"] {
-  color: #6B6560 !important;
-}
-
-/* ── 8. Character counter text near inputs ── */
-[data-ui="TextInput"] ~ [data-ui="Text"],
-[data-ui="TextArea"] ~ [data-ui="Text"] {
-  color: #6B6560 !important;
+  color: #2C2825 !important;
 }
