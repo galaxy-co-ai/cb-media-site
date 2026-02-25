@@ -3,13 +3,14 @@ import { useRouter } from 'sanity/router'
 import { useClient } from 'sanity'
 
 /* ── Tokens ── */
-const GOLD = '#E8C872'
-const TEXT = '#E8E4DE'
-const MUTED = '#6B6560'
-const SURFACE = '#1A1918'
-const BORDER = 'rgba(255,255,255,0.08)'
-const HOVER_BG = 'rgba(232,200,114,0.04)'
-const FONT_UI = '"Space Grotesk", sans-serif'
+const ACCENT = '#C4875A'
+const TEXT = '#2C2825'
+const MUTED = '#8A8279'
+const SURFACE = '#FFFFFF'
+const BG = '#F5F0EB'
+const BORDER = 'rgba(0,0,0,0.08)'
+const HOVER_BG = 'rgba(196,135,90,0.04)'
+const FONT_UI = '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
 
 /* ── Types ── */
 interface ContentStats {
@@ -96,7 +97,7 @@ const statValue: React.CSSProperties = {
 const cardStyle: React.CSSProperties = {
   backgroundColor: SURFACE,
   border: `1px solid ${BORDER}`,
-  borderLeft: `2px solid ${GOLD}`,
+  borderLeft: `2px solid ${ACCENT}`,
   borderRadius: 6,
   padding: '16px 16px 16px 14px',
 }
@@ -127,7 +128,7 @@ export function StudioWelcome() {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '2rem',
-        backgroundColor: '#111010',
+        backgroundColor: BG,
       }}
     >
       <div style={{ maxWidth: 580, width: '100%' }}>
@@ -143,10 +144,10 @@ export function StudioWelcome() {
               margin: 0,
             }}
           >
-            <span style={{ color: GOLD }}>CB MEDIA</span>{' '}
+            <span style={{ color: ACCENT }}>CB MEDIA</span>{' '}
             Content Studio
           </h2>
-          <div style={{ width: 64, height: 2, backgroundColor: GOLD, borderRadius: 1, marginTop: 12 }} />
+          <div style={{ width: 64, height: 2, backgroundColor: ACCENT, borderRadius: 1, marginTop: 12 }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12 }}>
             <span style={{ color: MUTED, fontSize: 14, fontFamily: FONT_UI }}>
               Your site at a glance
@@ -163,7 +164,7 @@ export function StudioWelcome() {
                 letterSpacing: '0.02em',
                 transition: 'color 150ms ease',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = GOLD }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = ACCENT }}
               onMouseLeave={(e) => { e.currentTarget.style.color = MUTED }}
             >
               View live site ↗
@@ -198,8 +199,8 @@ export function StudioWelcome() {
           </div>
 
           {stats.draftCount > 0 && (
-            <div style={{ ...cardStyle, borderLeftColor: '#c9960c' }}>
-              <p style={{ ...overline, color: '#c9960c' }}>Drafts</p>
+            <div style={{ ...cardStyle, borderLeftColor: '#C49A3C' }}>
+              <p style={{ ...overline, color: '#C49A3C' }}>Drafts</p>
               <p style={{ ...statValue, marginTop: 6 }}>{stats.draftCount}</p>
             </div>
           )}
@@ -211,13 +212,13 @@ export function StudioWelcome() {
             style={{
               backgroundColor: 'rgba(201,150,12,0.06)',
               border: '1px solid rgba(201,150,12,0.15)',
-              borderLeft: '2px solid #c9960c',
+              borderLeft: '2px solid #C49A3C',
               borderRadius: 6,
               padding: '12px 16px 12px 14px',
               marginBottom: 24,
             }}
           >
-            <span style={{ color: '#c9960c', fontSize: 14, fontFamily: FONT_UI }}>
+            <span style={{ color: '#C49A3C', fontSize: 14, fontFamily: FONT_UI }}>
               {stats.draftCount} unpublished {stats.draftCount === 1 ? 'draft' : 'drafts'} — publish when ready
             </span>
           </div>
@@ -251,7 +252,7 @@ export function StudioWelcome() {
                   }
                 }}
               >
-                <span style={{ color: GOLD, fontSize: 18, fontFamily: 'serif', flexShrink: 0 }}>
+                <span style={{ color: ACCENT, fontSize: 18, fontFamily: 'serif', flexShrink: 0 }}>
                   {action.icon}
                 </span>
                 <div style={{ flex: 1 }}>
