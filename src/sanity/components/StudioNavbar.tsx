@@ -15,19 +15,19 @@ export function StudioNavbar(props: NavbarProps) {
           size={1}
           weight="bold"
           style={{
-            fontFamily: '"Space Grotesk", sans-serif',
+            fontFamily: '"Inter", -apple-system, sans-serif',
             letterSpacing: '0.14em',
           }}
         >
-          <span style={{ color: '#E8C872' }}>CB</span>{' '}
-          <span style={{ color: '#E8E4DE' }}>MEDIA</span>
+          <span style={{ color: '#C4875A' }}>CB</span>{' '}
+          <span style={{ color: '#2C2825' }}>MEDIA</span>
         </Text>
         <Text
           size={0}
           style={{
-            color: '#6B6560',
+            color: '#8A8279',
             letterSpacing: '0.08em',
-            fontFamily: '"Space Grotesk", sans-serif',
+            fontFamily: '"Inter", -apple-system, sans-serif',
           }}
         >
           Studio
