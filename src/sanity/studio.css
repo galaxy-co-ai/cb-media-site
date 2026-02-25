@@ -67,6 +67,27 @@
   box-shadow: 0 0 0 1px rgba(196, 135, 90, 0.3) !important;
 }
 
+/* ── Rich text toolbar (Bold, Italic, List, Link, etc.) ── */
+[data-testid="pt-editor"] [data-ui="Button"] {
+  color: #8A8279 !important;
+}
+
+[data-testid="pt-editor"] [data-ui="Button"]:hover {
+  color: #2C2825 !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-testid="pt-editor"] [data-ui="Button"][data-selected] {
+  color: #C4875A !important;
+  background-color: rgba(196, 135, 90, 0.08) !important;
+}
+
+[data-testid="pt-editor"] [data-ui="Select"],
+[data-testid="pt-editor"] select {
+  color: #2C2825 !important;
+  background-color: #FFFFFF !important;
+}
+
 /* ── Selection color ── */
 ::selection {
   background: rgba(196, 135, 90, 0.25);
