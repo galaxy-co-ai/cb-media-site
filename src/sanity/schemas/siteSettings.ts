@@ -67,13 +67,44 @@ export default defineType({
         Rule.email().error('This doesn\'t look like a valid email — check for typos'),
     }),
     defineField({
-      name: 'contactPhone',
-      title: 'Phone Number',
-      type: 'string',
+      name: 'regionPhones',
+      title: 'Regional Phone Numbers',
+      type: 'array',
       group: 'contact',
       description:
-        'Displayed next to your email in the contact section. Leave blank to hide the phone number.',
-      placeholder: '+1 (555) 123-4567',
+        'Add phone numbers for each region you operate in (e.g. NA, MENA, APAC). These display side-by-side in the contact section.',
+      of: [
+        {
+          type: 'object',
+          name: 'regionPhone',
+          fields: [
+            defineField({
+              name: 'region',
+              title: 'Region Label',
+              type: 'string',
+              description: 'Short label like "NA", "MENA", or "APAC"',
+              validation: (Rule) => Rule.required().max(10),
+            }),
+            defineField({
+              name: 'phone',
+              title: 'Phone Number',
+              type: 'string',
+              description: 'Full international number, e.g. +1 (555) 123-4567',
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+          preview: {
+            select: { region: 'region', phone: 'phone' },
+            prepare({ region, phone }) {
+              return {
+                title: region || 'Region',
+                subtitle: phone || 'No number set',
+              }
+            },
+          },
+        },
+      ],
+      validation: (Rule) => Rule.max(5),
     }),
 
     // === CTA Group ===

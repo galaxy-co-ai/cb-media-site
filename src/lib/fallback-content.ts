@@ -6,7 +6,11 @@ export const fallbackSiteSettings: SiteSettings = {
   heroSubtext:
     'Architects of culture, community, and impact. Engineering brands for long-term durability, not just short-term spikes.',
   contactEmail: 'info@cb.media',
-  contactPhone: '+1 (000) 000-0000',
+  regionPhones: [
+    { region: 'NA', phone: '+1 (000) 000-0000' },
+    { region: 'MENA', phone: '+971 0 000 0000' },
+    { region: 'APAC', phone: '+61 0 0000 0000' },
+  ],
   ctaText: 'GET IN TOUCH',
   ctaLink: 'mailto:info@cb.media',
 }

@@ -35,12 +35,17 @@ export interface SocialLink {
   url: string
 }
 
+export interface RegionPhone {
+  region: string
+  phone: string
+}
+
 export interface SiteSettings {
   heroHeadline?: string
   heroTagline?: string
   heroSubtext?: string
   contactEmail?: string
-  contactPhone?: string
+  regionPhones?: RegionPhone[]
   ctaText?: string
   ctaLink?: string
   metaTitle?: string

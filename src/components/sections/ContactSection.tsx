@@ -19,7 +19,13 @@ export function ContactSection({ siteSettings }: ContactSectionProps) {
   const prefersReduced = useReducedMotion()
 
   const email = siteSettings?.contactEmail || 'info@cb.media'
-  const phone = siteSettings?.contactPhone || '+1 (000) 000-0000'
+  const regionPhones = siteSettings?.regionPhones?.length
+    ? siteSettings.regionPhones
+    : [
+        { region: 'NA', phone: '+1 (000) 000-0000' },
+        { region: 'MENA', phone: '+971 0 000 0000' },
+        { region: 'APAC', phone: '+61 0 0000 0000' },
+      ]
   const ctaText = siteSettings?.ctaText || 'GET IN TOUCH'
   const ctaLink = siteSettings?.ctaLink || `mailto:${email}`
 
@@ -84,17 +90,18 @@ export function ContactSection({ siteSettings }: ContactSectionProps) {
         >
           {email}
         </a>
-        {phone && (
-          <>
-            <span className="hidden md:block text-border">|</span>
+        {regionPhones.map(({ region, phone }, i) => (
+          <div key={region} className="flex items-center gap-2">
+            {i === 0 && <span className="hidden md:block text-border">|</span>}
+            <span className="text-muted-foreground text-xs uppercase tracking-wider">{region}</span>
             <a
               href={`tel:${phone.replace(/[\s()-]/g, '')}`}
               className="text-sm hover:text-foreground transition-colors"
             >
               {phone}
             </a>
-          </>
-        )}
+          </div>
+        ))}
       </div>
     </section>
   )

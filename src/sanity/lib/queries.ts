@@ -26,7 +26,10 @@ export const SITE_SETTINGS_QUERY = groq`
     heroTagline,
     heroSubtext,
     contactEmail,
-    contactPhone,
+    regionPhones[] {
+      region,
+      phone
+    },
     ctaText,
     ctaLink,
     metaTitle,
