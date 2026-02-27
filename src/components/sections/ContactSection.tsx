@@ -54,7 +54,7 @@ export function ContactSection({ siteSettings }: ContactSectionProps) {
     <section className="relative min-h-screen flex flex-col items-center justify-center px-6 md:px-10 lg:px-16 py-16">
       <h2
         ref={headlineRef}
-        className="font-display text-[clamp(2.25rem,10vw,7.5rem)] text-center leading-none tracking-[0.08em]"
+        className="font-display text-5xl md:text-7xl lg:text-8xl text-center leading-none tracking-[0.08em]"
       >
         LET&apos;S TALK
       </h2>
