@@ -1,41 +1,30 @@
 'use client'
 
 import { useRef, useEffect, useCallback } from 'react'
-import { useThree } from '@react-three/fiber'
+import { useThree, useFrame } from '@react-three/fiber'
 import { PerformanceMonitor } from '@react-three/drei'
 import gsap from 'gsap'
 import * as THREE from 'three'
 import { CrystalShards } from './CrystalShards'
-import { BrandText } from './BrandText'
 import { Lighting } from './Lighting'
-import { PostFX } from './PostFX'
+// PostFX disabled: @react-three/postprocessing 3.x crashes with R3F 9 / React 19
+// import { PostFX } from './PostFX'
 import type { QualityConfig } from './quality'
+import type { AnimState } from './types'
 
 interface CrystalSceneProps {
   quality: QualityConfig
   timelineRef: React.MutableRefObject<gsap.core.Timeline | null>
+  animState: AnimState
   onAutoplayComplete: () => void
-}
-
-function createAnimState() {
-  return {
-    crystalScale: 0,
-    rotationSpeed: 0.1,
-    dissolutionProgress: 0,
-    textOpacity: 0,
-    taglineOpacity: 0,
-    scrollInfluence: 0,
-    bloomIntensity: 0,
-    caOffset: 0.0006,
-  }
 }
 
 export function CrystalScene({
   quality,
   timelineRef,
+  animState,
   onAutoplayComplete,
 }: CrystalSceneProps) {
-  const animState = useRef(createAnimState()).current
   const { gl, camera } = useThree()
 
   // Configure renderer
@@ -69,7 +58,6 @@ export function CrystalScene({
     }, 0)
 
     // Phase 2: Dissolution (1.7–3s)
-    // Brief pause at 1.5s (the stillness beat)
     tl.to(animState, {
       rotationSpeed: 0,
       duration: 0.2,
@@ -139,8 +127,9 @@ export function CrystalScene({
       <color attach="background" args={[0x000000]} />
       <Lighting />
       <CrystalShards quality={quality} animState={animState} />
-      <BrandText animState={animState} />
+      {/* PostFX disabled: @react-three/postprocessing 3.x has circular JSON error with R3F 9 / React 19
       {!quality.fallback && <PostFX quality={quality} animState={animState} />}
+      */}
     </>
   )
 }

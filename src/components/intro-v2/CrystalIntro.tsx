@@ -6,11 +6,16 @@ import gsap from 'gsap'
 import { CrystalScene } from './CrystalScene'
 import { ScrollController } from './ScrollController'
 import { detectQuality, type QualityConfig, getQualityConfig } from './quality'
+import { createAnimState } from './types'
 
 export default function CrystalIntro() {
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
   const scrollSpacerRef = useRef<HTMLDivElement>(null)
-  const animStateRef = useRef({ scrollInfluence: 0 })
+  const animState = useRef(createAnimState()).current
+
+  // DOM refs for HTML text overlay (driven by rAF, not React state)
+  const headlineRef = useRef<HTMLHeadingElement>(null)
+  const taglineRef = useRef<HTMLParagraphElement>(null)
 
   const [quality, setQuality] = useState<QualityConfig | null>(null)
   const [showSkip, setShowSkip] = useState(false)
@@ -35,6 +40,27 @@ export default function CrystalIntro() {
     const timer = setTimeout(() => setShowSkip(true), 1500)
     return () => clearTimeout(timer)
   }, [])
+
+  // rAF loop: sync HTML text overlay opacity/scale from mutable animState
+  // Refs may be null initially (quality=null → early return), so check inside tick
+  useEffect(() => {
+    let rafId: number
+    const tick = () => {
+      const headline = headlineRef.current
+      const tagline = taglineRef.current
+      if (headline) {
+        headline.style.opacity = String(animState.textOpacity)
+        headline.style.transform = `scale(${1 + animState.scrollInfluence * 0.03})`
+      }
+      if (tagline) {
+        tagline.style.opacity = String(animState.taglineOpacity)
+        tagline.style.transform = `scale(${1 + animState.scrollInfluence * 0.03})`
+      }
+      rafId = requestAnimationFrame(tick)
+    }
+    rafId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafId)
+  }, [animState])
 
   const handleAutoplayComplete = useCallback(() => {
     setAutoplayDone(true)
@@ -127,10 +153,59 @@ export default function CrystalIntro() {
             <CrystalScene
               quality={quality}
               timelineRef={timelineRef}
+              animState={animState}
               onAutoplayComplete={handleAutoplayComplete}
             />
           </Suspense>
         </Canvas>
+      </div>
+
+      {/* Brand text overlay — HTML for reliable rendering (drei Text/troika hangs Suspense) */}
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+        }}
+      >
+        <h1
+          ref={headlineRef}
+          style={{
+            fontFamily: 'var(--font-display, "Space Grotesk", sans-serif)',
+            fontSize: 'clamp(2rem, 8vw, 4.5rem)',
+            fontWeight: 500,
+            letterSpacing: '0.08em',
+            color: '#fff',
+            opacity: 0,
+            margin: 0,
+            textTransform: 'uppercase',
+            willChange: 'opacity, transform',
+          }}
+        >
+          CB.MEDIA
+        </h1>
+        <p
+          ref={taglineRef}
+          style={{
+            fontFamily: 'var(--font-display, "Space Grotesk", sans-serif)',
+            fontSize: 'clamp(0.55rem, 1.5vw, 0.85rem)',
+            fontWeight: 300,
+            letterSpacing: '0.15em',
+            color: 'rgba(255, 255, 255, 0.6)',
+            opacity: 0,
+            margin: 0,
+            marginTop: '1rem',
+            textTransform: 'uppercase',
+            willChange: 'opacity, transform',
+          }}
+        >
+          TURNING VISIBILITY INTO VALUE
+        </p>
       </div>
 
       {/* Scroll spacer — provides scroll height for scroll-driven phase */}
@@ -208,7 +283,7 @@ export default function CrystalIntro() {
 
       {/* ScrollController — bridges scroll position to animState */}
       <ScrollController
-        animState={animStateRef.current}
+        animState={animState}
         enabled={autoplayDone}
         triggerRef={scrollSpacerRef}
       />
