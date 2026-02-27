@@ -1,46 +1,17 @@
 import { getGPUTier } from 'detect-gpu'
 
 export interface QualityConfig {
-  shardCount: number
+  particleCount: number
   dpr: [number, number]
   transmission: boolean
   fallback: boolean
-  postFX: {
-    bloom: boolean
-    chromaticAberration: boolean
-    vignette: boolean
-  }
 }
 
 const TIERS: Record<number, QualityConfig> = {
-  3: {
-    shardCount: 320,
-    dpr: [1, 2],
-    transmission: true,
-    fallback: false,
-    postFX: { bloom: true, chromaticAberration: true, vignette: true },
-  },
-  2: {
-    shardCount: 200,
-    dpr: [1, 1.5],
-    transmission: true,
-    fallback: false,
-    postFX: { bloom: true, chromaticAberration: false, vignette: true },
-  },
-  1: {
-    shardCount: 120,
-    dpr: [1, 1],
-    transmission: false,
-    fallback: false,
-    postFX: { bloom: true, chromaticAberration: false, vignette: false },
-  },
-  0: {
-    shardCount: 0,
-    dpr: [1, 1],
-    transmission: false,
-    fallback: true,
-    postFX: { bloom: false, chromaticAberration: false, vignette: false },
-  },
+  3: { particleCount: 200, dpr: [1, 2], transmission: true, fallback: false },
+  2: { particleCount: 150, dpr: [1, 1.5], transmission: true, fallback: false },
+  1: { particleCount: 100, dpr: [1, 1], transmission: false, fallback: false },
+  0: { particleCount: 0, dpr: [1, 1], transmission: false, fallback: true },
 }
 
 export function getQualityConfig(tier: number): QualityConfig {
