@@ -2,11 +2,11 @@
 
 import dynamic from 'next/dynamic'
 
-const CrystalIntro = dynamic(
-  () => import('@/components/intro-v2/CrystalIntro'),
+const GalaxyIntro = dynamic(
+  () => import('@/components/intro-v2/GalaxyIntro'),
   { ssr: false },
 )
 
 export default function IntroV2Page() {
-  return <CrystalIntro />
+  return <GalaxyIntro />
 }
