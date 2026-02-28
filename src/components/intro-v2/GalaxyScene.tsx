@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useCallback } from 'react'
+import { useRef, useEffect, useCallback, useMemo } from 'react'
 import { useThree, useFrame } from '@react-three/fiber'
 import { PerformanceMonitor } from '@react-three/drei'
 import gsap from 'gsap'
@@ -19,6 +19,29 @@ interface GalaxySceneProps {
   onAutoplayComplete: () => void
 }
 
+function Singularity({ animState }: { animState: AnimState }) {
+  const meshRef = useRef<THREE.Mesh>(null)
+
+  const geometry = useMemo(() => new THREE.SphereGeometry(0.05, 16, 12), [])
+  const material = useMemo(() => new THREE.MeshBasicMaterial({
+    color: new THREE.Color('#fffaf0'),
+    transparent: true,
+    opacity: 1,
+  }), [])
+
+  useFrame(({ clock }) => {
+    if (!meshRef.current) return
+    const s = animState.singularityScale
+    // Pulse effect during hold phase
+    const pulse = s > 0.5 ? 1 + 0.15 * Math.sin(clock.getElapsedTime() * 8) : 1
+    const scale = s * pulse
+    meshRef.current.scale.set(scale, scale, scale)
+    meshRef.current.visible = s > 0.01
+  })
+
+  return <mesh ref={meshRef} geometry={geometry} material={material} />
+}
+
 export function GalaxyScene({
   quality,
   timelineRef,
@@ -28,7 +51,7 @@ export function GalaxyScene({
 }: GalaxySceneProps) {
   const { gl, camera } = useThree()
 
-  // Configure renderer — warm dark background
+  // Configure renderer
   useEffect(() => {
     gl.toneMapping = THREE.AgXToneMapping
     gl.toneMappingExposure = 1.0
@@ -41,33 +64,62 @@ export function GalaxyScene({
     camera.lookAt(0, 0, 0)
   }, [camera])
 
-  // Build GSAP timeline (~2s)
+  // Build GSAP timeline (~6s total)
   useEffect(() => {
     const tl = gsap.timeline({ paused: true })
 
-    // 0–0.8s: Particles emerge (staggered per-particle in GlassParticles)
+    // Phase 1: Emerge (0–1s)
     tl.to(animState, {
       particleScale: 1,
-      duration: 0.8,
+      duration: 1.0,
       ease: 'power2.out',
     }, 0)
 
-    // 0.5–1.5s: Headline fades in
+    // Phase 2: Drain — spiral toward center (1–3s)
+    tl.to(animState, {
+      drainProgress: 1,
+      duration: 2.0,
+      ease: 'power2.in',
+    }, 1.0)
+
+    // Phase 3: Collapse — singularity appears (2.5–3.2s)
+    tl.to(animState, {
+      singularityScale: 1,
+      duration: 0.7,
+      ease: 'power3.in',
+    }, 2.5)
+
+    // Phase 4: Pause — hold singularity (3.2–4.2s, implicit)
+
+    // Phase 5: Explosion — blast particles outward (4.2s)
+    tl.to(animState, {
+      explodeProgress: 1,
+      duration: 0.1,
+      ease: 'none',
+    }, 4.2)
+
+    // Singularity shrinks after explosion (4.2–4.6s)
+    tl.to(animState, {
+      singularityScale: 0,
+      duration: 0.4,
+      ease: 'power2.out',
+    }, 4.2)
+
+    // Phase 6: Settle + Text (5–6s)
     tl.to(animState, {
       textOpacity: 1,
-      duration: 1.0,
-      ease: 'power2.out',
-    }, 0.5)
-
-    // 1.2–2.0s: Tagline fades in
-    tl.to(animState, {
-      taglineOpacity: 1,
       duration: 0.8,
       ease: 'power2.out',
-    }, 1.2)
+    }, 5.0)
 
-    // 2.0s: Autoplay complete
-    tl.call(() => onAutoplayComplete(), [], 2.0)
+    tl.to(animState, {
+      taglineOpacity: 1,
+      duration: 0.6,
+      ease: 'power2.out',
+    }, 5.4)
+
+    // Autoplay complete at 6s
+    tl.call(() => onAutoplayComplete(), [], 6.0)
 
     timelineRef.current = tl
     tl.play()
@@ -78,7 +130,7 @@ export function GalaxyScene({
     }
   }, [animState, timelineRef, onAutoplayComplete])
 
-  // Cursor parallax — smooth camera offset toward mouse
+  // Cursor parallax
   useFrame(() => {
     if (!mouseRef.current) return
     const targetX = mouseRef.current.x * 0.3
@@ -88,7 +140,6 @@ export function GalaxyScene({
     camera.lookAt(0, 0, 0)
   })
 
-  // PerformanceMonitor
   const handleDecline = useCallback(() => {
     gl.setPixelRatio(Math.max(0.75, window.devicePixelRatio * 0.5))
   }, [gl])
@@ -103,7 +154,8 @@ export function GalaxyScene({
       <fog attach="fog" args={['#0a0806', 10, 25]} />
       <Lighting />
       <GlassParticles quality={quality} animState={animState} />
-      <ShootingStars delay={2} />
+      <Singularity animState={animState} />
+      <ShootingStars delay={5} />
     </>
   )
 }
