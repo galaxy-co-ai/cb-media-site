@@ -33,14 +33,14 @@ export interface AnimState {
 
 function createAnimState(): AnimState {
   return {
-    gravity: 0,
+    gravity: 0.5,
     diskFlatten: 0,
     collapseForce: 0,
     brownian: 0.015,
     maxSpeed: 0.1,
     repulsion: 0,
     drag: 0.998,
-    spiral: 0,
+    spiral: 1.0,
     centerDampen: 0,
     colorTemp: 4000,
     particleOpacity: 1.0,
@@ -97,33 +97,34 @@ export default function EventHorizonScene({
     );
 
     // =====================================================================
-    // Phase 2: PULL (2–4s)
-    // Gravity activates, cyclonic spiral begins
+    // Phase 2: PULL (1–3s)
+    // Gravity ramps up, cyclonic spiral intensifies. Overlaps with
+    // fade-in so particles are already moving when the scene reveals.
     // =====================================================================
     tl.to(
       animState,
       { gravity: 2.0, duration: 2, ease: 'power2.in' },
-      2,
+      1,
     );
     tl.to(
       animState,
       { spiral: 4.0, duration: 2, ease: 'power2.in' },
-      2,
+      1,
     );
     tl.to(
       animState,
       { drag: 0.995, duration: 1.5, ease: 'power1.in' },
-      2,
+      1,
     );
     tl.to(
       animState,
       { maxSpeed: 3.0, duration: 2, ease: 'power1.in' },
-      2,
+      1,
     );
     tl.to(
       animState,
       { bloomIntensity: 0.6, duration: 2, ease: 'power1.in' },
-      2,
+      1,
     );
 
     // =====================================================================
