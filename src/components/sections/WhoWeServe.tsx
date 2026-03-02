@@ -92,9 +92,10 @@ export function WhoWeServe({ section }: WhoWeServeProps) {
         const lines = linesRef.current
         if (lines.length === 0) return
 
-        const textRect = textEl.getBoundingClientRect()
-        const cursorY = e.clientY - textRect.top
         const lh = lineHeightRef.current
+        // offsetTop on spans is relative to the offset parent (<section>
+        // with position:relative), so cursorY must use the same origin.
+        const cursorY = e.clientY - container.getBoundingClientRect().top
 
         for (const line of lines) {
           const lineCenter = line.top + lh / 2
