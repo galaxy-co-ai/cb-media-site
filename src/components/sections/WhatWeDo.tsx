@@ -89,9 +89,12 @@ export function WhatWeDo({ section }: WhatWeDoProps) {
                   {services[activeIndex].description}
                 </p>
                 {services[activeIndex].ctaText && (
-                  <span className="inline-block mt-4 font-display text-sm tracking-wider text-[var(--accent-glow)]">
+                  <a
+                    href={services[activeIndex].ctaLink || 'mailto:info@cb.media'}
+                    className="inline-block mt-4 font-display text-sm tracking-wider text-[var(--accent-glow)] hover:opacity-80 transition-opacity"
+                  >
                     {services[activeIndex].ctaText} &rarr;
-                  </span>
+                  </a>
                 )}
               </motion.div>
             )}
@@ -141,9 +144,17 @@ export function WhatWeDo({ section }: WhatWeDoProps) {
                   }}
                   className="overflow-hidden"
                 >
-                  <p className="pb-5 text-muted-foreground leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed">
                     {item.description}
                   </p>
+                  {item.ctaText && (
+                    <a
+                      href={item.ctaLink || 'mailto:info@cb.media'}
+                      className="inline-block mt-3 mb-5 font-display text-sm tracking-wider text-[var(--accent-glow)] hover:opacity-80 transition-opacity"
+                    >
+                      {item.ctaText} &rarr;
+                    </a>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
